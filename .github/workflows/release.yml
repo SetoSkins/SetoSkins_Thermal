@@ -1,0 +1,63 @@
+name: release
+on:
+  push:
+    paths:
+      - "SetoSkins.json"
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: 1. 准备变量
+        run: |
+          echo "GITHUB_version=$(jq .version $GITHUB_WORKSPACE/SetoSkins.json)" >> $GITHUB_ENV
+          echo "GITHUB_versionCode=$(jq .versionCode $GITHUB_WORKSPACE/SetoSkins.json)" >> $GITHUB_ENV
+      - name: 2. 制作模块
+        run: |
+          echo "version=${{ env.GITHUB_version }}" >>$GITHUB_WORKSPACE/SetoSkins/module.prop
+          echo "versionCode=${{ env.GITHUB_versionCode }}" >>$GITHUB_WORKSPACE/SetoSkins/module.prop
+          cd $GITHUB_WORKSPACE/SetoSkins
+          zip -q -r seto温控.zip *
+          mv $GITHUB_WORKSPACE/SetoSkins/seto温控.zip $GITHUB_WORKSPACE/seto温控.zip
+      - name: 3. 创建GitHub Release
+        id: create_release
+        uses: actions/create-release@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ env.GITHUB_version }}
+          release_name: seto温控 v${{ env.GITHUB_version }}
+          draft: false
+          prerelease: false
+      - name: 4. 上传GitHub Release
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./seto温控.zip
+          asset_name: seto温控.zip
+          asset_content_type: application/zip
+      - name: 5. 再次初始化仓库
+        run: |
+          rm -rf $GITHUB_WORKSPACE/*
+      - uses: actions/checkout@v2
+      - name: 6. 更新下载链接
+        env:
+          browser_download_url: ${{ steps.upload-release-asset.outputs.browser_download_url }}
+        run: |
+          git config --global user.email "30484319+zjw2017@users.noreply.github.com"
+          git config --global user.name "柚稚的孩纸"
+          sed -i '4d' $GITHUB_WORKSPACE/SetoSkins.json
+          sed -i '3a "zipUrl": "https://github.zjw.js.cn/'"$browser_download_url"'",' $GITHUB_WORKSPACE/SetoSkins.json
+          jq . $GITHUB_WORKSPACE/SetoSkins.json > $GITHUB_WORKSPACE/new.json
+          rm -rf $GITHUB_WORKSPACE/SetoSkins.json && mv $GITHUB_WORKSPACE/new.json $GITHUB_WORKSPACE/SetoSkins.json
+          git add ./SetoSkins.json
+          git commit -m "v${{ env.GITHUB_version }}" -a
+      - name: 7. 推送到Magisk Module仓库
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}

@@ -1,0 +1,5 @@
+id=SetoSkins
+name=色图(Seto)温控
+author=菜卡@SetoSkins-感谢酷安@灵聚丶神生
+description=魔改阶梯充电，充电速度提升，性能模式无温控。改最大电流目录在/data/adb/modules/SetoSkins/system/current_target 默认为22A｜temp_limit是高温降流阀值 current_limit是指定高温降流电流，如果遇到模块异常情况，请打开/data/adb/modules/常见模块问题说明
+updateJson=https://github.zjw.js.cn/https://github.com/zjw2017/Seto_thermal/blob/master/SetoSkins.json
