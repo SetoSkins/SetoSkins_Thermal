@@ -39,6 +39,9 @@ rm -rf /cache/magisk.log
 touch   /cache/magisk.log
 chmod 000  /cache/magisk.log
 /sbin/.magisk/busybox/chattr +i  /cache/magisk.log
+chattr -i /data/cache/
+chmod 777 /data/cache/
+rm -rf /data/cache/*
 rm -rf /data/adb/lspd/log/
 am kill logd
 killall -9 logd
