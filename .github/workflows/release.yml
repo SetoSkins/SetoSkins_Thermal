@@ -20,23 +20,33 @@ jobs:
           cd $GITHUB_WORKSPACE/SetoSkins
           zip -q -r SetoSkins_Thermal.zip *
           mv $GITHUB_WORKSPACE/SetoSkins/SetoSkins_Thermal.zip $GITHUB_WORKSPACE/SetoSkins_Thermal.zip
-      - name: 3. 创建并上传GitHub Release
+      - name: 3. 创建GitHub Release
         id: create_release
-        uses: marvinpinto/action-automatic-releases@latest
+        uses: actions/create-release@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          automatic_release_tag: ${{ env.GITHUB_version }}
-          title: seto温控 v${{ env.GITHUB_version }}
-          files: ./SetoSkins_Thermal.zip
+          tag_name: ${{ env.GITHUB_version }}
+          release_name: Seto温控 v${{ env.GITHUB_version }}
           draft: false
           prerelease: false
-      - name: 4. 再次初始化仓库
+      - name: 4. 上传GitHub Release
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./SetoSkins_Thermal.zip
+          asset_name: SetoSkins_Thermal.zip
+          asset_content_type: application/zip
+      - name: 5. 再次初始化仓库
         run: |
           rm -rf $GITHUB_WORKSPACE/*
       - uses: actions/checkout@v2
-      - name: 5. 更新下载链接
+      - name: 6. 更新下载链接
         env:
-          browser_download_url: ${{ steps.create_release.outputs.upload_url }}
+          browser_download_url: ${{ steps.upload-release-asset.outputs.browser_download_url }}
         run: |
           git config --global user.email "30484319+zjw2017@users.noreply.github.com"
           git config --global user.name "柚稚的孩纸"
@@ -46,7 +56,7 @@ jobs:
           rm -rf $GITHUB_WORKSPACE/SetoSkins.json && mv $GITHUB_WORKSPACE/new.json $GITHUB_WORKSPACE/SetoSkins.json
           git add ./SetoSkins.json
           git commit -m "v${{ env.GITHUB_version }}" -a
-      - name: 6. 推送到Magisk Module仓库
+      - name: 7. 推送到Magisk Module仓库
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
