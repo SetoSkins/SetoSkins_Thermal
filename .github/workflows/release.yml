@@ -18,16 +18,16 @@ jobs:
           echo "version=${{ env.GITHUB_version }}" >>$GITHUB_WORKSPACE/SetoSkins/module.prop
           echo "versionCode=${{ env.GITHUB_versionCode }}" >>$GITHUB_WORKSPACE/SetoSkins/module.prop
           cd $GITHUB_WORKSPACE/SetoSkins
-          zip -q -r seto温控.zip *
-          mv $GITHUB_WORKSPACE/SetoSkins/seto温控.zip $GITHUB_WORKSPACE/seto温控.zip
-      - name: 3. 创建GitHub Release
+          zip -q -r SetoSkins_Thermal.zip *
+          mv $GITHUB_WORKSPACE/SetoSkins/SetoSkins_Thermal.zip $GITHUB_WORKSPACE/SetoSkins_Thermal.zip
+      - name: 3. 创建并上传GitHub Release
         id: create_release
         uses: marvinpinto/action-automatic-releases@latest
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           automatic_release_tag: ${{ env.GITHUB_version }}
           title: seto温控 v${{ env.GITHUB_version }}
-          files: ./seto温控.zip
+          files: ./SetoSkins_Thermal.zip
           draft: false
           prerelease: false
       - name: 4. 再次初始化仓库
