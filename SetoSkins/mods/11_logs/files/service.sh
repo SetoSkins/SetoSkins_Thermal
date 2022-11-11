@@ -1,11 +1,5 @@
 #!/system/bin/sh
 MODDIR=${0%/*}
-chattr -i /data/cache/
-rm -rf /data/cache/*
-chmod 000 /data/cache/
-chattr -i /data/mdlog/
-rm -rf /data/mdlog/*
-chmod 000 /data/mdlog/
 chmod 0755 /system/etc/init/mobile_log_d.rc
 chmod 0755 /system/bin/logd
 chmod 0755 /system/bin/mobile_log_d

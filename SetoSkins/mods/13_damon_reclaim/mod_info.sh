@@ -14,7 +14,7 @@ mod_select_no_text="不安装"
 # 按下[音量-]后加入module.prop的内容
 mod_select_no_desc=""
 # 支持的设备，支持正则表达式(多的在后面加上|)
-mod_require_device=".{0,}" #全部
+mod_require_device="rubens" #全部
 # 支持的系统版本，持正则表达式
 mod_require_version=".{0,}" #全部
 # 支持的设备版本，持正则表达式

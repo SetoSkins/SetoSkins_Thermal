@@ -39,13 +39,7 @@ initmods() {
 	framework=false
 	cd $TMPDIR/mods
 }
-print_modname() {
-# 在这里设置你想要在模块安装过程中显示的信息
-	ui_print "----------------------------"
-	ui_print "  特别感谢@灵聚丶神生@向晚今天吃了咩""
-  "你的机型代号是"`getprop ro.product.device`"
-    ui_print "----------------------------"
-}
+
 keytest() {
 	ui_print "----------------------------"
 	ui_print "- 音量键测试 -"
