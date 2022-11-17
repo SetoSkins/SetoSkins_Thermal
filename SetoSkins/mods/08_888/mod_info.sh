@@ -70,7 +70,7 @@ mod_install_yes() {
 		echo "电量与性能呢？被你吃了？"
 	fi
 
-	chattr -i /data/vendor/thermal/
+	[[ -d /data/vendor/thermal ]] && chattr -i /data/vendor/thermal/
 	rm -rf /data/vendor/thermal/config*
 	for i in $(find /data/adb/modules* -name module.prop); do
 		module_id=$(cat $i | grep "id=" | awk -F= '{print $2}')
@@ -85,8 +85,8 @@ mod_install_yes() {
 			touch /data/adb/modules/MIUI_Optimization
 		fi
 	done
-	chattr +i /data/thermal
-	chattr +i /data/vendor/thermal
+	[[ -d /data/thermal ]] && chattr +i /data/thermal
+	[[ -d /data/vendor/thermal ]] && chattr +i /data/vendor/thermal
 	return 0
 }
 
