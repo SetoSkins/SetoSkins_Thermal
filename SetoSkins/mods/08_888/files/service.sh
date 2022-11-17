@@ -54,35 +54,24 @@ while true; do
     setprop ctl.stop thermal
   elif [[ $hint == "HighCurrent" ]]; then
     sed -i "/^description=/c description=[✅正常充电中 温度$temp℃ 电流$ChargemA"mA" ]性能模式无温控。改最大电流目录在/data/adb/modules/SetoSkins/system/current_target 默认为22A｜temp_limit是高温降流阀值 current_limit是指定高温降流电流，如果遇到模块异常情况，请打开/data/adb/modules/常见模块问题说明" "$MODDIR/module.prop"
-    echo '0' >/sys/class/power_supply/battery/input_current_limited
-    echo '1' >/sys/class/power_supply/usb/boost_current
+    echo '0' >/sys/class/power_supply/usb/input_current_limited
     echo ${current_target} >/sys/class/power_supply/usb/current_max
-    echo ${current_target} >/sys/class/power_supply/usb/constant_charge_current
     echo ${current_target} >/sys/class/power_supply/battery/constant_charge_current
-    echo ${current_target} >/sys/class/power_supply/battery/current_max
   elif [[ $hint == "LowCurrent" ]]; then
     sed -i "/^description=/c description=[ 充电缓慢⚠️ ️电量$capacity% 温度$temp℃ 电流$ChargemA"mA" ]可能是碰到内核墙，如果不是，请排查问题改最大电流目录在/data/adb/modules/SetoSkins/system/current_target 默认为22A｜temp_limit是高温降流阀值 current_limit是指定高温降流电流。" "$MODDIR/module.prop"
-    echo '0' >/sys/class/power_supply/battery/input_current_limited
-    echo '1' >/sys/class/power_supply/usb/boost_current
+    echo '0' >/sys/class/power_supply/usb/input_current_limited
     echo ${current_target} >/sys/class/power_supply/usb/current_max
-    echo ${current_target} >/sys/class/power_supply/usb/constant_charge_current
     echo ${current_target} >/sys/class/power_supply/battery/constant_charge_current
-    echo ${current_target} >/sys/class/power_supply/battery/current_max
   elif [[ $hint == "HighTemperature" ]]; then
     sed -i "/^description=/c description=[ 太烧了🥵 温度$temp℃ 电流$ChargemA"mA" ]性能模式无温控。改最大电流目录在/data/adb/modules/SetoSkins/system/current_target 默认为22A｜temp_limit是高温降流阀值 current_limit是指定高温降流电流，如果遇到模块异常情况，请打开/data/adb/modules/常见模块问题说明" "$MODDIR/module.prop"
     echo ${current_target} >/sys/class/power_supply/usb/current_max
-    echo ${current_target} >/sys/class/power_supply/usb/constant_charge_current
     echo ${current_target} >/sys/class/power_supply/battery/constant_charge_current
-    echo ${current_target} >/sys/class/power_supply/battery/current_max
   elif [[ $hint == "AlreadyFinish" ]]; then
     sed -i "/^description=/c description=[ ⚡达到阈值 尝试加快速度充电 温度$temp℃ 电流$ChargemA"mA" ]性能模式无温控。改最大电流目录在/data/adb/modules/SetoSkins/system/current_target 默认为22A｜temp_limit是高温降流阀值 current_limit是指定高温降流电流，如果遇到模块异常情况，请打开/data/adb/modules/常见模块问题说明" "$MODDIR/module.prop"
     echo 10 >/sys/class/thermal/thermal_message/sconfig
     echo ${current_target} >/sys/class/power_supply/usb/current_max
-    echo ${current_target} >/sys/class/power_supply/usb/constant_charge_current
     echo ${current_target} >/sys/class/power_supply/battery/constant_charge_current
-    echo ${current_target} >/sys/class/power_supply/battery/current_max
   elif [[ $hint == "DoNothing" ]]; then
     sed -i "/^description=/c description=[ ✅正常充电中 温度$temp℃ 电流$ChargemA"mA" ]性能模式无温控。改最大电流目录在/data/adb/modules/SetoSkins/system/current_target 默认为22A｜temp_limit是高温降流阀值 current_limit是指定高温降流电流，如果遇到模块异常情况，请打开/data/adb/modules/常见模块问题说明" "$MODDIR/module.prop"
   fi
 done
-exit
