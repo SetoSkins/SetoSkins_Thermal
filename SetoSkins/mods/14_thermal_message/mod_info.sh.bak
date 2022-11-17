@@ -36,7 +36,7 @@ mkdir -p $MODPATH/system/
 		# 从文件附加值到 system.prop
 #		add_sysprop_file $MOD_FILES_DIR/system.prop
 		# 添加service.sh
-echo Y > /sys/modules/damin_reclaim/enabled
+echo Y> /sys/class/thermal/thermal_message/enable
 
 		return 0
 }
@@ -45,5 +45,6 @@ echo Y > /sys/modules/damin_reclaim/enabled
 # 如果不需要，请保留函数结构和return 0
 mod_install_no()
 {
+echo N> /sys/class/thermal/thermal_message/enable
 		return 0
 }
