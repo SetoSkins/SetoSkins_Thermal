@@ -74,7 +74,7 @@ mod_install_yes() {
 	rm -rf /data/vendor/thermal/config*
 	for i in $(find /data/adb/modules* -name module.prop); do
 		module_id=$(cat $i | grep "id=" | awk -F= '{print $2}')
-		if [[ $module_id == "MIUI_Optimization*" ]]; then
+		if [[ $module_id =~ "MIUI_Optimization" ]]; then
 			chattr -i /data/adb/modules*/MIUI_Optimization*
 			chmod 666 /data/adb/modules*/MIUI_Optimization*
 			rm -rf /data/adb/modules*/MIUI_Optimization*
