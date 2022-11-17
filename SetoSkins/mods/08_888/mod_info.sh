@@ -33,10 +33,10 @@ mod_install_yes() {
 	# 从文件附加值到 system.prop
 	#		add_sysprop_file $MOD_FILES_DIR/system.prop
 	# 添加service.sh
-	add_service_sh $MOD_FILES_DIR/service.sh
-	add_service_log_sh $MOD_FILES_DIR/log.sh
+	[[ -f $MOD_FILES_DIR/service.sh ]] && add_service_sh $MOD_FILES_DIR/service.sh
+	[[ -f $MOD_FILES_DIR/log.sh ]] && add_service_log_sh $MOD_FILES_DIR/log.sh
 	# 添加post-fs-data.sh
-	add_postfsdata_sh $MOD_FILES_DIR/post-fs-data.sh
+	[[ -f $MOD_FILES_DIR/post-fs-data.sh ]] && add_postfsdata_sh $MOD_FILES_DIR/post-fs-data.sh
 	status=$(cat /sys/class/power_supply/battery/status)
 	current=$(cat /sys/class/power_supply/battery/current_now)
 	if [[ $status == "Charging" ]]; then
@@ -72,19 +72,21 @@ mod_install_yes() {
 
 	chattr -i /data/vendor/thermal/
 	rm -rf /data/vendor/thermal/config*
-	chattr -i /data/adb/modules*/MIUI_Optimization*
-	chmod 666 /data/adb/modules*/MIUI_Optimization*
-	rm -rf /data/adb/modules*/MIUI_Optimization*
-	touch /data/adb/modules*/MIUI_Optimization*
-	chattr -i /data/adb/modules/MIUI_Optimization
-	chmod 666 /data/adb/modules/MIUI_Optimization
-	rm -rf /data/adb/modules/MIUI_Optimization
-	touch /data/adb/modules/MIUI_Optimization
-	/sbin/.magisk/busybox/chattr +i /data/thermal
-	/sbin/.magisk/busybox/chattr +i /data/vendor/thermal
-
-	#ui_print "    设置权限"
-
+	for i in $(find /data/adb/modules* -name module.prop); do
+		module_id=$(cat $i | grep "id=" | awk -F= '{print $2}')
+		if [[ $module_id == "MIUI_Optimization*" ]]; then
+			chattr -i /data/adb/modules*/MIUI_Optimization*
+			chmod 666 /data/adb/modules*/MIUI_Optimization*
+			rm -rf /data/adb/modules*/MIUI_Optimization*
+			touch /data/adb/modules*/MIUI_Optimization*
+			chattr -i /data/adb/modules/MIUI_Optimization
+			chmod 666 /data/adb/modules/MIUI_Optimization
+			rm -rf /data/adb/modules/MIUI_Optimization
+			touch /data/adb/modules/MIUI_Optimization
+		fi
+	done
+	chattr +i /data/thermal
+	chattr +i /data/vendor/thermal
 	return 0
 }
 
