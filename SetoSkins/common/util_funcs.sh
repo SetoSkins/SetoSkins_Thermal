@@ -22,6 +22,14 @@ add_service_sh()
 }
 
 # $1:path/to/file
+add_service_log_sh()
+{
+  LATESTARTSERVICE=true
+  cp "$1" $MODPATH/service_"$MOD"_log.sh
+  chmod 0755 $MODPATH/service_"$MOD"_log.sh
+}
+
+# $1:path/to/file
 add_postfsdata_sh()
 {
   POSTFSDATA=true

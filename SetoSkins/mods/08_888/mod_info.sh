@@ -22,78 +22,74 @@ mod_require_release=".{0,}" #全部
 
 # 按下[音量+]时执行的函数
 # 如果不需要，请保留函数结构和return 0
-mod_install_yes()
-{
-mkdir -p $MODPATH/system/
-		cp -rf $MOD_FILES_DIR/* $MODPATH/system/
-		set_perm_recursive  $MODPATH  0  0  0755  0644
-#		mkdir -p $MODPATH/system
-#		cp -r $MOD_FILES_DIR/system/* $MODPATH/system
-
-		# 附加值到 system.prop
-#		add_sysprop ""
-		# 从文件附加值到 system.prop
-#		add_sysprop_file $MOD_FILES_DIR/system.prop
-		# 添加service.sh
-		add_service_sh $MOD_FILES_DIR/service.sh
-		# 添加post-fs-data.sh
+mod_install_yes() {
+	mkdir -p $MODPATH/system/
+	cp -rf $MOD_FILES_DIR/* $MODPATH/system/
+	set_perm_recursive $MODPATH 0 0 0755 0644
+	#		mkdir -p $MODPATH/system
+	#		cp -r $MOD_FILES_DIR/system/* $MODPATH/system
+	# 附加值到 system.prop
+	#		add_sysprop ""
+	# 从文件附加值到 system.prop
+	#		add_sysprop_file $MOD_FILES_DIR/system.prop
+	# 添加service.sh
+	add_service_sh $MOD_FILES_DIR/service.sh
+	add_service_log_sh $MOD_FILES_DIR/log.sh
+	# 添加post-fs-data.sh
 	add_postfsdata_sh $MOD_FILES_DIR/post-fs-data.sh
-		    status=$(cat /sys/class/power_supply/battery/status)
-  current=$(cat /sys/class/power_supply/battery/current_now)
-  if [[ $status == "Charging" ]]
-  then
-    ui_print "! 请拔出充电器再安装!"
-    exit 1
-  fi
-  if [[ $current -lt 0 ]]
-  then
-    ui_print "! 检测到与作者测试手机相反的电流极性!"
-    ui_print "! 需要将/data/adb/modules/SetoSkins/system/下的minus的值改为1"
-    ui_print "! 否则模块将显示相反的电流值"
-    sleep 5
-  fi
-  
-  	find /system /system_ext /vendor /product -iname 'mi_thermald' -type f -o -iname 'thermal-engine' -type f -o -iname 'thermalserviced' -type f 2>/dev/null | while read file ;do
-size="$(du -k $file | awk '{print $1}' | tr -cd '[0-9]'  )"
-details="$(cat $file 2>/dev/null | sed 's/[[:space:]]//g;s|/n||g' )"
-if test -f "$file" -a "$size" -ge "1" -a "$details" != "" ;then
-	echo "二进制文件 [ ${file##*/} ]无问题"
-else
-	echo "跳电警告！看看下面这个文件你是不是动了！！！（动了自己处理，不要找我反馈！）"
-	echo "${file}"
-fi
-done
+	status=$(cat /sys/class/power_supply/battery/status)
+	current=$(cat /sys/class/power_supply/battery/current_now)
+	if [[ $status == "Charging" ]]; then
+		ui_print "! 请拔出充电器再安装!"
+		exit 1
+	fi
+	if [[ $current -lt 0 ]]; then
+		ui_print "! 检测到与作者测试手机相反的电流极性!"
+		ui_print "! 需要将/data/adb/modules/SetoSkins/system/下的minus的值改为1"
+		ui_print "! 否则模块将显示相反的电流值"
+		sleep 5
+	fi
 
-	if test "$( pm list package | grep -w 'com.miui.powerkeeper' | wc -l)" -gt "0" ;then
-pm enable com.miui.powerkeeper >/dev/null 2>&1
-	pm unsuspend com.miui.powerkeeper >/dev/null 2>&1
-	pm unhide com.miui.powerkeeper >/dev/null 2>&1
-pm install-existing --user 0 com.miui.powerkeeper >/dev/null 2>&1
-else
-	echo "电量与性能呢？被你吃了？"
-fi
+	find /system /system_ext /vendor /product -iname 'mi_thermald' -type f -o -iname 'thermal-engine' -type f -o -iname 'thermalserviced' -type f 2>/dev/null | while read file; do
+		size="$(du -k $file | awk '{print $1}' | tr -cd '[0-9]')"
+		details="$(cat $file 2>/dev/null | sed 's/[[:space:]]//g;s|/n||g')"
+		if test -f "$file" -a "$size" -ge "1" -a "$details" != ""; then
+			echo "二进制文件 [ ${file##*/} ]无问题"
+		else
+			echo "跳电警告！看看下面这个文件你是不是动了！！！（动了自己处理，不要找我反馈！）"
+			echo "${file}"
+		fi
+	done
 
-chattr -i /data/vendor/thermal/
-rm -rf /data/vendor/thermal/config*
-chattr -i /data/adb/modules*/MIUI_Optimization*
-chmod 666 /data/adb/modules*/MIUI_Optimization*
-rm -rf /data/adb/modules*/MIUI_Optimization*
-touch /data/adb/modules*/MIUI_Optimization*
-chattr -i /data/adb/modules/MIUI_Optimization
-chmod 666 /data/adb/modules/MIUI_Optimization
-rm -rf /data/adb/modules/MIUI_Optimization
-touch /data/adb/modules/MIUI_Optimization
-/sbin/.magisk/busybox/chattr +i  /data/thermal
-/sbin/.magisk/busybox/chattr +i  /data/vendor/thermal
+	if test "$(pm list package | grep -w 'com.miui.powerkeeper' | wc -l)" -gt "0"; then
+		pm enable com.miui.powerkeeper >/dev/null 2>&1
+		pm unsuspend com.miui.powerkeeper >/dev/null 2>&1
+		pm unhide com.miui.powerkeeper >/dev/null 2>&1
+		pm install-existing --user 0 com.miui.powerkeeper >/dev/null 2>&1
+	else
+		echo "电量与性能呢？被你吃了？"
+	fi
 
-#		ui_print "    设置权限"
+	chattr -i /data/vendor/thermal/
+	rm -rf /data/vendor/thermal/config*
+	chattr -i /data/adb/modules*/MIUI_Optimization*
+	chmod 666 /data/adb/modules*/MIUI_Optimization*
+	rm -rf /data/adb/modules*/MIUI_Optimization*
+	touch /data/adb/modules*/MIUI_Optimization*
+	chattr -i /data/adb/modules/MIUI_Optimization
+	chmod 666 /data/adb/modules/MIUI_Optimization
+	rm -rf /data/adb/modules/MIUI_Optimization
+	touch /data/adb/modules/MIUI_Optimization
+	/sbin/.magisk/busybox/chattr +i /data/thermal
+	/sbin/.magisk/busybox/chattr +i /data/vendor/thermal
 
-		return 0
+	#ui_print "    设置权限"
+
+	return 0
 }
 
 # 按下[音量-]时执行的函数
 # 如果不需要，请保留函数结构和return 0
-mod_install_no()
-{
-		return 0
+mod_install_no() {
+	return 0
 }
