@@ -39,7 +39,11 @@ while true; do
     fi
   fi
   #进行相应操作
-  if [[ $hint == "DisCharging" ]]; then
+  if [[ $capacity == "100" ]]; then
+    echo $(date)" 已充满" >>"$MODDIR"/log.log
+    #sed -i "/^description=/c description=奇怪的东西出现了😋 https://www.123pan.com/s/y5nrVv-BluY3" "$MODDIR/module.prop"
+    sed -i "/^description=/c description=[ 😊已充满 温度$temp℃ 电流$ChargemA"mA" ]" "$MODDIR/module.prop"
+  elif [[ $hint == "DisCharging" ]]; then
     sed -i "/^description=/c description=[ 🔋未充电 ]魔改阶梯充电，充电速度提升，性能模式无温控。改最大电流目录在/data/adb/modules/SetoSkins/system/current_target 默认为22A｜temp_limit是高温降流阀值 current_limit是指定高温降流电流，如果遇到模块异常情况，请打开/data/adb/modules/常见模块问题说明" "$MODDIR/module.prop"
     setprop ctl.restart mi_thermald
     setprop ctl.restart thermal
