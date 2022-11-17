@@ -5,7 +5,6 @@ while true; do
     temp=$(expr $(cat /sys/class/power_supply/battery/temp) / 10)
     ChargemA=$(expr $(cat /sys/class/power_supply/battery/current_now) / -1000)
     #写入日志
-    sleep 90
     if [[ $status == "Charging" ]] && [[ $ChargemA -gt 300 ]]; then
         echo $(date) $hint" 电量$capacity% 温度$temp℃ 电流$ChargemA"mA"" >>"$MODDIR"/log.log
     fi
@@ -15,4 +14,5 @@ while true; do
         #sed -i "/^description=/c description=奇怪的东西出现了😋 https://www.123pan.com/s/y5nrVv-BluY3" "$MODDIR/module.prop"
         sed -i "/^description=/c description=已充满" "$MODDIR/module.prop"
     fi
+    sleep 90
 done
