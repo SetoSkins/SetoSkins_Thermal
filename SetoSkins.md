@@ -2,3 +2,4 @@
 - 增加更多log
 - 增加thermal_message
 - 修复fpsgo
+- 去除没必要的代码
