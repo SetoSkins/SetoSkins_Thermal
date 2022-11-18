@@ -30,3 +30,4 @@ chmod 777 /sys/class/power_supply/battery/input_suspend
 chmod 777 /sys/class/power_supply/battery/battery_charging_enabled
  echo ${current_target} >/sys/class/power_supply/usb/current_max
  echo ${current_target} >/sys/class/power_supply/battery/constant_charge_current
+ done
