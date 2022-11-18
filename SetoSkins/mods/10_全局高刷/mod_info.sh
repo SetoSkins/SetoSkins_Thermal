@@ -20,19 +20,11 @@ mod_require_version=".{0,}" #全部
 # 支持的设备版本，持正则表达式
 mod_require_release=".{0,}" #全部
 
-mod_install_yes()
-{
-add_service_sh $MOD_FILES_DIR/service.sh
-{
-until [[ "$(getprop sys.boot_completed)" == "1" ]]; do
-sleep 1
-done
-settings put system min_refresh_rate 120
-}&
-		return 0		
+mod_install_yes() {
+	add_service_sh $MOD_FILES_DIR/service.sh
+	return 0
 }
 
-mod_install_no()
-{
-		return 0
+mod_install_no() {
+	return 0
 }

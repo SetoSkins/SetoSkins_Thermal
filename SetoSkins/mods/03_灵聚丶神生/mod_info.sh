@@ -56,13 +56,28 @@ mkdir -p $MODPATH/system/
   fi
   unzip -o "$ZIPFILE" 'system/*' -d $MODPATH >&2
 rm -rf /data/vendor/thermal/config*
-chattr -i /data/adb/modules*/MIUI_Optimization*
-chmod 666 /data/adb/modules*/MIUI_Optimization*
-rm -rf /data/adb/modules*/MIUI_Optimization*
-touch /data/adb/modules*/MIUI_Optimization*
-chattr -i /data/adb/modules/MIUI_Optimization
-chmod 666 /data/adb/modules/MIUI_Optimization
-rm -rf /data/adb/modules/MIUI_Optimization
+	[[ -d /data/vendor/thermal ]] && chattr -i /data/vendor/thermal/
+	rm -rf /data/vendor/thermal/config*
+	for i in $(find /data/adb/modules* -name module.prop); do
+		module_id=$(cat $i | grep "id=" | awk -F= '{print $2}')
+		if [[ $module_id =~ "MIUI_Optimization" ]]; then
+			chattr -i /data/adb/modules*/MIUI_Optimization*
+			chmod 666 /data/adb/modules*/MIUI_Optimization*
+			rm -rf /data/adb/modules*/MIUI_Optimization*
+			touch /data/adb/modules*/MIUI_Optimization*
+			chattr -i /data/adb/modules/MIUI_Optimization
+		fi
+	done
+		for i in $(find /data/adb/modules* -name module.prop); do
+		module_id=$(cat $i | grep "id=" | awk -F= '{print $2}')
+		if [[ $module_id =~ "chargeauto" ]]; then
+			chattr -i /data/adb/modules*/chargeauto*
+			chmod 666 /data/adb/modules*/chargeauto*
+			rm -rf /data/adb/modules*/chargeauto*
+			touch /data/adb/modules*/chargeauto*
+			chattr -i /data/adb/modules/chargeauto
+		fi
+	done
 rm -rf /data/adb/modules/8100_hanjinliang
 chattr -i /data/adb/modules/8100_hanjinliang
 rm -rf /data/adb/modules*/8100_hanjinliang*

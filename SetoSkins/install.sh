@@ -16,10 +16,6 @@ LATESTARTSERVICE=false
 # 替换文件夹列表
 REPLACE=""
 # 获取系统信息
-<<<<<<< HEAD
-MODS_PATH="/data/adb/modules"
-=======
->>>>>>> 884a8cae0acd8e4f700a32e4ceaf38cde564b373
 var_device="$(getprop ro.product.device)"
 var_release="$(grep_prop ro.*version.release)"
 var_version="$(grep_prop ro.*version.incremental)"
@@ -185,31 +181,17 @@ on_install() {
 		rm -rf $TMPDIR
 		exit
 	fi
-	#我超,Sutoliu
-for i in $(ls $MODS_PATH); do
-    if [[ ! -z $(grep author=SutoLiu $MODS_PATH/$i/module.prop) ]]; then
-        chattr -R -i $MODS_PATH/$i
-        rm -rf $MODS_PATH/$i
-    fi
-done
-#我超shadog
-for i in $(ls $MODS_PATH); do
-    if [[ ! -z $(grep id=chargeauto $MODS_PATH/$i/module.prop) ]]; then
-        chattr -R -i $MODS_PATH/$i
-        rm -rf $MODS_PATH/$i
-    echo "将shadog变成Seto的形状!"
-    fi
-
-		echo "安装时间：[$(date "+%F %T")]	安装的功能: $INSTALLED_FUNC" >>$TMPDIR/module.prop
+	echo "安装时间：[$(date "+%F %T")]	安装的功能: $INSTALLED_FUNC" >>$TMPDIR/module.prop
 	[ -d "/storage/emulated/0/Download/"$MODID"_update" ] && rm -rf /storage/emulated/0/Download/"$MODID"_update
-	#echo -e "打开模块目录如果一些常见的文件还在的话，请返回data/adb/modules/把module.prop复制到模块目录即可。如果出现模块目录下只有一个system，其他文件都消失并且删除不掉模块，请打开data/adb/modules/module.prop执行异常情况解决方案2.sh\nSeto温控链接:" >/data/adb/modules/常见模块问题说明.prop
+	#echo -e "打开模块目录如果一些常见的文件还在的话，请data/adb/modules/把module.prop复制到模块目录即可。如果出现模块目录下只有一个system，其他文件都消失并且删除不掉模块，请打开data/adb/modules/module.prop执行异常情况解决方案2.sh\nSeto温控链接:" >/data/adb/modules/常见模块问题说明.prop
 	#echo -e ""id=SetoSkins"\n"name=色图Seto温控"\n"version=19"\n"versionCode=19"\n"author=菜卡@SetoSkins-感谢酷安@灵聚丶神生"\n"description=魔改阶梯充电，充电速度提升，性能模式无温控。改最大电流目录在/data/adb/modules/SetoSkins/system/current_target 默认为22A｜temp_limit是高温降流阀值 current_limit是指定高温降流电流，如果遇到模块异常情况，请打开/data/adb/modules/常见模块问题说明"\n"updateJson=https://ghproxy.com/https://raw.githubusercontent.com/SetoSKins/wenkong/main/update.json"\n" >/data/adb/modules/module.prop
 	#echo -e "chattr -R -i -a /data/adb/modules/SetoSkins/\nrm -rf /data/adb/modules/SetoSkins/" >/data/adb/modules/异常情况解决方案2.sh
 	#ui_print "    你选择安装的模块列表在/data/adb/modules/SetoSkins/module.prop里"
 	ui_print "    请仔细查看模块简介！"
+    ui_print "    充电日志在模块根目录的log里面"
 	#ui_print "    如果遇到模块异常情况，请打开/data/adb/modules/常见模块问题说明"
 	ui_print "    作者酷安@SetoSkins"
-	sleep 4
+	sleep 3
 	rm -rf /data/system/package_cache/*
 	ui_print "    缓存清理完毕"
 }
