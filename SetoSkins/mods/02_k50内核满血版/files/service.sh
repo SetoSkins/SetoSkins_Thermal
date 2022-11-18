@@ -29,8 +29,21 @@ chmod 777 /sys/class/power_supply/battery/constant_charge_current_max
 chmod 777 /sys/class/power_supply/battery/step_charging_enabled
 chmod 777 /sys/class/power_supply/battery/input_suspend
 chmod 777 /sys/class/power_supply/battery/battery_charging_enabled
-    echo ${current_target} >/sys/class/power_supply/usb/current_max
-    echo ${current_target} >/sys/class/power_supply/battery/constant_charge_current
+echo ${current_target} > /sys/class/power_supply/usb/ctm_current_max
+echo ${current_target} > /sys/class/power_supply/usb/current_max
+echo ${current_target} > /sys/class/power_supply/usb/sdp_current_max
+echo ${current_target} > /sys/class/power_supply/usb/hw_current_max
+echo ${current_target} > /sys/class/power_supply/usb/constant_charge_current
+echo ${current_target} > /sys/class/power_supply/usb/constant_charge_current_max
+echo ${current_target} > /sys/class/power_supply/main/current_max
+echo ${current_target} > /sys/class/power_supply/main/constant_charge_current_max
+echo ${current_target} > /sys/class/power_supply/dc/current_max
+echo ${current_target} > /sys/class/power_supply/dc/constant_charge_current_max
+echo ${current_target} > /sys/class/power_supply/battery/constant_charge_current_max
+echo ${current_target} > /sys/class/power_supply/battery/constant_charge_current
+echo ${current_target} > /sys/class/power_supply/battery/current_max
+echo ${current_target} > /sys/class/power_supply/pc_port/current_max
+echo ${current_target} > /sys/class/power_supply/qpnp-dc/current_max
 
 sleep 60
   #写入日志
