@@ -11,7 +11,6 @@ while true; do
     fi
     if [[ $capacity == "100" ]]; then
         echo $(date)" 已充满" >>"$MODDIR"/log.log
-        sed -i "/^description=/c description=奇怪的东西出现了😋 https://www.123pan.com/s/y5nrVv-BluY3" "$MODDIR/module.prop"
         sed -i "/^description=/c description=已充满" "$MODDIR/module.prop"
     fi
     sleep 60
