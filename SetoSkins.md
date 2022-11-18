@@ -1,7 +1,4 @@
- ### 更新日志
-- 删掉多余代码</br>
-- 8100温控bug修复（）</br>
-- 内核温控增加最大电流</br>
-- 调整内核温控（更放开）</br>
-- 清掉更多的log</br>
-- 开放damon_reclaim</br>
+ ### v19更新日志
+- 增加更多log
+- 增加thermal_message
+- 修复fpsgo

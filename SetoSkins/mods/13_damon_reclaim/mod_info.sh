@@ -14,7 +14,7 @@ mod_select_no_text="不安装"
 # 按下[音量-]后加入module.prop的内容
 mod_select_no_desc=""
 # 支持的设备，支持正则表达式(多的在后面加上|)
-mod_require_device="rubens" #全部
+mod_require_device=".{0,}" #全部
 # 支持的系统版本，持正则表达式
 mod_require_version=".{0,}" #全部
 # 支持的设备版本，持正则表达式
@@ -36,7 +36,7 @@ mkdir -p $MODPATH/system/
 		# 从文件附加值到 system.prop
 #		add_sysprop_file $MOD_FILES_DIR/system.prop
 		# 添加service.sh
-echo N > /sys/modules/damin_reclaim/enabled
+echo Y > /sys/modules/damin_reclaim/enabled
 
 		return 0
 }
