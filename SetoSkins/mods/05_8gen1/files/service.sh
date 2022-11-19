@@ -1,12 +1,20 @@
 #!/system/bin/sh
 MODDIR=${0%/*}
-true >"$MODDIR"/log.log
 [[ -e /sys/class/power_supply/battery/cycle_count ]] && CYCLE_COUNT="$(cat /sys/class/power_supply/battery/cycle_count) 次" || CYCLE_COUNT="（？）"
-[[ -e /sys/class/power_supply/battery/charge_full ]] && Battery_capacity="$(($(cat /sys/class/power_supply/battery/charge_full) / 1000))mAh" || Battery_capacity="（？）"
-echo $(date) ""模块启动"\n"电池循环次数: $CYCLE_COUNT"\n"电池容量: $Battery_capacity"\n" >>"$MODDIR"/log.log
+[[ -e /sys/class/power_supply/bms/charge_full ]] && Battery_capacity="$(($(cat /sys/class/power_supply/bms/charge_full) / 1000))mAh" || Battery_capacity="（？）"
+echo -e $(date) ""模块启动"\n"电池循环次数: $CYCLE_COUNT"\n"电池容量: $Battery_capacity"\n" > "$MODDIR"/log.log
 chmod 777 /sys/class/power_supply/*/*
 lasthint="DisCharging"
+ROOTS $MODDIR/system/Cloud_Redirect.sh
+PROCESS() {
+	ps -ef | grep "log.sh" | grep -v grep | wc -l
+}
+until [[ $(PROCESS) -ne 0 ]]; do
+	nohup sh $MODDIR/system/log.sh
+	sleep 2
+done
 while true; do
+sleep 10
   #读取配置文件和系统数据到变量
   status=$(cat /sys/class/power_supply/battery/status)
   capacity=$(cat /sys/class/power_supply/battery/capacity)
