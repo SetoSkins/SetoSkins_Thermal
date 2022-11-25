@@ -13,6 +13,10 @@ until [[ $(PROCESS) -ne 0 ]]; do
 	nohup sh $MODDIR/system/log.sh
 	sleep 2
 done
+wk="/sys/class/thermal/thermal_message/enable"
+mode="/data/vendor/thermal/thermal-global-mode"
+echo 0 > $mode
+echo 1 > $wk
 while true; do
 sleep 10
   #读取配置文件和系统数据到变量
