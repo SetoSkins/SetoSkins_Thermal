@@ -5,20 +5,13 @@ MODDIR=${0%/*}
 echo -e $(date) ""模块启动"\n"电池循环次数: $CYCLE_COUNT"\n"电池容量: $Battery_capacity"\n" > "$MODDIR"/log.log
 chmod 777 /sys/class/power_supply/*/*
 lasthint="DisCharging"
-ROOTS $MODDIR/system/Cloud_Redirect.sh
-PROCESS() {
-	ps -ef | grep "log.sh" | grep -v grep | wc -l
-}
-until [[ $(PROCESS) -ne 0 ]]; do
-	nohup sh $MODDIR/system/log.sh
-	sleep 2
-done
+chattr -R -i -a /sys/class/power_supply/11280000.i2c:mt6375@34:chg/
 wk="/sys/class/thermal/thermal_message/enable"
 mode="/data/vendor/thermal/thermal-global-mode"
 echo 0 > $mode
 echo 1 > $wk
 while true; do
-sleep 10
+sleep 3
   #读取配置文件和系统数据到变量
   status=$(cat /sys/class/power_supply/battery/status)
   capacity=$(cat /sys/class/power_supply/battery/capacity)
@@ -65,24 +58,32 @@ sleep 10
   elif [[ $hint == "HighCurrent" ]]; then
     sed -i "/^description=/c description=[✅正常充电中 温度$temp℃ 电流$ChargemA"mA" ]性能模式无温控，改最大电流目录在模块根目录current_target 默认为22A｜temp_limit是高温降流阀值 current_limit是指定高温降流电流｜充电log位置也在模块根目录" "$MODDIR/module.prop"
     echo '0' >/sys/class/power_supply/usb/input_current_limited
-    echo ${current_target} >/sys/class/power_supply/usb/current_max
-    echo ${current_target} >/sys/class/power_supply/battery/constant_charge_current
+ echo ${current_target} > /sys/class/power_supply/11280000.i2c:mt6375@34:chg/current_max
+ echo ${current_target} >/sys/class/power_supply/usb/current_max
+ echo ${current_target} >/sys/class/power_supply/battery/constant_charge_current
+ echo ${current_target} >/sys/class/power_supply/11280000.i2c:mt6375@34:chg/constant_charge_current
   elif [[ $hint == "LowCurrent" ]]; then
     sed -i "/^description=/c description=[ 充电缓慢⚠️ ️电量$capacity% 温度$temp℃ 电流$ChargemA"mA" ]性能模式无温控，改最大电流目录在模块根目录current_target 默认为22A｜temp_limit是高温降流阀值 current_limit是指定高温降流电流｜充电log位置也在模块根目录" "$MODDIR/module.prop"
     echo '0' >/sys/class/power_supply/usb/input_current_limited
-    echo ${current_target} >/sys/class/power_supply/usb/current_max
-    echo ${current_target} >/sys/class/power_supply/battery/constant_charge_current
+ echo ${current_target} > /sys/class/power_supply/11280000.i2c:mt6375@34:chg/current_max
+ echo ${current_target} >/sys/class/power_supply/usb/current_max
+ echo ${current_target} >/sys/class/power_supply/battery/constant_charge_current
+ echo ${current_target} >/sys/class/power_supply/11280000.i2c:mt6375@34:chg/constant_charge_current
   elif [[ $hint == "HighTemperature" ]]; then
     sed -i "/^description=/c description=[ 太烧了🥵 温度$temp℃ 电流$ChargemA"mA" ]性能模式无温控，改最大电流目录在模块根目录current_target 默认为22A｜temp_limit是高温降流阀值 current_limit是指定高温降流电流｜充电log位置也在模块根目录" "$MODDIR/module.prop"
-    echo ${current_limit} >/sys/class/power_supply/usb/current_max
-    echo ${current_limit} >/sys/class/power_supply/battery/constant_charge_current
+ echo ${current_target} > /sys/class/power_supply/11280000.i2c:mt6375@34:chg/current_max
+ echo ${current_target} >/sys/class/power_supply/usb/current_max
+ echo ${current_target} >/sys/class/power_supply/battery/constant_charge_current
+ echo ${current_target} >/sys/class/power_supply/11280000.i2c:mt6375@34:chg/constant_charge_current
   elif [[ $hint == "AlreadyFinish" ]]; then
     sed -i "/^description=/c description=[ ⚡达到阈值 尝试加快速度充电 温度$temp℃ 电流$ChargemA"mA" ]性能模式无温控，改最大电流目录在模块根目录current_target 默认为22A｜temp_limit是高温降流阀值 current_limit是指定高温降流电流｜充电log位置也在模块根目录" "$MODDIR/module.prop"
     setprop ctl.stop mi_thermald
     setprop ctl.stop thermal
     echo 10 >/sys/class/thermal/thermal_message/sconfig
-    echo ${current_target} >/sys/class/power_supply/usb/current_max
-    echo ${current_target} >/sys/class/power_supply/battery/constant_charge_current
+ echo ${current_target} > /sys/class/power_supply/11280000.i2c:mt6375@34:chg/current_max
+ echo ${current_target} >/sys/class/power_supply/usb/current_max
+ echo ${current_target} >/sys/class/power_supply/battery/constant_charge_current
+ echo ${current_target} >/sys/class/power_supply/11280000.i2c:mt6375@34:chg/constant_charge_current
   elif [[ $hint == "DoNothing" ]]; then
     sed -i "/^description=/c description=[ ✅正常充电中 温度$temp℃ 电流$ChargemA"mA" ]性能模式无温控，改最大电流目录在模块根目录current_target 默认为22A｜temp_limit是高温降流阀值 current_limit是指定高温降流电流｜充电log位置也在模块根目录" "$MODDIR/module.prop"
   fi

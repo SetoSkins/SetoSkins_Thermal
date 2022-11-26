@@ -5,16 +5,12 @@ MODDIR=${0%/*}
 echo -e $(date) ""模块启动"\n"电池循环次数: $CYCLE_COUNT"\n"电池容量: $Battery_capacity"\n" > "$MODDIR"/log.log
 chmod 777 /sys/class/power_supply/*/*
 lasthint="DisCharging"
-ROOTS $MODDIR/system/Cloud_Redirect.sh
-PROCESS() {
-	ps -ef | grep "log.sh" | grep -v grep | wc -l
-}
-until [[ $(PROCESS) -ne 0 ]]; do
-	nohup sh $MODDIR/system/log.sh
-	sleep 2
-done
+wk="/sys/class/thermal/thermal_message/enable"
+mode="/data/vendor/thermal/thermal-global-mode"
+echo 0 > $mode
+echo 1 > $wk
 while true; do
-sleep 10
+sleep 3
   #读取配置文件和系统数据到变量
   status=$(cat /sys/class/power_supply/battery/status)
   capacity=$(cat /sys/class/power_supply/battery/capacity)

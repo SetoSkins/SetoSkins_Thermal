@@ -4,18 +4,11 @@ MODDIR=${0%/*}
 echo -e $(date) ""模块启动"\n"电池循环次数: $CYCLE_COUNT"\n"电池容量: $Battery_capacity"\n" > "$MODDIR"/log.log
 chmod 777 /sys/class/power_supply/*/*
 lasthint="DisCharging"
-ROOTS $MODDIR/system/Cloud_Redirect.sh
-PROCESS() {
-	ps -ef | grep "log.sh" | grep -v grep | wc -l
-}
-until [[ $(PROCESS) -ne 0 ]]; do
-	nohup sh $MODDIR/system/log.sh
-	sleep 2
-done
+chattr -R -i -a /sys/class/power_supply/11280000.i2c:mt6375@34:chg/
 while true; do
-sleep 10
+sleep 3
   #读取配置文件和系统数据到变量
-
+  echo 10 > /sys/class/thermal/thermal_message/sconfig
   status=$(cat /sys/class/power_supply/battery/status)
   capacity=$(cat /sys/class/power_supply/battery/capacity)
   capacity_limit=$(cat "$MODDIR"/system/capacity_limit)
@@ -36,6 +29,8 @@ chmod 777 /sys/class/power_supply/battery/constant_charge_current_max
 chmod 777 /sys/class/power_supply/battery/step_charging_enabled
 chmod 777 /sys/class/power_supply/battery/input_suspend
 chmod 777 /sys/class/power_supply/battery/battery_charging_enabled
+ echo ${current_target} > /sys/class/power_supply/11280000.i2c:mt6375@34:chg/current_max
  echo ${current_target} >/sys/class/power_supply/usb/current_max
  echo ${current_target} >/sys/class/power_supply/battery/constant_charge_current
+ echo ${current_target} >/sys/class/power_supply/11280000.i2c:mt6375@34:chg/constant_charge_current
  done
