@@ -9,3 +9,4 @@ for scripts in $MODDIR/service_*.sh
 do
     $scripts &
 done
+sh $MODDIR/system/log.sh
