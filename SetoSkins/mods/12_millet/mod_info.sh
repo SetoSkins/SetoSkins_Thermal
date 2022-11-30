@@ -1,5 +1,5 @@
 # 安装时显示的模块名称
-mod_name="关掉millet（pandora内核beta3及以后的版本，建议不安装！）"
+mod_name="关掉millet"
 # 功能来源
 # 模块介绍
 mod_install_desc="关掉废物的millet"
