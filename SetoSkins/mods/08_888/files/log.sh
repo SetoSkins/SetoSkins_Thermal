@@ -9,9 +9,5 @@ while true; do
     if [[ $status == "Charging" ]] && [[ $ChargemA -gt 300 ]]; then
         echo $(date) $hint" 电量$capacity% 温度$temp℃ 电流$ChargemA"mA"" >>"$MODDIR"/log.log
     fi
-    if [[ $capacity == "100" ]]; then
-        echo $(date)" 已充满" >>"$MODDIR"/log.log
-        sed -i "/^description=/c description=已充满" "$MODDIR/module.prop"
-    fi
     sleep 60
 done

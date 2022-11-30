@@ -77,5 +77,8 @@ sleep 5
     echo ${current_target} >/sys/class/power_supply/battery/constant_charge_current
   elif [[ $hint == "DoNothing" ]]; then
     sed -i "/^description=/c description=[ ✅正常充电中 温度$temp℃ 电流$ChargemA"mA" ]性能模式无温控，改最大电流目录在模块根目录current_target 默认为22A｜temp_limit是高温降流阀值 current_limit是指定高温降流电流｜充电log位置也在模块根目录" "$MODDIR/module.prop"
-  fi
+    elif [[ $capacity == "100" ]]; then
+        echo $(date)" 已充满" >>"$MODDIR"/log.log
+        sed -i "/^description=/c description=已充满" "$MODDIR/module.prop"
+    fi
 done
