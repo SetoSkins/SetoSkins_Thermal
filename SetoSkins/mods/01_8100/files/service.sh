@@ -9,6 +9,8 @@ wk="/sys/class/thermal/thermal_message/enable"
 mode="/data/vendor/thermal/thermal-global-mode"
 echo 0 > $mode
 echo 1 > $wk
+  while true; do
+sleep 5
   #读取配置文件和系统数据到变量
   status=$(cat /sys/class/power_supply/battery/status)
   capacity=$(cat /sys/class/power_supply/battery/capacity)
@@ -20,8 +22,6 @@ echo 1 > $wk
   current=$(expr $(cat /sys/class/power_supply/battery/current_now) \* $minus)
   show_current=$(expr $current / 1000)
   ChargemA=$(expr $(cat /sys/class/power_supply/battery/current_now) / -1000)
-  while true; do
-sleep 5
   #判断目前状态
   hint="DisCharging"
   if [[ $status == "Charging" ]]; then
