@@ -1,5 +1,5 @@
 id=SetoSkins
 name=色图(Seto)温控
 author=菜卡@SetoSkins
-description=动态温控 配置在模块根目录的system里面｜充电log位置也在模块根目录
+description=动态温控 配置在/data/adb/modules/SetoSkins/里面｜充电log位置也在模块根目录
 updateJson=https://ghproxy.com/https://github.com/zjw2017/SetoSkins_Thermal/blob/master/SetoSkins.json
