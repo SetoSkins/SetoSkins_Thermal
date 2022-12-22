@@ -1,16 +1,17 @@
 #!/system/bin/sh
 MODDIR=${0%/*}
+  file1=/data/adb/modules/SetoSkins/配置.prop
 show_value() {
   value=$1
   file=/data/adb/modules/SetoSkins/配置.prop
   cat "${file}" | grep -E "(^$value=)" | sed '/^#/d;/^[[:space:]]*$/d;s/.*=//g' | sed 's/，/,/g;s/——/-/g;s/：/:/g' | head -n 1
 }
 temp=$(expr $(cat /sys/class/power_supply/battery/temp) / 10)
-a=$(grep "一限温度阈值" "$file" | cut -c8-)
-b=$(grep "一限限制电流" "$file" | cut -c8-)
-a1=$(grep "二限温度阈值" "$file" | cut -c8-)
-b1=$(grep "二限限制电流" "$file" | cut -c8-)
-c=$(grep "延迟温度阈值" "$file" | cut -c8-)
+a=$(grep "一限温度阈值" "$file1" | cut -c8-)
+b=$(grep "一限限制电流" "$file1" | cut -c8-)
+a1=$(grep "二限温度阈值" "$file1" | cut -c8-)
+b1=$(grep "二限限制电流" "$file1" | cut -c8-)
+c=$(grep "延迟温度阈值" "$file1" | cut -c8-)
 
 if test $(show_value '开启充电调速') == true; then
   while true; do

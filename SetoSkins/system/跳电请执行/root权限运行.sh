@@ -30,7 +30,7 @@ chcon -R 'u:object_r:vendor_data_file:s0' '/data/vendor/thermal'
 #复制温控文件
 function copy_thermal_conf_file(){
 local target="${1}"
-find /system /system_ext /vendor /product -iname '*thermal*.conf' -type f 2>/dev/null | sed '/.*android.*/d;/.*libthermalclient.*/d;/.*hardware.*/d' | while read file ;do
+find /system /system_ext /product -iname '*thermal*.conf' -type f 2>/dev/null | sed '/.*android.*/d;/.*libthermalclient.*/d;/.*hardware.*/d' | while read file ;do
 size="$(du -k $file | awk '{print $1}' | tr -cd '[0-9]'  )"
 details="$(cat $file 2>/dev/null | sed 's/[[:space:]]//g;s|/n||g' )"
 if test -f "$file" -a "$size" -ge "1" -a "$details" != "" ;then

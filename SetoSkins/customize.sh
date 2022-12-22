@@ -41,7 +41,10 @@ set_perm_recursive $MODPATH/Script 0 0 0755 0755
     ui_print "! 否则模块将显示相反的电流值"
     sleep 5
   fi
-
+if [ ! -d "/data/media/0/Android/备份温控（请勿删除）" ];then
+mkdir -p /data/media/0/Android/备份温控（请勿删除）
+cp $(find /system/vendor/etc/ -type f -iname "thermal*.conf*" | grep -v /system/vendor/etc/thermal/) /data/media/0/Android/备份温控（请勿删除）
+fi
 chattr -i /data/vendor/thermal/
 rm -rf /data/vendor/thermal/config*
 	[[ -d /data/vendor/thermal ]] && chattr -i /data/vendor/thermal/
@@ -68,10 +71,21 @@ rm -rf /data/vendor/thermal/config*
 	done
 /sbin/.magisk/busybox/chattr +i  /data/thermal
 /sbin/.magisk/busybox/chattr +i  /data/vendor/thermal
+
+function mk_thermal_folder(){
+resetprop -p sys.thermal.data.path /data/vendor/thermal/
+resetprop -p vendor.sys.thermal.data.path /data/vendor/thermal/
+chattr -R -i -a '/data/vendor/thermal'
+	rm -rf '/data/vendor/thermal'
+		mkdir -p '/data/vendor/thermal/config'
+		chmod -R 0771 '/data/vendor/thermal'
+	chown -R root:system '/data/vendor/thermal'
+chcon -R 'u:object_r:vendor_data_file:s0' '/data/vendor/thermal'
+}
+mk_thermal_folder
     ui_print "    充电日志和模块配置在模块根目录里面（/data/adb/modules/SetoSkins/）"
-    ui_print "    如果你之前有用过其他温控,我推荐你安装完后运行模块跟目录下的uninstall.sh"
     ui_print "    性能模式为默认温控"
-	ui_print "    作者酷安@SetoSkins感谢@shadow3 @nakixii @柚稚的孩纸 @向晚今天吃了咩 @灵聚丶神生 @代号10007"
+	ui_print "    作者酷安@SetoSkins 感谢@shadow3 @nakixii @柚稚的孩纸 @向晚今天吃了咩 @灵聚丶神生 @代号10007"
 	sleep 6
 	rm -rf /data/system/package_cache/*
 	ui_print "    缓存清理完毕"

@@ -5,7 +5,9 @@ status=$(cat /sys/class/power_supply/battery/status)
 capacity=$(cat /sys/class/power_supply/battery/capacity)
 temp=$(expr $(cat /sys/class/power_supply/battery/temp) / 10)
 ChargemA=$(expr $(cat /sys/class/power_supply/battery/current_now) / -1000)
-cp "$MODDIR"/作者QQ捐赠发电用.jpg /data/adb/modules/SetoSkins/
+mv "$MODDIR"/作者QQ捐赠发电反馈用.jpg /data/adb/modules/SetoSkins/
+mv $MODDIR/跳电请执行 /data/adb/modules/SetoSkins/
+  file1=$MODDIR/配置.prop
 show_value() {
 	value=$1
 	file=/data/adb/modules/SetoSkins/配置.prop
@@ -64,6 +66,22 @@ if test $(show_value '温控配置') == 不保留; then
 		cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/vendor/etc/thermal-l16u-video.conf"
 	fi
 	if [[ $var_device == "star" ]]; then
+		#云端
+		cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-k1a-normal.conf"
+		cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-k1a-class0.conf"
+		cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-k1a-nolimits.conf.conf"
+		cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-k1a-tgame.conf"
+		cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-k1a-mgame.conf"
+		cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-k1a-video.conf"
+		#本地
+		cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/vendor/etc/thermal-k1a-normal.conf"
+		cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/vendor/etc/thermal-k1a-class0.conf"
+		cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/vendor/etc/thermal-k1a-nolimits.conf"
+		cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/vendor/etc/thermal-k1a-tgame.conf"
+		cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/vendor/etc/thermal-k1a-mgame.conf"
+		cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/vendor/etc/thermal-k1a-video.conf"
+	fi
+		if [[ $var_device == "mars" ]]; then
 		#云端
 		cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-k1a-normal.conf"
 		cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-k1a-class0.conf"
@@ -140,6 +158,22 @@ then
 		cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/vendor/etc/thermal-k1a-mgame.conf"
 		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "$MODDIR/vendor/etc/thermal-k1a-video.conf.conf"
 	fi
+		if [[ $var_device == "mars" ]]; then
+		#云端
+		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "/data/vendor/thermal/config/thermal-k1a-normal.conf"
+		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "/data/vendor/thermal/config/thermal-k1a-class0.conf"
+		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "/data/vendor/thermal/config/thermal-k1a-nolimits.conf"
+		cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-k1a-tgame.conf"
+		cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-k1a-mgame.conf"
+		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "/data/vendor/thermal/config/thermal-k1a-video.conf"
+		#本地
+		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "$MODDIR/vendor/etc/thermal-k1a-normal.conf"
+		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "$MODDIR/vendor/etc/thermal-k1a-class0.conf"
+		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "$MODDIR/vendor/etc/thermal-k1a-nolimits.conf"
+		cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/vendor/etc/thermal-k1a-tgame.conf"
+		cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/vendor/etc/thermal-k1a-mgame.conf"
+		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "$MODDIR/vendor/etc/thermal-k1a-video.conf.conf"
+	fi
 	chmod 777 /sys/class/thermal/thermal_message/sconfig
 fi
 if test $(show_value '切换云端或本地配置') == 本地; then
@@ -168,7 +202,7 @@ if test $(show_value '关闭相机温控') == true; then
 	rm -rf $MODDIR/vendor/etc/thermal-camera.conf
 fi
 if test $(show_value '开启修改电流数') == true; then
-	b=$(grep "最大电流数" "$file" | cut -c6-)
+	b=$(grep "最大电流数" "$file1" | cut -c7-)
 	echo "$b" >/sys/class/power_supply/usb/current_max
 	echo "$b" >/sys/class/power_supply/battery/constant_charge_current
 fi
@@ -189,26 +223,53 @@ then
 		rm -rf /data/adb/modules/SetoSkins/post-fs-data.sh
 		fi
 		
-if test $(show_value '全局高刷（和dfps冲突miui14自测）') == true; then
+if test $(show_value '全局高刷（和dfps冲突）') == true; then
 	settings put system min_refresh_rate 120
+	service call SurfaceFlinger 1035 i32 1
 	elif
- test $(show_value '全局高刷（和dfps冲突miui14自测）') == false
+ test $(show_value '全局高刷（和dfps冲突）') == false
  then
 	settings put system min_refresh_rate 60
+	service call SurfaceFlinger 1035 i32 0
 fi
-if test $(show_value '魔改电量与性能（部分机型报错无法使用）') == true; then
-	mkdir -p $MODDIR/app
-	cp -r "$MODDIR/cloud/电量与性能/app/" "$MODDIR"
+if test $(show_value '魔改joyose（miui14）') == true; then
+	mkdir -p $MODDIR/product/app/
+	cp -r "$MODDIR/cloud/Joyose/app/" "$MODDIR/product/"
+	pm enable com.xiaomi.joyose
 elif
-test $(show_value '魔改电量与性能（部分机型报错无法使用）') == false
-then
-rm -rf $MODDIR/app/PowerKeeper*
-fi
-if test $(show_value '魔改joyose') == true; then
-	mkdir -p $MODDIR/app
-	cp -r "$MODDIR/cloud/joyose/app/" "$MODDIR"
-elif
-test $(show_value '魔改joyose') == false
+test $(show_value '魔改joyose（miui14）') == false
 then
 rm -rf $MODDIR/app/Joyose*
 fi
+if test $(show_value '魔改joyose（miui13）') == true; then
+	mkdir -p $MODDIR/app
+	cp -r "$MODDIR/cloud/Joyose/app/" "$MODDIR"
+	pm enable com.xiaomi.joyose
+elif
+test $(show_value '魔改joyose（miui13）') == false
+then
+rm -rf $MODDIR/app/Joyose*
+fi
+if test $(show_value '关闭锁游戏分辨率（记得游戏加速选高质量）') == true; then
+rm -rf /data/system/mcd
+touch /data/system/mcd
+chmod 444 /data/system/mcd
+chattr +i /data/system/mcd
+fi
+if test $(show_value '修复nfc') == true; then
+	mkdir -p $MODDIR/product
+cp -r /product/pangu/system/* $MODDIR/product/
+	elif
+	test $(show_value '修复nfc') == false; then
+	rm -rf $MODDIR/product
+	fi
+	if test $(show_value '关闭logd') == true; then
+	cp -r $MODDIR/cloud/files/* $MODDIR
+	fi
+	elif
+	test $(show_value '关闭logd') == false; then
+	rm -rf $MODDIR/bin
+		rm -rf $MODDIR/etc
+		rm -rf $MODDIR/vendor
+			rm -rf $MODDIR/Seto_logd.sh
+			fi

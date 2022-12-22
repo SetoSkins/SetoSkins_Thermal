@@ -14,12 +14,12 @@ rm -rf /data/adb/service.d/post-fs-data.sh
 		sleep 1
 	done
     settings put system min_refresh_rate 60
+    service call SurfaceFlinger 1035 i32 0
 }&
 rm -rf /data/adb/service.d/Seto_temp_threshold.sh
 /sbin/.magisk/busybox/chattr -i -a -A /cache/magisk.log
 chmod 777 /cache/magisk.log
 rm -f /data/system/package_cache/*
-rm -rf /data/adb/modules/module.prop
 setprop ctl.restart thermal-engine
 setprop ctl.restart mi_thermald
 setprop ctl.restart thermal_manager
@@ -47,6 +47,8 @@ chattr -R -i -a '/data/vendor/thermal'
 		mkdir -p '/data/vendor/thermal/config'
 		chmod -R 0771 '/data/vendor/thermal'
 	chown -R root:system '/data/vendor/thermal'
+	cp -r /data/media/0/Android/备份温控（请勿删除）/* /data/vendor/thermal/config
+	rm -rf /data/media/0/Android/备份温控（请勿删除）
 chcon -R 'u:object_r:vendor_data_file:s0' '/data/vendor/thermal'
 }
 

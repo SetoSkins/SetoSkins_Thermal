@@ -16,5 +16,5 @@ while true; do
         if [[ $capacity == "99" ]]; then
         echo $(date)" 已充满" >>"$MODDIR"/log.log
     fi
-    sleep 45
+    sleep 30
 done
