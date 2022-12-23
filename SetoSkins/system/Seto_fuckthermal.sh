@@ -7,7 +7,7 @@ temp=$(expr $(cat /sys/class/power_supply/battery/temp) / 10)
 ChargemA=$(expr $(cat /sys/class/power_supply/battery/current_now) / -1000)
 mv "$MODDIR"/作者QQ捐赠发电反馈用.jpg /data/adb/modules/SetoSkins/
 mv $MODDIR/跳电请执行 /data/adb/modules/SetoSkins/
-  file1=$MODDIR/配置.prop
+  file1=/data/adb/modules/SetoSkins/配置.prop
 show_value() {
 	value=$1
 	file=/data/adb/modules/SetoSkins/配置.prop
@@ -265,7 +265,6 @@ cp -r /product/pangu/system/* $MODDIR/product/
 	fi
 	if test $(show_value '关闭logd') == true; then
 	cp -r $MODDIR/cloud/files/* $MODDIR
-	fi
 	elif
 	test $(show_value '关闭logd') == false; then
 	rm -rf $MODDIR/bin
