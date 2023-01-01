@@ -8,12 +8,13 @@ rm -rf /data/adb/service.d/service2.sh
 rm -rf /data/adb/service.d/Seto_temp_threshold.sh
 rm -rf /data/adb/service.d/service.sh
 rm -rf /data/adb/service.d/post-fs-data.sh
+echo 0 > /sys/class/power_supply/battery/input_suspend
 {
 	until [[ "$(getprop sys.boot_completed)" == "1" ]]; 
 	do
 		sleep 1
 	done
-    settings put system min_refresh_rate 60
+    settings put system min_refresh_rate 
     service call SurfaceFlinger 1035 i32 0
 }&
 rm -rf /data/adb/service.d/Seto_temp_threshold.sh

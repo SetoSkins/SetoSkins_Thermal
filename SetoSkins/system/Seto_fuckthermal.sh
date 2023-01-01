@@ -1,5 +1,6 @@
 #!/system/bin/sh
 MODDIR=${0%/*}
+alias sh='/system/bin/sh'
 var_device=$(getprop ro.product.device)
 status=$(cat /sys/class/power_supply/battery/status)
 capacity=$(cat /sys/class/power_supply/battery/capacity)
@@ -49,7 +50,7 @@ if test $(show_value '温控配置') == 不保留; then
 	cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/vendor/etc/thermal-yuanshen.conf"
 	cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/vendor/etc/thermal-video.conf"
 	chmod 777 /sys/class/thermal/thermal_message/sconfig
-	if [[ $var_device == "xaga" ]]; then
+	if [[ $var_device == "xagapro" ]]; then
 		#云端
 		cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-l16u-normal.conf"
 		cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-l16u-class0.conf"
@@ -126,7 +127,7 @@ then
 	cp "$MODDIR/cloud/thermal/thermal-normal.conf" "$MODDIR/vendor/etc/thermal-yuanshen.conf"
 	cp "$MODDIR/cloud/thermal/thermal-normal.conf" "$MODDIR/vendor/etc/thermal-video.conf"
 
-	if [[ $var_device == "xaga" ]]; then
+	if [[ $var_device == "xagapro" ]]; then
 		#云端
 		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "/data/vendor/thermal/config/thermal-l16u-normal.conf"
 		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "/data/vendor/thermal/config/thermal-l16u-class0.conf"
@@ -215,6 +216,10 @@ then
 	rm -rf /data/adb/service.d/Seto_temp_threshold.sh
 fi
 
+if test $(show_value '全局高刷（和dfps冲突）') == true; then
+sh $MODDIR/Seto_shadow3.sh
+fi
+
 if test $(show_value '关闭millet') == true; then
 	cp "$MODDIR/cloud/post-fs-data.sh" "/data/adb/modules/SetoSkins/post-fs-data.sh"
 elif
@@ -222,16 +227,6 @@ elif
 then
 		rm -rf /data/adb/modules/SetoSkins/post-fs-data.sh
 		fi
-		
-if test $(show_value '全局高刷（和dfps冲突）') == true; then
-	settings put system min_refresh_rate 120
-	service call SurfaceFlinger 1035 i32 1
-	elif
- test $(show_value '全局高刷（和dfps冲突）') == false
- then
-	settings put system min_refresh_rate 60
-	service call SurfaceFlinger 1035 i32 0
-fi
 if test $(show_value '魔改joyose（miui14）') == true; then
 	mkdir -p $MODDIR/product/app/
 	cp -r "$MODDIR/cloud/Joyose/app/" "$MODDIR/product/"
@@ -272,3 +267,10 @@ cp -r /product/pangu/system/* $MODDIR/product/
 		rm -rf $MODDIR/vendor
 			rm -rf $MODDIR/Seto_logd.sh
 			fi
+			if test $(show_value '关闭miui更新') == true; then
+	cp "$MODDIR/cloud/system.prop" "/data/adb/modules/SetoSkins/system.prop"
+elif
+	test $(show_value '关闭miui更新') == false
+then
+		rm -rf /data/adb/modules/SetoSkins/system.prop
+		fi

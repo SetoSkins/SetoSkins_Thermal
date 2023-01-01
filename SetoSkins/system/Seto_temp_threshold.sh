@@ -1,5 +1,6 @@
 #!/system/bin/sh
 MODDIR=${0%/*}
+alias sh='/system/bin/sh'
   file1=/data/adb/modules/SetoSkins/配置.prop
 show_value() {
   value=$1
