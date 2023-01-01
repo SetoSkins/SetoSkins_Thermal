@@ -217,7 +217,13 @@ then
 fi
 
 if test $(show_value '全局高刷（和dfps冲突）') == true; then
-sh $MODDIR/Seto_shadow3.sh
+{
+	until [[ "$(getprop sys.boot_completed)" == "1" ]]; 
+	do
+		sleep 1
+	done
+    sh $MODDIR/Seto_shadow3.sh >/dev/null 2>&1
+}&
 fi
 
 if test $(show_value '关闭millet') == true; then
