@@ -19,10 +19,22 @@ bfb=$(echo "$bfb 100" | awk '{printf $1*$2}')
 [[ -e /sys/class/power_supply/bms/charge_full ]] && Battery_capacity="$(($(cat /sys/class/power_supply/bms/charge_full) / 1000))mAh" || Battery_capacity="（？）"
 echo -e $(date) ""模块启动"\n"电池循环次数: $CYCLE_COUNT"\n"电池容量: $Battery_capacity"\n"当前剩余百分比： $bfb%>"$MODDIR"/log.log
 if test $(show_value '当电流低于阈值执行停充') == true; then
-   echo -e ""停充模式：开启"\n" >>"$MODDIR"/log.log
+   echo -e ""停充模式：开启 >>"$MODDIR"/log.log
    elif
   test $(show_value '当电流低于阈值执行停充') == false; then
-   echo -e ""停充模式：关闭"\n" >>"$MODDIR"/log.log
+   echo -e ""停充模式：关闭 >>"$MODDIR"/log.log
+   fi
+   if test $(show_value '开启修改电流数') == true; then
+   echo -e ""限制电流：开启 >>"$MODDIR"/log.log
+   elif
+  test $(show_value '开启修改电流数') == false; then
+   echo -e ""限制电流：关闭 >>"$MODDIR"/log.log
+   fi
+   if test $(show_value '开启充电调速') == true; then
+   echo -e ""温度阈值：开启"\n">>"$MODDIR"/log.log
+   elif
+  test $(show_value '开启充电调速') == false; then
+   echo -e ""温度阈值：关闭"\n">>"$MODDIR"/log.log
    fi
 chmod 777 /sys/class/power_supply/*/*
 lasthint="DisCharging"

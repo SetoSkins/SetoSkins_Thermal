@@ -8,7 +8,7 @@ show_value() {
 }
   file1=/data/adb/modules/SetoSkins/配置.prop
   while true; do
-  sleep 5
+  sleep 10
   #读取配置文件和系统数据到变量
   status=$(cat /sys/class/power_supply/battery/status)
   capacity=$(cat /sys/class/power_supply/battery/capacity)
@@ -16,11 +16,12 @@ show_value() {
   current=$(expr $(cat /sys/class/power_supply/battery/current_now) \* $minus)
   ChargemA1=$(expr $(cat /sys/class/power_supply/battery/current_now) / -1000)
 if test $(show_value '当电流低于阈值执行停充') == true; then
+    a=$(grep "电量多少检测阈值" "$file1" | cut -c10-)
     c=$(grep "电流阈值" "$file1" | cut -c6-)
     d=$(grep "降低到多少电量恢复充电" "$file1" | cut -c13-)
-  if [[ $ChargemA1 -lt $c ]] && [[ $capacity -gt 90 ]] && [[ $status == "Charging" ]]; then
+  if [[ $ChargemA1 -lt $c ]] && [[ $capacity -gt $a ]] && [[ $status == "Charging" ]]; then
    echo 1 > /sys/class/power_supply/battery/input_suspend
-   echo $(date) $hint" 触发停充"" >>"/data/adb/modules/SetoSkins/log.log
+   echo "触发停充">>/data/adb/modules/SetoSkins/log.log
     elif [[ $capacity -lt $d ]] && [[ $status == "Discharging" ]]; then
    echo 0 > /sys/class/power_supply/battery/input_suspend
   elif test $(show_value '当电流低于电流阈值执行停充') == false; then

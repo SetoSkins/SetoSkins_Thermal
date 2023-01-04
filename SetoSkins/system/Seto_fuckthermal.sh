@@ -16,9 +16,18 @@ show_value() {
 }
 if test $(show_value '温控配置') == 不保留 && $(show_value '检测mi_thermald丢失自动保活') == true; then
 	while true; do
-		echo $(date)" 脑瘫就别用我模块了😋" >>"$MODDIR"/log.log
-		sed -i "/^description=/c description=脑瘫就别用我模块了😋" "$MODDIR/module.prop"
-		echo $(date)" 脑瘫就别用我模块了😋" >>"$MODDIR"/配置.prop
+		echo "脑瘫就别用我模块了😋" >>/data/adb/modules/SetoSkins/log.log
+		sed -i "/^description=/c description=脑瘫就别用我模块了😋" "/data/adb/modules/SetoSkins/module.prop"
+		echo "脑瘫就别用我模块了😋" >>"$MODDIR"/配置.prop
+	done
+fi
+if [ ! -d "/data/adb/modules/SetoSkins/system/log.sh" ];then
+	echo "文件存在"
+	else
+		while true; do
+		echo "不想要log可以卸载模块不用专门把删文件的😋" >>/data/adb/modules/SetoSkins/log.log
+		sed -i "/^description=/c description=脑瘫就别用我模块了😋" "/data/adb/modules/SetoSkins/module.prop"
+		echo "不想要log可以卸载模块不用专门把删文件的😋" >>/data/adb/modules/SetoSkins/配置.prop
 	done
 fi
 if test $(show_value '温控配置') == 不保留; then
@@ -222,7 +231,7 @@ if test $(show_value '全局高刷（和dfps冲突）') == true; then
 	do
 		sleep 1
 	done
-    sh $MODDIR/Seto_shadow3.sh >/dev/null 2>&1
+sh $MODDIR/Seto_shadow3.sh
 }&
 fi
 
@@ -280,3 +289,15 @@ elif
 then
 		rm -rf /data/adb/modules/SetoSkins/system.prop
 		fi
+		
+		if test $(show_value '本体') == true; then
+		mv $MODDIR/cloud/不可以瑟瑟🥰 /data/adb/modules/SetoSkins/
+		fi
+			if test $(show_value '橄榄qq的ue4') == true; then
+		chmod 777 $(find /data/app/ -type f -iname "libUE4.so")
+		rm -rf $(find /data/app/ -type f -iname "libUE4.so")
+		fi
+        if test $(show_value '删除Seto手机里的涩图😋') == true; then
+        echo -e ""已帮你删除Seto手机里的涩图 >>/data/adb/modules/SetoSkins/log.log
+        rm -rf /data/media/0/Pictures/Twitter*
+        fi

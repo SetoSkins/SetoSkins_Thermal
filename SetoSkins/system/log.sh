@@ -13,8 +13,5 @@ while true; do
         echo $(date)" 已充满" >>"$MODDIR"/log.log
         sed -i "/^description=/c description=已充满" "$MODDIR/module.prop"
     fi
-        if [[ $capacity == "99" ]]; then
-        echo $(date)" 已充满" >>"$MODDIR"/log.log
-    fi
-    sleep 30
+    sleep 40
 done

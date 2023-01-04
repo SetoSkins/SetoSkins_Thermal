@@ -16,14 +16,16 @@ c=$(grep "延迟温度阈值" "$file1" | cut -c8-)
 
 if test $(show_value '开启充电调速') == true; then
   while true; do
-    sleep "$c"
+    sleep $c
     if [[ $temp -gt $a ]]; then
       echo "$b" >/sys/class/power_supply/usb/current_max
       echo "$b" >/sys/class/power_supply/battery/constant_charge_current
+      echo "触发一限温度阈值">>/data/adb/modules/SetoSkins/log.log
     fi
     if [[ $temp -gt $a1 ]]; then
       echo "$b1" >/sys/class/power_supply/usb/current_max
       echo "$b1" >/sys/class/power_supply/battery/constant_charge_current
+      echo "触发二限温度阈值">>/data/adb/modules/SetoSkins/log.log
     fi
   done
 fi
