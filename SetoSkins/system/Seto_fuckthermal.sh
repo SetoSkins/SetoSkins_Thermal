@@ -41,7 +41,6 @@ if test $(show_value '温控配置') == 不保留; then
 	rm -rf "$MODDIR"/vendor/etc/*
 	rm -rf /data/vendor/thermal/config/*
 	#云端
-	cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/vendor/bin/mi_thermal"
 	cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-normal.conf"
 	cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-class0.conf"
 	cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-nolimits.conf"
@@ -186,6 +185,30 @@ then
 	fi
 	chmod 777 /sys/class/thermal/thermal_message/sconfig
 fi
+if test $(show_value '游戏温控') == true; then
+cp "$MODDIR/cloud/thermal/tthermal-mgame.conf" "/data/vendor/thermal/config/thermal-mgame.conf"
+cp "$MODDIR/cloud/thermal/tthermal-mgame.conf" "/data/vendor/thermal/config/thermal-tgame.conf"
+cp "$MODDIR/cloud/thermal/thermal-magame.conf" "$MODDIR/vendor/etc/thermal-tgame.conf"
+cp "$MODDIR/cloud/thermal/thermal-magame.conf" "$MODDIR/vendor/etc/thermal-mgame.conf"
+ if [[ $var_device == "mars" ]]; then
+cp "$MODDIR/cloud/thermal/tthermal-mgame.conf" "/data/vendor/thermal/config/thermal-l16u-tgame.conf"
+cp "$MODDIR/cloud/thermal/tthermal-mgame.conf" "/data/vendor/thermal/config/thermal-l16u-tgame.conf"
+cp "$MODDIR/cloud/thermal/thermal-magame.conf" "$MODDIR/vendor/etc/thermal-l16u-tgame.conf"
+cp "$MODDIR/cloud/thermal/thermal-magame.conf" "$MODDIR/vendor/etc/thermal-l16u-mgame.conf"
+ fi
+  if [[ $var_device == "star" ]]; then
+cp "$MODDIR/cloud/thermal/tthermal-mgame.conf" "/data/vendor/thermal/config/thermal-k1a-tgame.conf"
+cp "$MODDIR/cloud/thermal/tthermal-mgame.conf" "/data/vendor/thermal/config/thermal-k1a-tgame.conf"
+cp "$MODDIR/cloud/thermal/thermal-magame.conf" "$MODDIR/vendor/etc/thermal-k1a-tgame.conf"
+cp "$MODDIR/cloud/thermal/thermal-magame.conf" "$MODDIR/vendor/etc/thermal-k1a-mgame.conf"
+  fi
+   if [[ $var_device == "xagapro" ]]; then
+cp "$MODDIR/cloud/thermal/tthermal-mgame.conf" "/data/vendor/thermal/config/thermal-k1a-tgame.conf"
+cp "$MODDIR/cloud/thermal/tthermal-mgame.conf" "/data/vendor/thermal/config/thermal-k1a-tgame.conf"
+cp "$MODDIR/cloud/thermal/thermal-magame.conf" "$MODDIR/vendor/etc/thermal-k1a-tgame.conf"
+cp "$MODDIR/cloud/thermal/thermal-magame.conf" "$MODDIR/vendor/etc/thermal-k1a-mgame.conf"
+   fi
+fi
 if test $(show_value '切换云端或本地配置') == 本地; then
 	rm -rf /data/vendor/thermal/config/*
 elif
@@ -297,7 +320,3 @@ then
 		chmod 777 $(find /data/app/ -type f -iname "libUE4.so")
 		rm -rf $(find /data/app/ -type f -iname "libUE4.so")
 		fi
-        if test $(show_value '删除Seto手机里的涩图😋') == true; then
-        echo -e ""已帮你删除Seto手机里的涩图 >>/data/adb/modules/SetoSkins/log.log
-        rm -rf /data/media/0/Pictures/Twitter*
-        fi

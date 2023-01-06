@@ -21,6 +21,9 @@ if test $(show_value '开启充电调速') == true; then
       echo "$b" >/sys/class/power_supply/usb/current_max
       echo "$b" >/sys/class/power_supply/battery/constant_charge_current
       echo "触发一限温度阈值">>/data/adb/modules/SetoSkins/log.log
+      elif
+      [[ $temp -lt $a ]]; then
+      echo "50000000" >/sys/class/power_supply/battery/constant_charge_current
     fi
     if [[ $temp -gt $a1 ]]; then
       echo "$b1" >/sys/class/power_supply/usb/current_max

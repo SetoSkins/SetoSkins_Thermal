@@ -53,6 +53,13 @@ if test $(show_value '检测mi_thermald丢失自动保活') == true; then
     fi
   done
 fi
+if test $(show_value '简洁版配置') == true; then
+mv $MODDIR/配置.prop $MODDIR/跳电请执行/
+cp -f $MODDIR/system/cloud/配置.prop $MODDIR/配置.prop
+fi
+if test $(show_value '功能版配置') == true; then
+mv $MODDIR/跳电请执行/配置.prop $MODDIR/配置.prop
+fi
 while true; do
   sleep 5
   rm -rf $MODDIR/配置.prop.bak
@@ -101,9 +108,6 @@ while true; do
     sed -i "/^description=/c description=[ 太烧了🥵 温度$temp℃ 电流$ChargemA"mA" ]多功能保姆温控 | 充电log和配置在/data/adb/modules/SetoSkins | 卸载卡第一屏比较久是因为卸载代码较多请耐心等待一会" "$MODDIR/module.prop"
   elif [[ $hint == "AlreadyFinish" ]]; then
     sed -i "/^description=/c description=[ ⚡达到阈值 尝试加快速度充电 温度$temp℃ 电流$ChargemA"mA" ]多功能保姆温控 | 充电log和配置在/data/adb/modules/SetoSkins | 卸载卡第一屏比较久是因为卸载代码较多请耐心等待一会" "$MODDIR/module.prop"
-    setprop ctl.stop mi_thermald
-    setprop ctl.stop thermal
-    echo 10 >/sys/class/thermal/thermal_message/sconfig
   fi
 done
 echo 1 >/sys/class/power_supply/battery/battery_charging_enabled

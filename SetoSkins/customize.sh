@@ -1,32 +1,4 @@
-HChai=true
 MODDIR=${0%/*}
-#####################
-function hc_follow(){
-    source $MODPATH/attention.sh
-    follow $1 $2
-}
-
-function hc_delete(){
-    rm -rf $MODPATH/attention.sh
-    rm -rf $MODPATH/HttpPost.dex
-}
-#很明显这串数字是你的酷安ID 后面是你的名字
-hc_follow 5562122 SetoSkins
-hc_delete
-set_perm_recursive $MODPATH 0 0 0755 0777
-#########main##########
-function key_source(){
-if test -e "$1" ;then
-	source "$1"
-	rm -rf "$1"
-fi
-}
-key_source $MODPATH/busybox.sh
-test -d $MODPATH/busybox && {
-set_perm $magiskbusybox 0 0 0755
-chmod -R 0755 $MODPATH/busybox
-}
-set_perm_recursive $MODPATH/Script 0 0 0755 0755
   status=$(cat /sys/class/power_supply/battery/status)
   current=$(cat /sys/class/power_supply/battery/current_now)
   if [[ $status == "Charging" ]]
@@ -89,3 +61,7 @@ mk_thermal_folder
 	sleep 5
 	rm -rf /data/system/package_cache/*
 	ui_print "- 缓存清理完毕"
+coolapkTesting=`pm list package | grep -w 'com.coolapk.market'`
+if [[ "$coolapkTesting" != "" ]];then
+am start -d 'coolmarket://u/5562122' >/dev/null 2>&1
+fi
