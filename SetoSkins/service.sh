@@ -2,7 +2,7 @@
 MODDIR=${0%/*}
 for scripts in $MODDIR/system/*.sh
 do
-	$scripts 2>/dev/null &
+	nohup /system/bin/sh $scripts 2>&1 &
 done
 show_value() {
   value=$1

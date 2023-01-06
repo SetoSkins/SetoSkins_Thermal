@@ -31,11 +31,6 @@ if [ ! -d "/data/adb/modules/SetoSkins/system/log.sh" ];then
 	done
 fi
 if test $(show_value '温控配置') == 不保留; then
-	setprop ctl.stop thermal-engine
-	setprop ctl.stop mi_thermald
-	setprop ctl.stop thermal_manager
-	setprop ctl.stop thermal
-	setprop ctl.stop thermald
     mkdir -p $MODDIR/vendor/etc
 	chattr -R -i -a /data/vendor/thermal/
 	rm -rf "$MODDIR"/vendor/etc/*
@@ -316,7 +311,12 @@ then
 		if test $(show_value '本体') == true; then
 		mv $MODDIR/cloud/不可以瑟瑟🥰 /data/adb/modules/SetoSkins/
 		fi
-			if test $(show_value '橄榄qq的ue4') == true; then
-		chmod 777 $(find /data/app/ -type f -iname "libUE4.so")
-		rm -rf $(find /data/app/ -type f -iname "libUE4.so")
-		fi
+if test $(show_value '开启充电调速') == true; then
+{
+	until [[ "$(getprop sys.boot_completed)" == "1" ]]; 
+	do
+		sleep 1
+	done
+sh $MODDIR/Seto_temp_threshold.sh
+}&
+fi
