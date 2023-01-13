@@ -7,6 +7,10 @@ show_value() {
   cat "${file}" | grep -E "(^$value=)" | sed '/^#/d;/^[[:space:]]*$/d;s/.*=//g' | sed 's/，/,/g;s/——/-/g;s/：/:/g' | head -n 1
 }
   file1=/data/adb/modules/SetoSkins/配置.prop
+if [ ! -f "/sys/class/power_supply/battery/input_suspend" ];then
+  echo "你的设备不支持停充">>/data/adb/modules/SetoSkins/log.log
+  exit 0
+  fi
   while true; do
   sleep 10
   #读取配置文件和系统数据到变量

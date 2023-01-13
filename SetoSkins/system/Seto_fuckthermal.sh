@@ -14,22 +14,6 @@ show_value() {
 	file=/data/adb/modules/SetoSkins/配置.prop
 	cat "${file}" | grep -E "(^$value=)" | sed '/^#/d;/^[[:space:]]*$/d;s/.*=//g' | sed 's/，/,/g;s/——/-/g;s/：/:/g' | head -n 1
 }
-if test $(show_value '温控配置') == 不保留 && $(show_value '检测mi_thermald丢失自动保活') == true; then
-	while true; do
-		echo "脑瘫就别用我模块了😋" >>/data/adb/modules/SetoSkins/log.log
-		sed -i "/^description=/c description=脑瘫就别用我模块了😋" "/data/adb/modules/SetoSkins/module.prop"
-		echo "脑瘫就别用我模块了😋" >>"$MODDIR"/配置.prop
-	done
-fi
-if [ ! -d "/data/adb/modules/SetoSkins/system/log.sh" ];then
-	echo "文件存在"
-	else
-		while true; do
-		echo "不想要log可以卸载模块不用专门把删文件的😋" >>/data/adb/modules/SetoSkins/log.log
-		sed -i "/^description=/c description=脑瘫就别用我模块了😋" "/data/adb/modules/SetoSkins/module.prop"
-		echo "不想要log可以卸载模块不用专门把删文件的😋" >>/data/adb/modules/SetoSkins/配置.prop
-	done
-fi
 if test $(show_value '温控配置') == 不保留; then
     mkdir -p $MODDIR/vendor/etc
 	chattr -R -i -a /data/vendor/thermal/
@@ -220,29 +204,56 @@ if test $(show_value '关闭录制4K温控') == true; then
 	rm -rf /data/vendor/thermal/config/thermal-4K.conf
 	rm -rf $MODDIR/vendor/etc/thermal-4K.conf
 fi
+
 if test $(show_value '关闭相机温控') == true; then
 	cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-camera.conf"
 	cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/vendor/etc/thermal-camera.conf"
 	elif
+	
 	test $(show_value '关闭相机温控') == false
 	then
 	rm -rf /data/vendor/thermal/config/thermal-camera.conf
 	rm -rf $MODDIR/vendor/etc/thermal-camera.conf
 fi
+
 if test $(show_value '开启修改电流数') == true; then
 	b=$(grep "最大电流数" "$file1" | cut -c7-)
-	echo "$b" >/sys/class/power_supply/usb/current_max
-	echo "$b" >/sys/class/power_supply/battery/constant_charge_current
-fi
-
-if test $(show_value '开启充电调速') == true; then
-	cp "$MODDIR/temp_threshold.sh" "/data/adb/service.d/Seto_temp_threshold.sh"
-elif
-	test $(show_value '开启充电调速') == false
-then
-	rm -rf /data/adb/service.d/Seto_temp_threshold.sh
-fi
-
+if [ -f "/sys/class/power_supply/battery/constant_charge_current" ]; then
+echo "文件存在"
+ elif
+  [ -f /sys/devices/platform/battery/power_supply/battery/fast_charge_current ]; then
+  echo "文件存在"
+   elif
+   [ -f /sys/devices/platform/mt_charger/power_supply/usb/current_max ]; then
+  echo "文件存在"
+   elif
+   [ -f /sys/devices/platform/battery/power_supply/battery/thermal_input_current ]; then
+  echo "文件存在"
+   elif
+  [ -f /sys/devices/platform/11cb1000.i2c9/i2c-9/9-0055/power_supply/bms/current_max ]; then
+  echo "文件存在"
+   elif
+   [ -f /sys/class/power_supply/usb/current_max ]; then
+  echo "文件存在"
+  else
+echo -e "你的机型不支持修改最大电流数 请反馈给Seto">>/data/adb/modules/SetoSkins/log.log
+  fi
+  fi
+	  echo "$b" > /sys/class/power_supply/battery/constant_charge_current
+      echo "$b" /sys/devices/platform/battery/power_supply/battery/fast_charge_current
+	  echo "$b" /sys/devices/platform/battery/power_supply/battery/thermal_input_current
+	  echo "$b" /sys/devices/platform/11cb1000.i2c9/i2c-9/9-0055/power_supply/bms/current_max
+	  echo "$b" /sys/devices/platform/mt_charger/power_supply/usb/current_max
+	  echo "$b" /sys/firmware/devicetree/base/charger/current_max
+	
+	if test $(show_value '开启修改电流数') == false; then
+	  echo "50000000" > /sys/class/power_supply/battery/constant_charge_current
+      echo "50000000" /sys/devices/platform/battery/power_supply/battery/fast_charge_current
+	  echo "50000000" /sys/devices/platform/battery/power_supply/battery/thermal_input_current
+	  echo "50000000" /sys/devices/platform/11cb1000.i2c9/i2c-9/9-0055/power_supply/bms/current_max
+	  echo "50000000" /sys/devices/platform/mt_charger/power_supply/usb/current_max
+	  echo "50000000" /sys/firmware/devicetree/base/charger/current_max
+	fi
 if test $(show_value '全局高刷（和dfps冲突）') == true; then
 {
 	until [[ "$(getprop sys.boot_completed)" == "1" ]]; 
@@ -311,12 +322,22 @@ then
 		if test $(show_value '本体') == true; then
 		mv $MODDIR/cloud/不可以瑟瑟🥰 /data/adb/modules/SetoSkins/
 		fi
+	
 if test $(show_value '开启充电调速') == true; then
-{
-	until [[ "$(getprop sys.boot_completed)" == "1" ]]; 
-	do
-		sleep 1
-	done
 sh $MODDIR/Seto_temp_threshold.sh
-}&
+fi
+	
+	if test $(show_value '温控空文件挂载') == true; then
+	cp -r $MODDIR/cloud/vendor/bin $MODDIR/vendor
+		cp -r $MODDIR/cloud/lib64/ $MODDIR
+			cp -r $MODDIR/cloud/bin/ $MODDIR
+			cp -r $MODDIR/cloud/etc/ $MODDIR
+elif
+test $(show_value '温控空文件挂载') == false; then
+rm -rf $MODDIR/bin/thermalserviced
+rm -rf $MODDIR/lib64
+rm -rf $MODDIR/etc/int/thermalservice.rc
+rm -rf $MODDIR/bin/thermal_factory
+rm -rf $MODDIR/bin/thermal-engine
+rm -rf $MODDIR/init
 fi

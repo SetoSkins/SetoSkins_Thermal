@@ -13,7 +13,6 @@ echo 0 > /sys/class/power_supply/battery/input_suspend
     settings put system min_refresh_rate 
     service call SurfaceFlinger 1035 i32
 }&
-rm -rf /data/adb/service.d/Seto_temp_threshold.sh
 /sbin/.magisk/busybox/chattr -i -a -A /cache/magisk.log
 chmod 777 /cache/magisk.log
 rm -f /data/system/package_cache/*

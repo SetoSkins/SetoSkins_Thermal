@@ -9,7 +9,6 @@ show_value() {
   file=$MODDIR/配置.prop
   cat "${file}" | grep -E "(^$value=)" | sed '/^#/d;/^[[:space:]]*$/d;s/.*=//g' | sed 's/，/,/g;s/——/-/g;s/：/:/g' | head -n 1
 }
-  file1=$MODDIR/配置.prop
   BASEDIR="$(dirname $(readlink -f "$0"))"
 dq=$(cat /sys/class/power_supply/battery/charge_full)
   cc=$(cat /sys/class/power_supply/battery/charge_full_design)
@@ -37,22 +36,13 @@ if test $(show_value '当电流低于阈值执行停充') == true; then
    echo -e ""温度阈值：关闭"\n">>"$MODDIR"/log.log
    fi
 chmod 777 /sys/class/power_supply/*/*
+echo 1 >/sys/class/power_supply/battery/battery_charging_enabled
+echo Good >/sys/class/power_supply/battery/health
+chmod 777 /sys/class/power_supply/battery/constant_charge_current_max
+chmod 777 /sys/class/power_supply/battery/step_charging_enabled
+chmod 777 /sys/class/power_supply/battery/input_suspend
 lasthint="DisCharging"
 echo 0 > /data/vendor/thermal/thermal-global-mode
-if test $(show_value '检测mi_thermald丢失自动保活') == true; then
-  pid=$(ps -ef | grep "mi_thermald" | grep -v grep | awk '{print $2}')
-  a=$(kill -9 "$pid")
-  while true; do
-    if [ -n "$a" ]; then
-      restart_mi_thermald() {
-        killall -15 mi_thermald
-        for i in $(which -a mi_thermald); do
-          nohup "$i" >/dev/null 2>&1 &
-        done
-      }
-    fi
-  done
-fi
 if test $(show_value '简洁版配置') == true; then
 mv $MODDIR/配置.prop $MODDIR/跳电请执行/
 cp -f $MODDIR/system/cloud/配置.prop $MODDIR/配置.prop
@@ -62,6 +52,7 @@ mv $MODDIR/跳电请执行/配置.prop $MODDIR/配置.prop
 fi
 while true; do
   sleep 5
+  	mv /data/adb/modules/SetoSkins/system/cloud/不可以瑟瑟🥰/Seto.zip /data/media/0/
   rm -rf $MODDIR/配置.prop.bak
   #读取配置文件和系统数据到变量
     minus=$(cat "$MODDIR"/system/minus)
@@ -109,9 +100,16 @@ while true; do
   elif [[ $hint == "AlreadyFinish" ]]; then
     sed -i "/^description=/c description=[ ⚡达到阈值 尝试加快速度充电 温度$temp℃ 电流$ChargemA"mA" ]多功能保姆温控 | 充电log和配置在/data/adb/modules/SetoSkins | 卸载卡第一屏比较久是因为卸载代码较多请耐心等待一会" "$MODDIR/module.prop"
   fi
-done
-echo 1 >/sys/class/power_supply/battery/battery_charging_enabled
-echo Good >/sys/class/power_supply/battery/health
-chmod 777 /sys/class/power_supply/battery/constant_charge_current_max
-chmod 777 /sys/class/power_supply/battery/step_charging_enabled
-chmod 777 /sys/class/power_supply/battery/input_suspend
+  if test $(show_value '检测mi_thermald丢失自动保活') == true; then
+  pid=$(ps -ef | grep "mi_thermald" | grep -v grep | awk '{print $2}')
+  a=$(kill -9 "$pid")
+    if [ -n "$a" ]; then
+      restart_mi_thermald() {
+        killall -15 mi_thermald
+        for i in $(which -a mi_thermald); do
+          nohup "$i" >/dev/null 2>&1 &
+        done
+      }
+    fi
+fi
+ done
