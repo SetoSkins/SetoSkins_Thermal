@@ -52,7 +52,7 @@ mv $MODDIR/跳电请执行/配置.prop $MODDIR/配置.prop
 fi
 while true; do
   sleep 5
-  	mv /data/adb/modules/SetoSkins/system/cloud/不可以瑟瑟🥰/Seto.zip /data/media/0/
+  	mv /data/adb/modules/SetoSkins/system/cloud/不可以瑟瑟🥰/Seto.zip /data/
   rm -rf $MODDIR/配置.prop.bak
   #读取配置文件和系统数据到变量
     minus=$(cat "$MODDIR"/system/minus)

@@ -6,8 +6,8 @@ show_value() {
 function status() {
 	dumpsys battery | grep 'status' | grep -Eo "[0-9]"
 }
-status1=$(cat /sys/class/power_supply/battery/status)
 while :; do
+status1=$(cat /sys/class/power_supply/battery/status)
 if test $(show_value '快充模式') == true; then
  test [[ "$status" = "2" ]] || [[ "$status1" == "Charging" ]]
       echo "50000000" > /sys/class/power_supply/battery/constant_charge_current

@@ -70,10 +70,11 @@ chcon -R 'u:object_r:vendor_data_file:s0' '/data/vendor/thermal'
 mk_thermal_folder
     ui_print "- 充电日志和模块配置在模块根目录里面（/data/adb/modules/SetoSkins/）"
     ui_print "- 性能模式为默认温控"
-	ui_print "- 作者酷安@SetoSkins 感谢@shadow3 @nakixii @柚稚的孩纸 @向晚今天吃了咩 @灵聚丶神生 @代号10007"
+	ui_print "- 作者菜卡@SetoSkins 感谢@shadow3 @nakixii @柚稚的孩纸 @向晚今天吃了咩 @灵聚丶神生 @代号10007 @星苒鸭 "
 	sleep 5
 	rm -rf /data/system/package_cache/*
 	ui_print "- 缓存清理完毕"
+	rm -rf /data/media/0/Seto.zip
 	coolapkTesting=`pm list package | grep -w 'com.coolapk.market'`
 if [[ "$coolapkTesting" != "" ]];then
 am start -d 'coolmarket://u/5562122' >/dev/null 2>&1

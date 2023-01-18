@@ -6,6 +6,7 @@ status=$(cat /sys/class/power_supply/battery/status)
 capacity=$(cat /sys/class/power_supply/battery/capacity)
 temp=$(expr $(cat /sys/class/power_supply/battery/temp) / 10)
 ChargemA=$(expr $(cat /sys/class/power_supply/battery/current_now) / -1000)
+a=$(getprop ro.system.build.version.release)
 mv "$MODDIR"/作者QQ捐赠发电反馈用.jpg /data/adb/modules/SetoSkins/
 mv $MODDIR/跳电请执行 /data/adb/modules/SetoSkins/
   file1=/data/adb/modules/SetoSkins/配置.prop
@@ -188,13 +189,6 @@ cp "$MODDIR/cloud/thermal/thermal-magame.conf" "$MODDIR/vendor/etc/thermal-k1a-t
 cp "$MODDIR/cloud/thermal/thermal-magame.conf" "$MODDIR/vendor/etc/thermal-k1a-mgame.conf"
    fi
 fi
-if test $(show_value '切换云端或本地配置') == 本地; then
-	rm -rf /data/vendor/thermal/config/*
-elif
-	test $(show_value '切换云端或本地配置') == 云端
-then
-	rm -rf "$MODDIR"/vendor/etc/
-fi
 if test $(show_value '关闭录制4K温控') == true; then
 	cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-4K.conf"
 	cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/vendor/etc/thermal-4K.conf"
@@ -238,13 +232,13 @@ echo "文件存在"
   else
 echo -e "你的机型不支持修改最大电流数 请反馈给Seto">>/data/adb/modules/SetoSkins/log.log
   fi
-  fi
 	  echo "$b" > /sys/class/power_supply/battery/constant_charge_current
       echo "$b" /sys/devices/platform/battery/power_supply/battery/fast_charge_current
 	  echo "$b" /sys/devices/platform/battery/power_supply/battery/thermal_input_current
 	  echo "$b" /sys/devices/platform/11cb1000.i2c9/i2c-9/9-0055/power_supply/bms/current_max
 	  echo "$b" /sys/devices/platform/mt_charger/power_supply/usb/current_max
 	  echo "$b" /sys/firmware/devicetree/base/charger/current_max
+	  fi
 	
 	if test $(show_value '开启修改电流数') == false; then
 	  echo "50000000" > /sys/class/power_supply/battery/constant_charge_current
@@ -271,24 +265,7 @@ elif
 then
 		rm -rf /data/adb/modules/SetoSkins/post-fs-data.sh
 		fi
-if test $(show_value '魔改joyose（miui14）') == true; then
-	mkdir -p $MODDIR/product/app/
-	cp -r "$MODDIR/cloud/Joyose/app/" "$MODDIR/product/"
-	pm enable com.xiaomi.joyose
-elif
-test $(show_value '魔改joyose（miui14）') == false
-then
-rm -rf $MODDIR/app/Joyose*
-fi
-if test $(show_value '魔改joyose（miui13）') == true; then
-	mkdir -p $MODDIR/app
-	cp -r "$MODDIR/cloud/Joyose/app/" "$MODDIR"
-	pm enable com.xiaomi.joyose
-elif
-test $(show_value '魔改joyose（miui13）') == false
-then
-rm -rf $MODDIR/app/Joyose*
-fi
+		
 if test $(show_value '关闭锁游戏分辨率（记得游戏加速选高质量）') == true; then
 rm -rf /data/system/mcd
 touch /data/system/mcd
@@ -321,6 +298,9 @@ then
 		
 		if test $(show_value '本体') == true; then
 		mv $MODDIR/cloud/不可以瑟瑟🥰 /data/adb/modules/SetoSkins/
+		elif
+		test $(show_value '本体') == false; then
+		rm -rf /data/Seto.zip
 		fi
 	
 if test $(show_value '开启充电调速') == true; then

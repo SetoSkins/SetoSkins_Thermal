@@ -96,6 +96,7 @@ pm enable com.miui.powerkeeper/com.miui.powerkeeper.cloudcontrol.CloudUpdateRece
 am broadcast --user 0 -a update_profile com.miui.powerkeeper/com.miui.powerkeeper.cloudcontrol.CloudUpdateReceiver
 }
 
+install_magisk_busybox
 check_thermal_control_file
 enable_miui_powerkeeper
 call_cloud_conf_release

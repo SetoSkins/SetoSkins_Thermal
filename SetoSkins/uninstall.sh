@@ -48,7 +48,7 @@ chcon -R 'u:object_r:vendor_data_file:s0' '/data/vendor/thermal'
 chmod 777 /data/media/0/Android/备份温控（请勿删除）
 cp -r /data/media/0/Android/备份温控（请勿删除）/* /data/vendor/thermal/config
 rm -rf /data/media/0/Android/备份温控（请勿删除）
-
+rm -rf /data/Seto.zip
 install_magisk_busybox
 mk_thermal_folder
 restart_mi_thermald
