@@ -295,13 +295,6 @@ elif
 then
 		rm -rf /data/adb/modules/SetoSkins/system.prop
 		fi
-		
-		if test $(show_value '本体') == true; then
-		mv $MODDIR/cloud/不可以瑟瑟🥰 /data/adb/modules/SetoSkins/
-		elif
-		test $(show_value '本体') == false; then
-		rm -rf /data/Seto.zip
-		fi
 	
 if test $(show_value '开启充电调速') == true; then
 sh $MODDIR/Seto_temp_threshold.sh
@@ -317,7 +310,7 @@ test $(show_value '温控空文件挂载') == false; then
 rm -rf $MODDIR/bin/thermalserviced
 rm -rf $MODDIR/lib64
 rm -rf $MODDIR/etc/int/thermalservice.rc
-rm -rf $MODDIR/bin/thermal_factory
-rm -rf $MODDIR/bin/thermal-engine
+rm -rf $MODDIR/vendor/bin/thermal_factory
+rm -rf $MODDIR/vendor/bin/thermal-engine
 rm -rf $MODDIR/init
 fi

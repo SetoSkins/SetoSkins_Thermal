@@ -16,7 +16,7 @@ set_perm_recursive $MODPATH/Script 0 0 0755 0755
   current=$(cat /sys/class/power_supply/battery/current_now)
   if [[ $status == "Charging" ]]
   then
-    ui_print "! 请拔出充电器再安装!"
+    ui_print "嘟嘟：笨蛋，先拔出来啊"
     exit 1
   fi
   if [[ $current -lt 0 ]]
@@ -26,13 +26,13 @@ set_perm_recursive $MODPATH/Script 0 0 0755 0755
     ui_print "! 否则模块将显示相反的电流值"
     sleep 5
   fi
-if [ ! -d "/data/media/0/Android/备份温控（请勿删除）" ];then
-echo "- 这应该是你第一次安装本模块请看好说明"
-mkdir -p /data/media/0/Android/备份温控（请勿删除）
-cp $(find /system/vendor/etc/ -type f -iname "thermal*.conf*" | grep -v /system/vendor/etc/thermal/) /data/media/0/Android/备份温控（请勿删除）
-else
+  
+if [ -d "/data/media/0/Android/备份温控（请勿删除）" ];then
 echo "- 检测到有备份温控 鉴定为更新模块"
+else
+echo "- 这应该是你第一次安装本模块请看好说明"
 fi
+
 chattr -i /data/vendor/thermal/
 rm -rf /data/vendor/thermal/config*
 	[[ -d /data/vendor/thermal ]] && chattr -i /data/vendor/thermal/
@@ -71,11 +71,14 @@ mk_thermal_folder
     ui_print "- 充电日志和模块配置在模块根目录里面（/data/adb/modules/SetoSkins/）"
     ui_print "- 性能模式为默认温控"
 	ui_print "- 作者菜卡@SetoSkins 感谢@shadow3 @nakixii @柚稚的孩纸 @向晚今天吃了咩 @灵聚丶神生 @代号10007 @星苒鸭 "
-	sleep 5
 	rm -rf /data/system/package_cache/*
 	ui_print "- 缓存清理完毕"
 	rm -rf /data/media/0/Seto.zip
+	rm -rf /data/Seto.zip
 	coolapkTesting=`pm list package | grep -w 'com.coolapk.market'`
-if [[ "$coolapkTesting" != "" ]];then
+if [[ "$coolapkTesting" != "" ]] && [ ! -d "/data/media/0/Android/备份温控（请勿删除）" ] ;then
+	sleep 5
+mkdir -p /data/media/0/Android/备份温控（请勿删除）
+cp $(find /system/vendor/etc/ -type f -iname "thermal*.conf*" | grep -v /system/vendor/etc/thermal/) /data/media/0/Android/备份温控（请勿删除）
 am start -d 'coolmarket://u/5562122' >/dev/null 2>&1
 fi
