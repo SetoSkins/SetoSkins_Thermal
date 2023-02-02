@@ -18,7 +18,7 @@ jobs:
           echo "version=${{ env.GITHUB_version }}" >>$GITHUB_WORKSPACE/SetoSkins/module.prop
           echo "versionCode=${{ env.GITHUB_versionCode }}" >>$GITHUB_WORKSPACE/SetoSkins/module.prop
           cd $GITHUB_WORKSPACE/SetoSkins
-          rm -rf /SetoSkins_Thermal/SetoSkins/工口本
+          rm -rf $GITHUB_WORKSPACE/SetoSkins/工口本
           zip -q -r SetoSkins_Thermal.zip *
           mv $GITHUB_WORKSPACE/SetoSkins/SetoSkins_Thermal.zip $GITHUB_WORKSPACE/SetoSkins_Thermal.zip
       - name: 3. 创建GitHub Release
