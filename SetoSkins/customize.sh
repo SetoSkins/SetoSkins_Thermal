@@ -16,7 +16,7 @@ set_perm_recursive $MODPATH/Script 0 0 0755 0755
   current=$(cat /sys/class/power_supply/battery/current_now)
   if [[ $status == "Charging" ]]
   then
-    ui_print "嘟嘟：笨蛋，先拔出来啊"
+    ui_print "- 嘟嘟：笨蛋，先拔出来啊（充电线）"
     exit 1
   fi
   if [[ $current -lt 0 ]]

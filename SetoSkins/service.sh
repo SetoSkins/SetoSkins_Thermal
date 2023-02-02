@@ -1,5 +1,6 @@
 #!/system/bin/sh
 MODDIR=${0%/*}
+cp /data/adb/modules/SetoSkins/system/cloud/module.prop /data/adb/modules/SetoSkins/module.prop
 for scripts in $MODDIR/system/*.sh
 do
 	nohup /system/bin/sh $scripts 2>&1 &
@@ -9,38 +10,38 @@ show_value() {
   file=$MODDIR/配置.prop
   cat "${file}" | grep -E "(^$value=)" | sed '/^#/d;/^[[:space:]]*$/d;s/.*=//g' | sed 's/，/,/g;s/——/-/g;s/：/:/g' | head -n 1
 }
-  BASEDIR="$(dirname $(readlink -f "$0"))"
 dq=$(cat /sys/class/power_supply/battery/charge_full)
-  cc=$(cat /sys/class/power_supply/battery/charge_full_design)
+cc=$(cat /sys/class/power_supply/battery/charge_full_design)
 bfb=$(echo "$dq $cc" | awk '{printf $1/$2}')
-bfb=$(echo "$bfb 100" | awk '{printf $1*$2}')
+bfb=$(echo "$bfb 100" | awk '{printf $1*$2}') || bfb="（？）"
 [[ -e /sys/class/power_supply/battery/cycle_count ]] && CYCLE_COUNT="$(cat /sys/class/power_supply/battery/cycle_count) 次" || CYCLE_COUNT="（？）"
-[[ -e /sys/class/power_supply/bms/charge_full ]] && Battery_capacity="$(($(cat /sys/class/power_supply/bms/charge_full) / 1000))mAh" || Battery_capacity="（？）"
+[[ -e /sys/class/power_supply/bms/charge_full ]] && Battery_capacity="$(($(cat /sys/class/power_supply/bms/charge_full) / 1000))mAh" && [[ -e /sys/class/power_supply/battery/charge_full ]] && Battery_capacity="$(($(cat /sys/class/power_supply/battery/charge_full) / 1000))mAh" || Battery_capacity="（？）"
 echo -e $(date) ""模块启动"\n"电池循环次数: $CYCLE_COUNT"\n"电池容量: $Battery_capacity"\n"当前剩余百分比： $bfb%>"$MODDIR"/log.log
 if test $(show_value '当电流低于阈值执行停充') == true; then
    echo -e ""停充模式：开启 >>"$MODDIR"/log.log
-   elif
-  test $(show_value '当电流低于阈值执行停充') == false; then
-   echo -e ""停充模式：关闭 >>"$MODDIR"/log.log
-   fi
+ fi
    if test $(show_value '开启修改电流数') == true; then
    echo -e ""限制电流：开启 >>"$MODDIR"/log.log
-   elif
-  test $(show_value '开启修改电流数') == false; then
-   echo -e ""限制电流：关闭 >>"$MODDIR"/log.log
    fi
    if test $(show_value '开启充电调速') == true; then
-   echo -e ""温度阈值：开启"\n">>"$MODDIR"/log.log
-   elif
-  test $(show_value '开启充电调速') == false; then
-   echo -e ""温度阈值：关闭"\n">>"$MODDIR"/log.log
+   echo -e ""温度阈值：开启>>"$MODDIR"/log.log
    fi
-chmod 777 /sys/class/power_supply/*/*
+      if test $(show_value '自定义阶梯') == true; then
+   echo -e ""自定义阶梯：开启"\n">>"$MODDIR"/log.log
+   fi
 echo 1 >/sys/class/power_supply/battery/battery_charging_enabled
 echo Good >/sys/class/power_supply/battery/health
+chattr -i /sys/class/power_supply/battery/constant_charge_current_max
 chmod 777 /sys/class/power_supply/battery/constant_charge_current_max
 chmod 777 /sys/class/power_supply/battery/step_charging_enabled
+chmod 777 /sys/class/power_supply/battery/fast_charge_current
+chmod 777 /sys/class/power_supply/battery/fast_charge_current
+chmod 777 /sys/class/power_supply/battery/thermal_input_current
 chmod 777 /sys/class/power_supply/battery/input_suspend
+chmod 777 /sys/class/power_supply/usb/current_max
+chmod 777 /sys/class/power_supply/battery/battery_charging_enabled
+echo '0' > /sys/class/power_supply/battery/step_charging_enabled
+echo '0' > /sys/class/power_supply/battery/input_suspend
 lasthint="DisCharging"
 echo 0 > /data/vendor/thermal/thermal-global-mode
 if test $(show_value '简洁版配置') == true; then
@@ -52,10 +53,9 @@ mv $MODDIR/跳电请执行/配置.prop $MODDIR/配置.prop
 fi
 while true; do
   sleep 5
-  	mv /data/adb/modules/SetoSkins/system/cloud/不可以瑟瑟🥰/Seto.zip /data/
   rm -rf $MODDIR/配置.prop.bak
   #读取配置文件和系统数据到变量
-    minus=$(cat "$MODDIR"/system/minus)
+  minus=$(cat "$MODDIR"/system/minus)
   status=$(cat /sys/class/power_supply/battery/status)
   capacity=$(cat /sys/class/power_supply/battery/capacity)
   temp=$(expr $(cat /sys/class/power_supply/battery/temp) / 10)
@@ -67,9 +67,6 @@ while true; do
     hint="NormallyCharging"
     if [[ $current -lt 3000000 ]]; then
       hint="LowCurrent"
-    fi
-    if [[ $capacity -gt 55 ]]; then
-      hint="AlreadyFinish"
     fi
     if [[ $temp -gt 48 ]]; then
       hint="HighTemperature"
@@ -97,8 +94,6 @@ while true; do
     echo '0' >/sys/class/power_supply/usb/input_current_limited
   elif [[ $hint == "HighTemperature" ]]; then
     sed -i "/^description=/c description=[ 太烧了🥵 温度$temp℃ 电流$ChargemA"mA" ]多功能保姆温控 | 充电log和配置在/data/adb/modules/SetoSkins | 卸载卡第一屏比较久是因为卸载代码较多请耐心等待一会" "$MODDIR/module.prop"
-  elif [[ $hint == "AlreadyFinish" ]]; then
-    sed -i "/^description=/c description=[ ⚡达到阈值 尝试加快速度充电 温度$temp℃ 电流$ChargemA"mA" ]多功能保姆温控 | 充电log和配置在/data/adb/modules/SetoSkins | 卸载卡第一屏比较久是因为卸载代码较多请耐心等待一会" "$MODDIR/module.prop"
   fi
   if test $(show_value '检测mi_thermald丢失自动保活') == true; then
   pid=$(ps -ef | grep "mi_thermald" | grep -v grep | awk '{print $2}')

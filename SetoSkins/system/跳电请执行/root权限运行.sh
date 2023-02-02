@@ -104,5 +104,3 @@ mk_thermal_folder
 copy_thermal_conf_file "/data/vendor/thermal/config"
 restart_mi_thermald
 echo "如果没有错误显示那你先用一段时间看看还有没有出现跳电情况"
-
-

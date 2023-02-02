@@ -233,20 +233,20 @@ echo "文件存在"
 echo -e "你的机型不支持修改最大电流数 请反馈给Seto">>/data/adb/modules/SetoSkins/log.log
   fi
 	  echo "$b" > /sys/class/power_supply/battery/constant_charge_current
-      echo "$b" /sys/devices/platform/battery/power_supply/battery/fast_charge_current
-	  echo "$b" /sys/devices/platform/battery/power_supply/battery/thermal_input_current
-	  echo "$b" /sys/devices/platform/11cb1000.i2c9/i2c-9/9-0055/power_supply/bms/current_max
-	  echo "$b" /sys/devices/platform/mt_charger/power_supply/usb/current_max
-	  echo "$b" /sys/firmware/devicetree/base/charger/current_max
+      echo "$b" > /sys/devices/platform/battery/power_supply/battery/fast_charge_current
+	  echo "$b" > /sys/devices/platform/battery/power_supply/battery/thermal_input_current
+	  echo "$b" > /sys/devices/platform/11cb1000.i2c9/i2c-9/9-0055/power_supply/bms/current_max
+	  echo "$b" > /sys/devices/platform/mt_charger/power_supply/usb/current_max
+	  echo "$b" > /sys/firmware/devicetree/base/charger/current_max
 	  fi
 	
 	if test $(show_value '开启修改电流数') == false; then
 	  echo "50000000" > /sys/class/power_supply/battery/constant_charge_current
-      echo "50000000" /sys/devices/platform/battery/power_supply/battery/fast_charge_current
-	  echo "50000000" /sys/devices/platform/battery/power_supply/battery/thermal_input_current
-	  echo "50000000" /sys/devices/platform/11cb1000.i2c9/i2c-9/9-0055/power_supply/bms/current_max
-	  echo "50000000" /sys/devices/platform/mt_charger/power_supply/usb/current_max
-	  echo "50000000" /sys/firmware/devicetree/base/charger/current_max
+      echo "50000000" > /sys/devices/platform/battery/power_supply/battery/fast_charge_current
+	  echo "50000000" > /sys/devices/platform/battery/power_supply/battery/thermal_input_current
+	  echo "50000000" > /sys/devices/platform/11cb1000.i2c9/i2c-9/9-0055/power_supply/bms/current_max
+	  echo "50000000" > /sys/devices/platform/mt_charger/power_supply/usb/current_max
+	  echo "50000000" > /sys/firmware/devicetree/base/charger/current_max
 	fi
 if test $(show_value '全局高刷（和dfps冲突）') == true; then
 {
@@ -314,3 +314,93 @@ rm -rf $MODDIR/vendor/bin/thermal_factory
 rm -rf $MODDIR/vendor/bin/thermal-engine
 rm -rf $MODDIR/init
 fi
+	if test $(show_value '跳电修复模式') == true; then
+	setprop ctl.restart thermal-engine
+	setprop ctl.restart mi_thermald
+	setprop ctl.restart thermal_manager
+	setprop ctl.restart thermal
+	mkdir -p $MODDIR/vendor/etc
+	rm -rf "$MODDIR"/vendor/etc/*
+	rm -rf /data/vendor/thermal/config/*
+	chattr -R -i -a /data/vendor/thermal/
+	#云端
+	cp "$MODDIR/cloud/thermal/thermal-normal.conf" "/data/vendor/thermal/config/thermal-normal.conf"
+	cp "$MODDIR/cloud/thermal/thermal-normal.conf" "/data/vendor/thermal/config/thermal-class0.conf"
+	cp "$MODDIR/cloud/thermal/thermal-normal.conf" "/data/vendor/thermal/config/thermal-nolimits.conf"
+	cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-tgame.conf"
+	cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-mgame.conf"
+	cp "$MODDIR/cloud/thermal/thermal-normal.conf" "/data/vendor/thermal/config/thermal-yuanshen.conf"
+	cp "$MODDIR/cloud/thermal/thermal-normal.conf" "/data/vendor/thermal/config/thermal-video.conf"
+
+	#本地
+	cp "$MODDIR/cloud/thermal/thermal-normal.conf" "$MODDIR/vendor/etc/thermal-normal.conf"
+	cp "$MODDIR/cloud/thermal/thermal-normal.conf" "$MODDIR/vendor/etc//thermal-class0.conf"
+	cp "$MODDIR/cloud/thermal/thermal-normal.conf" "$MODDIR/vendor/etc/thermal-nolimits.conf"
+	cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/vendor/etc/thermal-tgame.conf"
+	cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/vendor/etc/thermal-mgame.conf"
+	cp "$MODDIR/cloud/thermal/thermal-normal.conf" "$MODDIR/vendor/etc/thermal-yuanshen.conf"
+	cp "$MODDIR/cloud/thermal/thermal-normal.conf" "$MODDIR/vendor/etc/thermal-video.conf"
+
+	if [[ $var_device == "xagapro" ]]; then
+		#云端
+		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "/data/vendor/thermal/config/thermal-l16u-normal.conf"
+		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "/data/vendor/thermal/config/thermal-l16u-class0.conf"
+		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "/data/vendor/thermal/config/thermal-l16u-nolimits.conf"
+		cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-l16u-tgame.conf"
+		cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-l16u-mgame.conf"
+		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "/data/vendor/thermal/config/thermal-l16u-video.conf"
+		#本地
+		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "$MODDIR/vendor/etc/thermal-l16u-normal.conf"
+		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "$MODDIR/vendor/etc/thermal-l16u-class0.conf"
+		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "$MODDIR/vendor/etc/thermal-l16u-nolimits.conf"
+		cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/vendor/etc/thermal-l16u-tgame.conf"
+		cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/vendor/etc/thermal-l16u-mgame.conf"
+		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "$MODDIR/vendor/etc/thermal-l16u-video.conf.conf"
+	fi
+	if [[ $var_device == "star" ]]; then
+		#云端
+		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "/data/vendor/thermal/config/thermal-k1a-normal.conf"
+		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "/data/vendor/thermal/config/thermal-k1a-class0.conf"
+		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "/data/vendor/thermal/config/thermal-k1a-nolimits.conf"
+		cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-k1a-tgame.conf"
+		cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-k1a-mgame.conf"
+		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "/data/vendor/thermal/config/thermal-k1a-video.conf"
+		#本地
+		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "$MODDIR/vendor/etc/thermal-k1a-normal.conf"
+		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "$MODDIR/vendor/etc/thermal-k1a-class0.conf"
+		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "$MODDIR/vendor/etc/thermal-k1a-nolimits.conf"
+		cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/vendor/etc/thermal-k1a-tgame.conf"
+		cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/vendor/etc/thermal-k1a-mgame.conf"
+		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "$MODDIR/vendor/etc/thermal-k1a-video.conf.conf"
+	fi
+		if [[ $var_device == "mars" ]]; then
+		#云端
+		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "/data/vendor/thermal/config/thermal-k1a-normal.conf"
+		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "/data/vendor/thermal/config/thermal-k1a-class0.conf"
+		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "/data/vendor/thermal/config/thermal-k1a-nolimits.conf"
+		cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-k1a-tgame.conf"
+		cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-k1a-mgame.conf"
+		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "/data/vendor/thermal/config/thermal-k1a-video.conf"
+		#本地
+		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "$MODDIR/vendor/etc/thermal-k1a-normal.conf"
+		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "$MODDIR/vendor/etc/thermal-k1a-class0.conf"
+		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "$MODDIR/vendor/etc/thermal-k1a-nolimits.conf"
+		cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/vendor/etc/thermal-k1a-tgame.conf"
+		cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/vendor/etc/thermal-k1a-mgame.conf"
+		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "$MODDIR/vendor/etc/thermal-k1a-video.conf.conf"
+	fi
+	sh /data/adb/modules/SetoSkins/跳电请执行/root权限运行.sh
+	while true; do
+	sleep 10
+	  pid=$(ps -ef | grep "mi_thermald" | grep -v grep | awk '{print $2}')
+  a=$(kill -9 "$pid")
+    if [ -n "$a" ]; then
+      restart_mi_thermald() {
+        killall -15 mi_thermald
+        for i in $(which -a mi_thermald); do
+          nohup "$i" >/dev/null 2>&1 &
+        done
+      }
+    fi
+    done
+    fi
