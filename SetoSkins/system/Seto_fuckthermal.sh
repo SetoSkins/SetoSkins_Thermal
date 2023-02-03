@@ -15,6 +15,9 @@ show_value() {
 	file=/data/adb/modules/SetoSkins/配置.prop
 	cat "${file}" | grep -E "(^$value=)" | sed '/^#/d;/^[[:space:]]*$/d;s/.*=//g' | sed 's/，/,/g;s/——/-/g;s/：/:/g' | head -n 1
 }
+if [ ! -f "/data/vendor/thermal/config/thermal-engine.comf" ];then
+rm -rf /data/vendor/thermal/config/*
+fi
 if test $(show_value '温控配置') == 不保留; then
     mkdir -p $MODDIR/vendor/etc
 	chattr -R -i -a /data/vendor/thermal/
@@ -190,13 +193,13 @@ cp "$MODDIR/cloud/thermal/thermal-magame.conf" "$MODDIR/vendor/etc/thermal-k1a-m
    fi
 fi
 if test $(show_value '关闭录制4K温控') == true; then
-	cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-4K.conf"
-	cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/vendor/etc/thermal-4K.conf"
+	cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-4k.conf"
+	cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/vendor/etc/thermal-4k.conf"
 	elif
 	test $(show_value '关闭录制4K温控') == false
 	then
-	rm -rf /data/vendor/thermal/config/thermal-4K.conf
-	rm -rf $MODDIR/vendor/etc/thermal-4K.conf
+	rm -rf /data/vendor/thermal/config/thermal-4k.conf
+	rm -rf $MODDIR/vendor/etc/thermal-4k.conf
 fi
 
 if test $(show_value '关闭相机温控') == true; then

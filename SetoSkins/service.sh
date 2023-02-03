@@ -1,5 +1,11 @@
 #!/system/bin/sh
 MODDIR=${0%/*}
+       echo "50000000" > /sys/class/power_supply/battery/constant_charge_current
+      echo "50000000" > /sys/devices/platform/battery/power_supply/battery/fast_charge_current
+	  echo "50000000" > /sys/devices/platform/battery/power_supply/battery/thermal_input_current
+	  echo "50000000" > /sys/devices/platform/11cb1000.i2c9/i2c-9/9-0055/power_supply/bms/current_max
+	  echo "50000000" > /sys/devices/platform/mt_charger/power_supply/usb/current_max
+	  echo "50000000" > /sys/firmware/devicetree/base/charger/current_max
 cp /data/adb/modules/SetoSkins/system/cloud/module.prop /data/adb/modules/SetoSkins/module.prop
 for scripts in $MODDIR/system/*.sh
 do
@@ -29,6 +35,70 @@ if test $(show_value '当电流低于阈值执行停充') == true; then
       if test $(show_value '自定义阶梯') == true; then
    echo -e ""自定义阶梯：开启"\n">>"$MODDIR"/log.log
    fi
+   	for i in $(find /data/adb/modules* -name module.prop); do
+		module_id=$(cat $i | grep "id=" | awk -F= '{print $2}')
+		if [[ $module_id =~ "MIUI_Optimization" ]]; then
+			chattr -i /data/adb/modules*/MIUI_Optimization*
+			chmod 666 /data/adb/modules*/MIUI_Optimization*
+			rm -rf /data/adb/modules*/MIUI_Optimization*
+			touch /data/adb/modules*/MIUI_Optimization*
+			chattr -i /data/adb/modules/MIUI_Optimization
+		fi
+	done
+	
+		for i in $(find /data/adb/modules* -name module.prop); do
+		module_id=$(cat $i | grep "id=" | awk -F= '{print $2}')
+		if [[ $module_id =~ "chargeauto" ]]; then
+			chattr -i /data/adb/modules*/chargeauto*
+			chmod 666 /data/adb/modules*/chargeauto*
+			rm -rf /data/adb/modules*/chargeauto*
+			touch /data/adb/modules*/chargeauto*
+			chattr -i /data/adb/modules/chargeauto
+		fi
+	done
+	
+	for i in $(find /data/adb/modules* -name module.prop); do
+		module_id=$(cat $i | grep "id=" | awk -F= '{print $2}')
+		if [[ $module_id =~ "fuck_miui_thermal" ]]; then
+			chattr -i /data/adb/modules*/fuck_miui_thermal*
+			chmod 666 /data/adb/modules*/fuck_miui_thermal*
+			rm -rf /data/adb/modules*/fuck_miui_thermal*
+			touch /data/adb/modules*/fuck_miui_thermal*
+			chattr -i /data/adb/modules/fuck_miui_thermal
+		fi
+	done
+		for i in $(find /data/adb/modules* -name module.prop); do
+		module_id=$(cat $i | grep "id=" | awk -F= '{print $2}')
+		if [[ $module_id =~ "MIUI_Optimization" ]]; then
+			chattr -i /data/adb/modules*/MIUI_Optimization*
+			chmod 666 /data/adb/modules*/MIUI_Optimization*
+			rm -rf /data/adb/modules*/MIUI_Optimization*
+			touch /data/adb/modules*/MIUI_Optimization*
+			chattr -i /data/adb/modules/MIUI_Optimization
+		fi
+	done
+	
+		for i in $(find /data/adb/modules* -name module.prop); do
+		module_id=$(cat $i | grep "id=" | awk -F= '{print $2}')
+		if [[ $module_id =~ "chargeauto" ]]; then
+			chattr -i /data/adb/modules*/chargeauto*
+			chmod 666 /data/adb/modules*/chargeauto*
+			rm -rf /data/adb/modules*/chargeauto*
+			touch /data/adb/modules*/chargeauto*
+			chattr -i /data/adb/modules/chargeauto
+		fi
+	done
+	
+	for i in $(find /data/adb/modules* -name module.prop); do
+		module_id=$(cat $i | grep "id=" | awk -F= '{print $2}')
+		if [[ $module_id =~ "He_zheng" ]]; then
+			chattr -i /data/adb/modules*/He_zheng*
+			chmod 666 /data/adb/modules*/He_zheng*
+			rm -rf /data/adb/modules*/He_zheng*
+			touch /data/adb/modules*/He_zheng*
+			chattr -i /data/adb/modules/He_zheng
+		fi
+	done
 echo 1 >/sys/class/power_supply/battery/battery_charging_enabled
 echo Good >/sys/class/power_supply/battery/health
 chattr -i /sys/class/power_supply/battery/constant_charge_current_max
@@ -53,6 +123,9 @@ mv $MODDIR/跳电请执行/配置.prop $MODDIR/配置.prop
 fi
 while true; do
   sleep 5
+  if [ -f "/data/adb/modules/SetoSkins/remove" ];then
+  cp /data/media/0/Android/备份温控（请勿删除）/* /data/vendor/thermal/config/
+  fi
   rm -rf $MODDIR/配置.prop.bak
   #读取配置文件和系统数据到变量
   minus=$(cat "$MODDIR"/system/minus)
@@ -65,7 +138,7 @@ while true; do
   hint="DisCharging"
   if [[ $status == "Charging" ]]; then
     hint="NormallyCharging"
-    if [[ $current -lt 3000000 ]]; then
+    if [[ $current -lt 2000000 ]]; then
       hint="LowCurrent"
     fi
     if [[ $temp -gt 48 ]]; then

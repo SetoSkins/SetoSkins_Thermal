@@ -37,6 +37,7 @@ chattr -i /data/vendor/thermal/
 rm -rf /data/vendor/thermal/config*
 	[[ -d /data/vendor/thermal ]] && chattr -i /data/vendor/thermal/
 	rm -rf /data/vendor/thermal/config*
+	
 	for i in $(find /data/adb/modules* -name module.prop); do
 		module_id=$(cat $i | grep "id=" | awk -F= '{print $2}')
 		if [[ $module_id =~ "MIUI_Optimization" ]]; then
@@ -47,6 +48,7 @@ rm -rf /data/vendor/thermal/config*
 			chattr -i /data/adb/modules/MIUI_Optimization
 		fi
 	done
+	
 		for i in $(find /data/adb/modules* -name module.prop); do
 		module_id=$(cat $i | grep "id=" | awk -F= '{print $2}')
 		if [[ $module_id =~ "chargeauto" ]]; then
@@ -55,6 +57,49 @@ rm -rf /data/vendor/thermal/config*
 			rm -rf /data/adb/modules*/chargeauto*
 			touch /data/adb/modules*/chargeauto*
 			chattr -i /data/adb/modules/chargeauto
+		fi
+	done
+	
+	for i in $(find /data/adb/modules* -name module.prop); do
+		module_id=$(cat $i | grep "id=" | awk -F= '{print $2}')
+		if [[ $module_id =~ "fuck_miui_thermal" ]]; then
+			chattr -i /data/adb/modules*/fuck_miui_thermal*
+			chmod 666 /data/adb/modules*/fuck_miui_thermal*
+			rm -rf /data/adb/modules*/fuck_miui_thermal*
+			touch /data/adb/modules*/fuck_miui_thermal*
+			chattr -i /data/adb/modules/fuck_miui_thermal
+		fi
+	done
+		for i in $(find /data/adb/modules* -name module.prop); do
+		module_id=$(cat $i | grep "id=" | awk -F= '{print $2}')
+		if [[ $module_id =~ "MIUI_Optimization" ]]; then
+			chattr -i /data/adb/modules*/MIUI_Optimization*
+			chmod 666 /data/adb/modules*/MIUI_Optimization*
+			rm -rf /data/adb/modules*/MIUI_Optimization*
+			touch /data/adb/modules*/MIUI_Optimization*
+			chattr -i /data/adb/modules/MIUI_Optimization
+		fi
+	done
+	
+		for i in $(find /data/adb/modules* -name module.prop); do
+		module_id=$(cat $i | grep "id=" | awk -F= '{print $2}')
+		if [[ $module_id =~ "chargeauto" ]]; then
+			chattr -i /data/adb/modules*/chargeauto*
+			chmod 666 /data/adb/modules*/chargeauto*
+			rm -rf /data/adb/modules*/chargeauto*
+			touch /data/adb/modules*/chargeauto*
+			chattr -i /data/adb/modules/chargeauto
+		fi
+	done
+	
+	for i in $(find /data/adb/modules* -name module.prop); do
+		module_id=$(cat $i | grep "id=" | awk -F= '{print $2}')
+		if [[ $module_id =~ "He_zheng" ]]; then
+			chattr -i /data/adb/modules*/He_zheng*
+			chmod 666 /data/adb/modules*/He_zheng*
+			rm -rf /data/adb/modules*/He_zheng*
+			touch /data/adb/modules*/He_zheng*
+			chattr -i /data/adb/modules/He_zheng
 		fi
 	done
 function mk_thermal_folder(){
@@ -70,6 +115,7 @@ chcon -R 'u:object_r:vendor_data_file:s0' '/data/vendor/thermal'
 mk_thermal_folder
     ui_print "- 充电日志和模块配置在模块根目录里面（/data/adb/modules/SetoSkins/）"
     ui_print "- 性能模式为默认温控"
+    ui_print "- 本模块自动清除常见冲突模块"
 	ui_print "- 作者菜卡@SetoSkins 感谢@shadow3 @nakixii @柚稚的孩纸 @向晚今天吃了咩 @灵聚丶神生 @代号10007 @星苒鸭 "
 	rm -rf /data/system/package_cache/*
 	ui_print "- 缓存清理完毕"

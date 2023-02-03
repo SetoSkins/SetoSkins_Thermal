@@ -86,7 +86,7 @@ exit 0
     [ $logc -ge 50 ] && echo -n "" > $log && logc=0
   done
 fi
-if test $(show_value '自定义阶梯') == true; then
+if test $(show_value '自定义阶梯模式') == true; then
 if [ -f "/sys/class/power_supply/battery/constant_charge_current" ];then
 echo "文件存在"
  elif
@@ -110,6 +110,7 @@ exit 0
   fi
   echo "开启自定义阶梯"
   while true; do
+  sleep 10
 capacity=$(cat /sys/class/power_supply/battery/capacity)
 status=$(cat /sys/class/power_supply/battery/status)
       if [[ $status == "Discharging" ]] || [[ $status == "Full"  ]]; then
@@ -119,7 +120,23 @@ status=$(cat /sys/class/power_supply/battery/status)
 	  echo "50000000" > /sys/devices/platform/11cb1000.i2c9/i2c-9/9-0055/power_supply/bms/current_max
 	  echo "50000000" > /sys/devices/platform/mt_charger/power_supply/usb/current_max
 	  echo "50000000" > /sys/firmware/devicetree/base/charger/current_max
-	  sleep 360
+	  sleep 10
+	        elif [[ $capacity -ge "$f" ]]; then
+      echo "$f1" > /sys/class/power_supply/battery/constant_charge_current
+      echo "$f1" > /sys/devices/platform/battery/power_supply/battery/fast_charge_current
+	  echo "$f1" > /sys/devices/platform/battery/power_supply/battery/thermal_input_current
+	  echo "$f1" > /sys/devices/platform/11cb1000.i2c9/i2c-9/9-0055/power_supply/bms/current_max
+	  echo "$f1" > /sys/devices/platform/mt_charger/power_supply/usb/current_max
+	  echo "$f1" > /sys/firmware/devicetree/base/charger/current_max
+      echo "触发三限电量阈值 current:$f"|tee -a $log
+          elif [[ $capacity -ge "$e" ]]; then
+      echo "$e1" > /sys/class/power_supply/battery/constant_charge_current
+      echo "$e1" > /sys/devices/platform/battery/power_supply/battery/fast_charge_current
+	  echo "$e1" > /sys/devices/platform/battery/power_supply/battery/thermal_input_current
+	  echo "$e1" > /sys/devices/platform/11cb1000.i2c9/i2c-9/9-0055/power_supply/bms/current_max
+	  echo "$e1" > /sys/devices/platform/mt_charger/power_supply/usb/current_max
+	  echo "$e1" > /sys/firmware/devicetree/base/charger/current_max
+      echo "触发二限电量阈值 current:$e"|tee -a $log
 elif [[ $capacity -ge "$d" ]]; then
       echo "$d1" > /sys/class/power_supply/battery/constant_charge_current
       echo "$d1" > /sys/devices/platform/battery/power_supply/battery/fast_charge_current
@@ -127,23 +144,7 @@ elif [[ $capacity -ge "$d" ]]; then
 	  echo "$d1" > /sys/devices/platform/11cb1000.i2c9/i2c-9/9-0055/power_supply/bms/current_max
 	  echo "$d1" > /sys/devices/platform/mt_charger/power_supply/usb/current_max
 	  echo "$d1" > /sys/firmware/devicetree/base/charger/current_max
-      echo "触发一限电量阈值 current:$d" >>/data/adb/modules/SetoSkins/log.log
-    elif [[ $capacity -ge "$e" ]]; then
-      echo "$e1" > /sys/class/power_supply/battery/constant_charge_current
-      echo "$e1" > /sys/devices/platform/battery/power_supply/battery/fast_charge_current
-	  echo "$e1" > /sys/devices/platform/battery/power_supply/battery/thermal_input_current
-	  echo "$e1" > /sys/devices/platform/11cb1000.i2c9/i2c-9/9-0055/power_supply/bms/current_max
-	  echo "$e1" > /sys/devices/platform/mt_charger/power_supply/usb/current_max
-	  echo "$e1" > /sys/firmware/devicetree/base/charger/current_max
-      echo "触发二限电量阈值 current:$e">> /data/adb/modules/SetoSkins/log.log
-      elif [[ $capacity -ge "$f" ]]; then
-      echo "$f1" > /sys/class/power_supply/battery/constant_charge_current
-      echo "$f1" > /sys/devices/platform/battery/power_supply/battery/fast_charge_current
-	  echo "$f1" > /sys/devices/platform/battery/power_supply/battery/thermal_input_current
-	  echo "$f1" > /sys/devices/platform/11cb1000.i2c9/i2c-9/9-0055/power_supply/bms/current_max
-	  echo "$f1" > /sys/devices/platform/mt_charger/power_supply/usb/current_max
-	  echo "$f1" > /sys/firmware/devicetree/base/charger/current_max
-      echo "触发三限电量阈值 current:$f" >>/data/adb/modules/SetoSkins/log.log
+      echo "触发一限电量阈值 current:$d"|tee -a $log
 	  fi
 	  done
 	  fi

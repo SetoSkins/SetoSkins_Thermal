@@ -5,6 +5,7 @@ chmod 777 /data/vendor/thermal/config/*
 rm -rf /data/system/package_cache/*
 chattr -R -i -a /data/adb/modules/SetoSkins/
 echo 0 > /sys/class/power_supply/battery/input_suspend
+rm -rf /data/media/0/Android/备份温控（请勿删除）
 {
 	until [[ "$(getprop sys.boot_completed)" == "1" ]]; 
 	do
@@ -45,9 +46,6 @@ chattr -R -i -a '/data/vendor/thermal'
 	chown -R root:system '/data/vendor/thermal'
 chcon -R 'u:object_r:vendor_data_file:s0' '/data/vendor/thermal'
 }
-chmod 777 /data/media/0/Android/备份温控（请勿删除）
-cp -r /data/media/0/Android/备份温控（请勿删除）/* /data/vendor/thermal/config
-rm -rf /data/media/0/Android/备份温控（请勿删除）
 install_magisk_busybox
 mk_thermal_folder
 restart_mi_thermald
