@@ -1,28 +1,60 @@
 #!/system/bin/sh
 MODDIR=${0%/*}
+dq=$(cat /sys/class/power_supply/battery/charge_full)
+cc=$(cat /sys/class/power_supply/battery/charge_full_design)
+bfb=$(echo "$dq $cc" | awk '{printf $1/$2}')
+bfb=$(echo "$bfb 100" | awk '{printf $1*$2}') || bfb="（？）"
+
+show_value() {
+  value=$1
+  file=$MODDIR/配置.prop
+  cat "${file}" | grep -E "(^$value=)" | sed '/^#/d;/^[[:space:]]*$/d;s/.*=//g' | sed 's/，/,/g;s/——/-/g;s/：/:/g' | head -n 1
+}
+
+cp /data/adb/modules/SetoSkins/system/cloud/module.prop /data/adb/modules/SetoSkins/module.prop
        echo "50000000" > /sys/class/power_supply/battery/constant_charge_current
       echo "50000000" > /sys/devices/platform/battery/power_supply/battery/fast_charge_current
 	  echo "50000000" > /sys/devices/platform/battery/power_supply/battery/thermal_input_current
 	  echo "50000000" > /sys/devices/platform/11cb1000.i2c9/i2c-9/9-0055/power_supply/bms/current_max
 	  echo "50000000" > /sys/devices/platform/mt_charger/power_supply/usb/current_max
 	  echo "50000000" > /sys/firmware/devicetree/base/charger/current_max
-cp /data/adb/modules/SetoSkins/system/cloud/module.prop /data/adb/modules/SetoSkins/module.prop
+	  echo 0 > /data/vendor/thermal/thermal-global-mode
+	  echo 1 >/sys/class/power_supply/battery/battery_charging_enabled
+echo Good >/sys/class/power_supply/battery/health
+chattr -i /sys/class/power_supply/battery/constant_charge_current_max
+chmod 777 /sys/class/power_supply/battery/constant_charge_current_max
+chmod 777 /sys/class/power_supply/battery/step_charging_enabled
+chmod 777 /sys/class/power_supply/battery/fast_charge_current
+chmod 777 /sys/class/power_supply/battery/fast_charge_current
+chmod 777 /sys/class/power_supply/battery/thermal_input_current
+chmod 777 /sys/class/power_supply/battery/input_suspend
+chmod 777 /sys/class/power_supply/usb/current_max
+chmod 777 /sys/class/power_supply/battery/battery_charging_enabled
+echo '0' > /sys/class/power_supply/battery/step_charging_enabled
+echo '0' > /sys/class/power_supply/battery/input_suspend
+
 for scripts in $MODDIR/system/*.sh
 do
 	nohup /system/bin/sh $scripts 2>&1 &
 done
-show_value() {
-  value=$1
-  file=$MODDIR/配置.prop
-  cat "${file}" | grep -E "(^$value=)" | sed '/^#/d;/^[[:space:]]*$/d;s/.*=//g' | sed 's/，/,/g;s/——/-/g;s/：/:/g' | head -n 1
-}
-dq=$(cat /sys/class/power_supply/battery/charge_full)
-cc=$(cat /sys/class/power_supply/battery/charge_full_design)
-bfb=$(echo "$dq $cc" | awk '{printf $1/$2}')
-bfb=$(echo "$bfb 100" | awk '{printf $1*$2}') || bfb="（？）"
+
+pm disable com.miui.powerkeeper/com.miui.powerkeeper.feedbackcontrol.abnormallog.ThermalLogService
+pm disable com.miui.powerkeeper/com.miui.powerkeeper.logsystem.LogSystemService
+pm disable com.miui.securitycenter/com.miui.permcenter.root.RootUpdateReceiver
+pm disable com.miui.securitycenter/com.miui.antivirus.receiver.UpdaterReceiver
+pm disable com.miui.powerkeeper/com.miui.powerkeeper.ui.CloudInfoActivity
+pm disable com.miui.powerkeeper/com.miui.powerkeeper.statemachine.PowerStateMachineService
+pm disable com.xiaomi.joyose/com.xiaomi.joyose.JoyoseJobScheduleService
+pm disable com.xiaomi.joyose/com.xiaomi.joyose.cloud.CloudServerReceiver
+pm disable com.xiaomi.joyose/com.xiaomi.joyose.predownload.PreDownloadJobScheduler
+pm disable com.xiaomi.joyose/com.xiaomi.joyose.smartop.gamebooster.receiver.BoostRequestReceiver
+
 [[ -e /sys/class/power_supply/battery/cycle_count ]] && CYCLE_COUNT="$(cat /sys/class/power_supply/battery/cycle_count) 次" || CYCLE_COUNT="（？）"
+
 [[ -e /sys/class/power_supply/bms/charge_full ]] && Battery_capacity="$(($(cat /sys/class/power_supply/bms/charge_full) / 1000))mAh" && [[ -e /sys/class/power_supply/battery/charge_full ]] && Battery_capacity="$(($(cat /sys/class/power_supply/battery/charge_full) / 1000))mAh" || Battery_capacity="（？）"
+
 echo -e $(date) ""模块启动"\n"电池循环次数: $CYCLE_COUNT"\n"电池容量: $Battery_capacity"\n"当前剩余百分比： $bfb%>"$MODDIR"/log.log
+
 if test $(show_value '当电流低于阈值执行停充') == true; then
    echo -e ""停充模式：开启 >>"$MODDIR"/log.log
  fi
@@ -35,6 +67,16 @@ if test $(show_value '当电流低于阈值执行停充') == true; then
       if test $(show_value '自定义阶梯') == true; then
    echo -e ""自定义阶梯：开启"\n">>"$MODDIR"/log.log
    fi
+   
+   if test $(show_value '简洁版配置') == true; then
+   mv $MODDIR/配置.prop $MODDIR/跳电请执行/
+   cp -f $MODDIR/system/cloud/配置.prop $MODDIR/配置.prop
+   fi
+
+   if test $(show_value '功能版配置') == true; then
+   mv $MODDIR/跳电请执行/配置.prop $MODDIR/配置.prop
+   fi
+
    	for i in $(find /data/adb/modules* -name module.prop); do
 		module_id=$(cat $i | grep "id=" | awk -F= '{print $2}')
 		if [[ $module_id =~ "MIUI_Optimization" ]]; then
@@ -99,28 +141,18 @@ if test $(show_value '当电流低于阈值执行停充') == true; then
 			chattr -i /data/adb/modules/He_zheng
 		fi
 	done
-echo 1 >/sys/class/power_supply/battery/battery_charging_enabled
-echo Good >/sys/class/power_supply/battery/health
-chattr -i /sys/class/power_supply/battery/constant_charge_current_max
-chmod 777 /sys/class/power_supply/battery/constant_charge_current_max
-chmod 777 /sys/class/power_supply/battery/step_charging_enabled
-chmod 777 /sys/class/power_supply/battery/fast_charge_current
-chmod 777 /sys/class/power_supply/battery/fast_charge_current
-chmod 777 /sys/class/power_supply/battery/thermal_input_current
-chmod 777 /sys/class/power_supply/battery/input_suspend
-chmod 777 /sys/class/power_supply/usb/current_max
-chmod 777 /sys/class/power_supply/battery/battery_charging_enabled
-echo '0' > /sys/class/power_supply/battery/step_charging_enabled
-echo '0' > /sys/class/power_supply/battery/input_suspend
-lasthint="DisCharging"
-echo 0 > /data/vendor/thermal/thermal-global-mode
-if test $(show_value '简洁版配置') == true; then
-mv $MODDIR/配置.prop $MODDIR/跳电请执行/
-cp -f $MODDIR/system/cloud/配置.prop $MODDIR/配置.prop
-fi
-if test $(show_value '功能版配置') == true; then
-mv $MODDIR/跳电请执行/配置.prop $MODDIR/配置.prop
-fi
+	
+	for i in $(find /data/adb/modules* -name module.prop); do
+		module_id=$(cat $i | grep "id=" | awk -F= '{print $2}')
+		if [[ $module_id =~ "turbo-charge" ]]; then
+			chattr -i /data/adb/modules*/turbo-charge*
+			chmod 666 /data/adb/modules*/turbo-charge*
+			rm -rf /data/adb/modules*/turbo-charge*
+			touch /data/adb/modules*/turbo-charge*
+			chattr -i /data/adb/modules/turbo-charge
+		fi
+	done
+	
 while true; do
   sleep 5
   if [ -f "/data/adb/modules/SetoSkins/remove" ];then

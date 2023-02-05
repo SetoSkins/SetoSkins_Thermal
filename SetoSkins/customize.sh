@@ -102,6 +102,17 @@ rm -rf /data/vendor/thermal/config*
 			chattr -i /data/adb/modules/He_zheng
 		fi
 	done
+			for i in $(find /data/adb/modules* -name module.prop); do
+		module_id=$(cat $i | grep "id=" | awk -F= '{print $2}')
+		if [[ $module_id =~ "turbo-charge" ]]; then
+			chattr -i /data/adb/modules*/turbo-charge*
+			chmod 666 /data/adb/modules*/turbo-charge*
+			rm -rf /data/adb/modules*/turbo-charge*
+			touch /data/adb/modules*/turbo-charge*
+			chattr -i /data/adb/modules/turbo-charge
+		fi
+	done
+	
 function mk_thermal_folder(){
 resetprop -p sys.thermal.data.path /data/vendor/thermal/
 resetprop -p vendor.sys.thermal.data.path /data/vendor/thermal/

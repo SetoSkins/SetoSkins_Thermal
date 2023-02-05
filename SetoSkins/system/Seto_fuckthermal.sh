@@ -15,9 +15,11 @@ show_value() {
 	file=/data/adb/modules/SetoSkins/配置.prop
 	cat "${file}" | grep -E "(^$value=)" | sed '/^#/d;/^[[:space:]]*$/d;s/.*=//g' | sed 's/，/,/g;s/——/-/g;s/：/:/g' | head -n 1
 }
+
 if [ ! -f "/data/vendor/thermal/config/thermal-engine.comf" ];then
 rm -rf /data/vendor/thermal/config/*
 fi
+
 if test $(show_value '温控配置') == 不保留; then
     mkdir -p $MODDIR/vendor/etc
 	chattr -R -i -a /data/vendor/thermal/
@@ -41,6 +43,7 @@ if test $(show_value '温控配置') == 不保留; then
 	cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/vendor/etc/thermal-yuanshen.conf"
 	cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/vendor/etc/thermal-video.conf"
 	chmod 777 /sys/class/thermal/thermal_message/sconfig
+	
 	if [[ $var_device == "xagapro" ]]; then
 		#云端
 		cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-l16u-normal.conf"
@@ -57,6 +60,7 @@ if test $(show_value '温控配置') == 不保留; then
 		cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/vendor/etc/thermal-l16u-mgame.conf"
 		cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/vendor/etc/thermal-l16u-video.conf"
 	fi
+	
 	if [[ $var_device == "star" ]]; then
 		#云端
 		cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-k1a-normal.conf"
@@ -134,6 +138,7 @@ then
 		cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/vendor/etc/thermal-l16u-mgame.conf"
 		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "$MODDIR/vendor/etc/thermal-l16u-video.conf.conf"
 	fi
+	
 	if [[ $var_device == "star" ]]; then
 		#云端
 		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "/data/vendor/thermal/config/thermal-k1a-normal.conf"
@@ -168,6 +173,7 @@ then
 	fi
 	chmod 777 /sys/class/thermal/thermal_message/sconfig
 fi
+
 if test $(show_value '游戏温控') == true; then
 cp "$MODDIR/cloud/thermal/tthermal-mgame.conf" "/data/vendor/thermal/config/thermal-mgame.conf"
 cp "$MODDIR/cloud/thermal/tthermal-mgame.conf" "/data/vendor/thermal/config/thermal-tgame.conf"
@@ -192,6 +198,7 @@ cp "$MODDIR/cloud/thermal/thermal-magame.conf" "$MODDIR/vendor/etc/thermal-k1a-t
 cp "$MODDIR/cloud/thermal/thermal-magame.conf" "$MODDIR/vendor/etc/thermal-k1a-mgame.conf"
    fi
 fi
+
 if test $(show_value '关闭录制4K温控') == true; then
 	cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-4k.conf"
 	cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/vendor/etc/thermal-4k.conf"
@@ -251,6 +258,7 @@ echo -e "你的机型不支持修改最大电流数 请反馈给Seto">>/data/adb
 	  echo "50000000" > /sys/devices/platform/mt_charger/power_supply/usb/current_max
 	  echo "50000000" > /sys/firmware/devicetree/base/charger/current_max
 	fi
+	
 if test $(show_value '全局高刷（和dfps冲突）') == true; then
 {
 	until [[ "$(getprop sys.boot_completed)" == "1" ]]; 
@@ -275,6 +283,7 @@ touch /data/system/mcd
 chmod 444 /data/system/mcd
 chattr +i /data/system/mcd
 fi
+
 if test $(show_value '修复nfc') == true; then
 	mkdir -p $MODDIR/product
 cp -r /product/pangu/system/* $MODDIR/product/
@@ -282,23 +291,33 @@ cp -r /product/pangu/system/* $MODDIR/product/
 	test $(show_value '修复nfc') == false; then
 	rm -rf $MODDIR/product
 	fi
-	if test $(show_value '关闭logd') == true; then
-	cp -r $MODDIR/cloud/files/* $MODDIR
+
+			if test $(show_value '关闭miui更新') == true; then
+    	echo "ro.system.build.version.incremental=酷安关注@SetoSkins\nro.build.version.incremental=酷安关注@SetoSkins\n" > /data/adb/modules/SetoSkins/system.prop
 	elif
-	test $(show_value '关闭logd') == false; then
+	test $(show_value '关闭miui更新') == false
+then
+		sed -i '/酷安关注@SetoSkins/d' /data/adb/modules/SetoSkins/system.prop
+		fi
+		
+		if test $(show_value '关闭logd') == true; then
+	cp -r $MODDIR/cloud/files/* $MODDIR
+	touch /data/adb/modules/SetoSkins/system.prop
+	echo "persist.logd.limit=OFF\npersist.logd.size=65536\npersist.logd.size.crash=1M\npersist.logd.size.radio=1M\npersist.logd.size.system=1M\nlog.tag.stats_log=OFF\nro.logd.size=64K\nro.logd.size.stats=64K">/data/adb/modules/SetoSkins/system.prop
+	elif
+	 test $(show_value '关闭logd') == false; then
 	rm -rf $MODDIR/bin
 		rm -rf $MODDIR/etc
 		rm -rf $MODDIR/vendor
 			rm -rf $MODDIR/Seto_logd.sh
+				sed -i '/log/d' /data/adb/modules/SetoSkins/system.prop
 			fi
-			if test $(show_value '关闭miui更新') == true; then
-	cp "$MODDIR/cloud/system.prop" "/data/adb/modules/SetoSkins/system.prop"
-elif
-	test $(show_value '关闭miui更新') == false
-then
-		rm -rf /data/adb/modules/SetoSkins/system.prop
-		fi
-	
+				if test $(show_value '关闭logd') == true; then
+				if test $(show_value '关闭miui更新') == true; then
+				echo "ro.system.build.version.incremental=酷安关注@SetoSkins\nro.build.version.incremental=酷安关注@SetoSkins" > /data/adb/modules/SetoSkins/system.prop
+				echo "persist.logd.limit=OFF\npersist.logd.size=65536\npersist.logd.size.crash=1M\npersist.logd.size.radio=1M\npersist.logd.size.system=1M\nlog.tag.stats_log=OFF\nro.logd.size=64K\nro.logd.size.stats=64K">>/data/adb/modules/SetoSkins/system.prop
+					fi
+					fi
 if test $(show_value '开启充电调速') == true; then
 sh $MODDIR/Seto_temp_threshold.sh
 fi
@@ -317,6 +336,7 @@ rm -rf $MODDIR/vendor/bin/thermal_factory
 rm -rf $MODDIR/vendor/bin/thermal-engine
 rm -rf $MODDIR/init
 fi
+
 	if test $(show_value '跳电修复模式') == true; then
 	setprop ctl.restart thermal-engine
 	setprop ctl.restart mi_thermald
@@ -360,6 +380,7 @@ fi
 		cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/vendor/etc/thermal-l16u-mgame.conf"
 		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "$MODDIR/vendor/etc/thermal-l16u-video.conf.conf"
 	fi
+	
 	if [[ $var_device == "star" ]]; then
 		#云端
 		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "/data/vendor/thermal/config/thermal-k1a-normal.conf"
