@@ -158,16 +158,13 @@ if test $(show_value '当电流低于阈值执行停充') == true; then
 	done
 	
 while true; do
-sleep 5
-status=$(cat /sys/class/power_supply/battery/status)
-if [[ "$status" == "Discharging" ]]; then
-sleep 10s
-fi
+sleep 6
   if [ -f "/data/adb/modules/SetoSkins/remove" ];then
   cp /data/media/0/Android/备份温控（请勿删除）/* /data/vendor/thermal/config/
   fi
   rm -rf $MODDIR/配置.prop.bak
   #读取配置文件和系统数据到变量
+  status=$(cat /sys/class/power_supply/battery/status)
   capacity=$(cat /sys/class/power_supply/battery/capacity)
   temp=$(expr $(cat /sys/class/power_supply/battery/temp) / 10)
   current=$(expr $(cat /sys/class/power_supply/battery/current_now) \* $minus)
