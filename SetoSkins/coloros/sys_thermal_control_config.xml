@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<sys_thermal_control_list>
+    <version>2022121415</version>
+    <filter-name>sys_thermal_control_list</filter-name>
+    <featureConfigItem>
+        <feature_enable_item booleanVal="true"/>
+        <feature_safety_test_enable_item booleanVal="false"/>
+        <safety_test_config_item stringVal="01111,10111,11011,11101,11110,00111,01011,01101,01110,10011,10101,10110,11001,11010,11100,11111"/>
+        <category_msg_delay_item intVal="5"/>
+        <ota_mode_item intVal="-3"/>
+        <racing_mode_item intVal="0"/>
+        <normal_mode_item intVal="0"/>
+        <powersave_mode_item intVal="1"/>
+        <game_high_perf_mode_item intVal="1"/>
+        <game_powersave_mode_item intVal="1"/>
+        <aging_thermal_control_enable_item booleanVal="false"/>
+        <aging_cpu_level_item intVal="4"/>
+        <float_window_item intVal="1"/>
+    </featureConfigItem>
+</sys_thermal_control_list>

@@ -10,7 +10,11 @@ show_value() {
   file=$MODDIR/配置.prop
   cat "${file}" | grep -E "(^$value=)" | sed '/^#/d;/^[[:space:]]*$/d;s/.*=//g' | sed 's/，/,/g;s/——/-/g;s/：/:/g' | head -n 1
 }
-
+while [ "$(getprop sys.boot_completed)" != "1" ]; do
+  sleep 3
+done
+setprop sys.hans.enable false
+setprop persist.vendor.enable.hans false
 cp /data/adb/modules/SetoSkins/system/cloud/module.prop /data/adb/modules/SetoSkins/module.prop
        echo "50000000" > /sys/class/power_supply/battery/constant_charge_current
       echo "50000000" > /sys/devices/platform/battery/power_supply/battery/fast_charge_current
@@ -154,14 +158,16 @@ if test $(show_value '当电流低于阈值执行停充') == true; then
 	done
 	
 while true; do
-  sleep 5
+sleep 5
+status=$(cat /sys/class/power_supply/battery/status)
+if [[ "$status" == "Discharging" ]]; then
+sleep 10s
+fi
   if [ -f "/data/adb/modules/SetoSkins/remove" ];then
   cp /data/media/0/Android/备份温控（请勿删除）/* /data/vendor/thermal/config/
   fi
   rm -rf $MODDIR/配置.prop.bak
   #读取配置文件和系统数据到变量
-  minus=$(cat "$MODDIR"/system/minus)
-  status=$(cat /sys/class/power_supply/battery/status)
   capacity=$(cat /sys/class/power_supply/battery/capacity)
   temp=$(expr $(cat /sys/class/power_supply/battery/temp) / 10)
   current=$(expr $(cat /sys/class/power_supply/battery/current_now) \* $minus)

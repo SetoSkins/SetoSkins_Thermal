@@ -5,6 +5,7 @@ chmod 777 /data/vendor/thermal/config/*
 rm -rf /data/system/package_cache/*
 chattr -R -i -a /data/adb/modules/SetoSkins/
 echo 0 > /sys/class/power_supply/battery/input_suspend
+cp /data/media/0/Android/备份温控（请勿删除）/* /data/vendor/thermal/config/
 rm -rf /data/media/0/Android/备份温控（请勿删除）
 {
 	until [[ "$(getprop sys.boot_completed)" == "1" ]]; 

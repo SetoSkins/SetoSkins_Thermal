@@ -8,7 +8,10 @@ show_value() {
 }
   file1=/data/adb/modules/SetoSkins/配置.prop
   while true; do
-  sleep 10
+sleep 5
+if [[ "$status" == "Discharging" ]]; then
+sleep 10s
+fi
   if [ ! -f "/sys/class/power_supply/battery/input_suspend" ];then
   echo "你的设备不支持停充">>/data/adb/modules/SetoSkins/log.log
   exit 0

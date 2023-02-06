@@ -1,0 +1,35 @@
+<filter-conf>
+    <!-- project:19065 -->
+    <version>2020043017</version>
+    <isOpen>1</isOpen>
+    <filter-name>sys_high_temp_protect</filter-name>
+    <HighTemperatureProtectSwitch>false</HighTemperatureProtectSwitch> 
+    <HighTemperatureShutdownSwitch>false</HighTemperatureShutdownSwitch>
+    <HighTemperatureFirstStepSwitch>false</HighTemperatureFirstStepSwitch>
+    <CountBatteryChangedForFosUpdateTime>30</CountBatteryChangedForFosUpdateTime> 
+    <HighTemperatureShutdownUpdateTime>15</HighTemperatureShutdownUpdateTime>
+    <HighTemperatureProtectFirstStepIn>960</HighTemperatureProtectFirstStepIn>
+    <HighTemperatureProtectFirstStepOut>940</HighTemperatureProtectFirstStepOut>
+    <HighTemperatureProtectThresholdIn>990</HighTemperatureProtectThresholdIn> 
+    <HighTemperatureProtectThresholdOut>970</HighTemperatureProtectThresholdOut>
+    <HighTemperatureProtectShutDown>1050</HighTemperatureProtectShutDown>
+    <MediumTemperatureProtectThreshold>10000</MediumTemperatureProtectThreshold>
+    <HighTemperatureDisableFlashSwitch>false</HighTemperatureDisableFlashSwitch>
+    <HighTemperatureDisableFlashLimit>940</HighTemperatureDisableFlashLimit>
+    <HighTemperatureEnableFlashLimit>920</HighTemperatureEnableFlashLimit>
+    <HighTemperatureDisableFlashChargeSwitch>false</HighTemperatureDisableFlashChargeSwitch>
+    <HighTemperatureDisableFlashChargeLimit>940</HighTemperatureDisableFlashChargeLimit>
+    <HighTemperatureEnableFlashChargeLimit>920</HighTemperatureEnableFlashChargeLimit>
+    <camera_temperature_limit>950</camera_temperature_limit>
+    <HighTemperatureControlVideoRecordSwitch>false</HighTemperatureControlVideoRecordSwitch>
+    <HighTemperatureDisableVideoRecordLimit>950</HighTemperatureDisableVideoRecordLimit>
+    <HighTemperatureEnableVideoRecordLimit>930</HighTemperatureEnableVideoRecordLimit>
+    <ToleranceFirstStepIn>1000</ToleranceFirstStepIn>
+    <ToleranceFirstStepOut>980</ToleranceFirstStepOut>
+    <ToleranceSecondStepIn>1020</ToleranceSecondStepIn>
+    <ToleranceSecondStepOut>1000</ToleranceSecondStepOut>
+    <ToleranceThreshold>90</ToleranceThreshold>
+    <ToleranceStart>930</ToleranceStart>
+    <ToleranceStop>910</ToleranceStop>
+    <ToleranceInterval>30000</ToleranceInterval>
+</filter-conf>
