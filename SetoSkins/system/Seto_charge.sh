@@ -21,10 +21,10 @@ status1=$(cat /sys/class/power_supply/battery/status)
 	  echo "50000000" > /sys/class/power_supply/mtk-master-charger/constant_charge_current_max
 	  echo '180' > /sys/class/power_supply/bms/temp
 		sleep 1s
-		fi
-	if [[ "$status1" == "Discharging" ]]; then
+elif
+ [[ "$status1" == "Discharging" ]]; then
 	  echo '0' > /sys/class/power_supply/bms/temp
 		sleep 30s
 	fi
-	fi
 done
+fi

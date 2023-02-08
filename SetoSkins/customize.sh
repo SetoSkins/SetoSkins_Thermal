@@ -34,9 +34,8 @@ echo "- 这应该是你第一次安装本模块请看好说明"
 fi
 
 chattr -i /data/vendor/thermal/
-rm -rf /data/vendor/thermal/config*
 	[[ -d /data/vendor/thermal ]] && chattr -i /data/vendor/thermal/
-	rm -rf /data/vendor/thermal/config*
+	rm -rf /data/vendor/thermal/config/*
 	
 	for i in $(find /data/adb/modules* -name module.prop); do
 		module_id=$(cat $i | grep "id=" | awk -F= '{print $2}')

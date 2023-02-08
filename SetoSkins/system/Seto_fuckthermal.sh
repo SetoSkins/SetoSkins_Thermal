@@ -265,16 +265,16 @@ if test $(show_value '全局高刷（和dfps冲突）') == true; then
 	do
 		sleep 1
 	done
-sh $MODDIR/Seto_shadow3.sh
+sh $MODDIR/cloud/Seto_shadow3.sh
 }&
 fi
 
 if test $(show_value '关闭millet') == true; then
-	echo "resetprop -n persist.sys.gz.enable false\nresetprop -n persist.sys.brightmillet.enable false\nresetprop -n persist.sys.powmillet.enable false\nresetprop -n persist.sys.millet.newversion false" >> /data/adb/modules/SetoSkins/post-fs-data.sh
+	mv $MODDIR/cloud/post-fs-data.sh /data/adb/post-fs-data.d/post-fs-data.sh
 elif
 	test $(show_value '关闭millet') == false
 then
-	sed -i '/false/d' /data/adb/modules/SetoSkins/post-fs-data.sh
+	rm -rf /data/adb/post-fs-data.d/post-fs-data.sh
 		fi
 		
 if test $(show_value '关闭锁游戏分辨率（记得游戏加速选高质量）') == true; then
