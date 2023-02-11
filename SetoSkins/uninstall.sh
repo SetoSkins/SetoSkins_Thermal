@@ -6,6 +6,16 @@ rm -rf /data/system/package_cache/*
 chattr -R -i -a /data/adb/modules/SetoSkins/
 echo 0 > /sys/class/power_supply/battery/input_suspend
 rm -rf /data/adb/post-fs-data.d/post-fs-data.sh
+pm enable com.miui.powerkeeper/com.miui.powerkeeper.feedbackcontrol.abnormallog.ThermalLogService
+pm enable com.miui.powerkeeper/com.miui.powerkeeper.logsystem.LogSystemService
+pm enable com.miui.securitycenter/com.miui.permcenter.root.RootUpdateReceiver
+pm enable com.miui.securitycenter/com.miui.antivirus.receiver.UpdaterReceiver
+pm enable com.miui.powerkeeper/com.miui.powerkeeper.ui.CloudInfoActivity
+pm enable com.miui.powerkeeper/com.miui.powerkeeper.statemachine.PowerStateMachineService
+pm enable com.xiaomi.joyose/com.xiaomi.joyose.JoyoseJobScheduleService
+pm enable com.xiaomi.joyose/com.xiaomi.joyose.cloud.CloudServerReceiver
+pm enable com.xiaomi.joyose/com.xiaomi.joyose.predownload.PreDownloadJobScheduler
+pm enable com.xiaomi.joyose/com.xiaomi.joyose.smartop.gamebooster.receiver.BoostRequestReceiver
 {
 	until [[ "$(getprop sys.boot_completed)" == "1" ]]; 
 	do

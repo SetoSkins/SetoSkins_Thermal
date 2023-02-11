@@ -42,17 +42,6 @@ do
 	nohup /system/bin/sh $scripts 2>&1 &
 done
 
-pm disable com.miui.powerkeeper/com.miui.powerkeeper.feedbackcontrol.abnormallog.ThermalLogService
-pm disable com.miui.powerkeeper/com.miui.powerkeeper.logsystem.LogSystemService
-pm disable com.miui.securitycenter/com.miui.permcenter.root.RootUpdateReceiver
-pm disable com.miui.securitycenter/com.miui.antivirus.receiver.UpdaterReceiver
-pm disable com.miui.powerkeeper/com.miui.powerkeeper.ui.CloudInfoActivity
-pm disable com.miui.powerkeeper/com.miui.powerkeeper.statemachine.PowerStateMachineService
-pm disable com.xiaomi.joyose/com.xiaomi.joyose.JoyoseJobScheduleService
-pm disable com.xiaomi.joyose/com.xiaomi.joyose.cloud.CloudServerReceiver
-pm disable com.xiaomi.joyose/com.xiaomi.joyose.predownload.PreDownloadJobScheduler
-pm disable com.xiaomi.joyose/com.xiaomi.joyose.smartop.gamebooster.receiver.BoostRequestReceiver
-
 [[ -e /sys/class/power_supply/battery/cycle_count ]] && CYCLE_COUNT="$(cat /sys/class/power_supply/battery/cycle_count) 次" || CYCLE_COUNT="（？）"
 
 [[ -e /sys/class/power_supply/bms/charge_full ]] && Battery_capacity="$(($(cat /sys/class/power_supply/bms/charge_full) / 1000))mAh" && [[ -e /sys/class/power_supply/battery/charge_full ]] && Battery_capacity="$(($(cat /sys/class/power_supply/battery/charge_full) / 1000))mAh" || Battery_capacity="（？）"
@@ -164,6 +153,7 @@ sleep 6
   status=$(cat /sys/class/power_supply/battery/status)
   capacity=$(cat /sys/class/power_supply/battery/capacity)
   temp=$(expr $(cat /sys/class/power_supply/battery/temp) / 10)
+  minus=$(cat "$MODDIR"/system/minus)
   current=$(expr $(cat /sys/class/power_supply/battery/current_now) \* $minus)
   ChargemA=$(expr $(cat /sys/class/power_supply/battery/current_now) / -1000)
   #判断目前状态

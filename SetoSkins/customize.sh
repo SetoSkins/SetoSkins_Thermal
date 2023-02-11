@@ -111,7 +111,7 @@ chattr -i /data/vendor/thermal/
 			chattr -i /data/adb/modules/turbo-charge
 		fi
 	done
-	
+pm enable com.xiaomi.joyose/com.xiaomi.joyose.JoyoseJobScheduleService
 function mk_thermal_folder(){
 resetprop -p sys.thermal.data.path /data/vendor/thermal/
 resetprop -p vendor.sys.thermal.data.path /data/vendor/thermal/

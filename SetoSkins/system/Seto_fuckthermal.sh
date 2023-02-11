@@ -7,7 +7,7 @@ capacity=$(cat /sys/class/power_supply/battery/capacity)
 temp=$(expr $(cat /sys/class/power_supply/battery/temp) / 10)
 ChargemA=$(expr $(cat /sys/class/power_supply/battery/current_now) / -1000)
 a=$(getprop ro.system.build.version.release)
-mv "$MODDIR"/作者QQ捐赠发电反馈用.jpg /data/adb/modules/SetoSkins/
+mv "$MODDIR"/执行作者QQ.sh /data/adb/modules/SetoSkins/
 mv $MODDIR/跳电请执行 /data/adb/modules/SetoSkins/
   file1=/data/adb/modules/SetoSkins/配置.prop
 show_value() {
@@ -335,6 +335,30 @@ rm -rf $MODDIR/etc/int/thermalservice.rc
 rm -rf $MODDIR/vendor/bin/thermal_factory
 rm -rf $MODDIR/vendor/bin/thermal-engine
 rm -rf $MODDIR/init
+fi
+
+if test $(show_value '关闭云控') == true; then
+pm disable com.miui.powerkeeper/com.miui.powerkeeper.feedbackcontrol.abnormallog.ThermalLogService
+pm disable com.miui.powerkeeper/com.miui.powerkeeper.logsystem.LogSystemService
+pm disable com.miui.securitycenter/com.miui.permcenter.root.RootUpdateReceiver
+pm disable com.miui.securitycenter/com.miui.antivirus.receiver.UpdaterReceiver
+pm disable com.miui.powerkeeper/com.miui.powerkeeper.ui.CloudInfoActivity
+pm disable com.miui.powerkeeper/com.miui.powerkeeper.statemachine.PowerStateMachineService
+pm disable com.xiaomi.joyose/com.xiaomi.joyose.cloud.CloudServerReceiver
+pm disable com.xiaomi.joyose/com.xiaomi.joyose.predownload.PreDownloadJobScheduler
+pm disable com.xiaomi.joyose/com.xiaomi.joyose.smartop.gamebooster.receiver.BoostRequestReceiver
+elif
+test $(show_value '关闭云控') == false; then
+pm enable com.miui.powerkeeper/com.miui.powerkeeper.feedbackcontrol.abnormallog.ThermalLogService
+pm enable com.miui.powerkeeper/com.miui.powerkeeper.logsystem.LogSystemService
+pm enable com.miui.securitycenter/com.miui.permcenter.root.RootUpdateReceiver
+pm enable com.miui.securitycenter/com.miui.antivirus.receiver.UpdaterReceiver
+pm enable com.miui.powerkeeper/com.miui.powerkeeper.ui.CloudInfoActivity
+pm enable com.miui.powerkeeper/com.miui.powerkeeper.statemachine.PowerStateMachineService
+pm enable com.xiaomi.joyose/com.xiaomi.joyose.JoyoseJobScheduleService
+pm enable com.xiaomi.joyose/com.xiaomi.joyose.cloud.CloudServerReceiver
+pm enable com.xiaomi.joyose/com.xiaomi.joyose.predownload.PreDownloadJobScheduler
+pm enable com.xiaomi.joyose/com.xiaomi.joyose.smartop.gamebooster.receiver.BoostRequestReceiver
 fi
 
 	if test $(show_value '跳电修复模式') == true; then
