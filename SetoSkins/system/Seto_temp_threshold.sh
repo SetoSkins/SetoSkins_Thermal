@@ -22,33 +22,14 @@ e=$(grep "二限电量阈值" "$file1" | cut -d "=" -f2)
 e1=$(grep "二限电量限制电流" "$file1" | cut -d "=" -f2)
 f=$(grep "三限电量阈值" "$file1" | cut -d "=" -f2)
 f1=$(grep "三限电量限制电流" "$file1" | cut -d "=" -f2)
+int=$(find /sys/devices/ -type f -iname "*constant_charge_current_max*" |sed '/hardware/d'|sed -n '1p')
+int2=$(find /sys/devices/ -type f -iname "*constant_charge_current_max*" |sed '/hardware/d'|sed -n '2p')
 }
 getp
 echo -n "Values:"
 echo $a ;echo $b ;echo $a1 ;echo $b1; echo "$c End values"
 if test $(show_value '开启充电调速') == true; then
   echo "开启充电调速"
-  if [ -f "/sys/class/power_supply/battery/constant_charge_current" ];then
-echo "文件存在"
- elif
-  [ -f /sys/devices/platform/battery/power_supply/battery/fast_charge_current ]; then
-  echo "文件存在"
-   elif
-   [ -f /sys/devices/platform/mt_charger/power_supply/usb/current_max ]; then
-  echo "文件存在"
-   elif
-   [ -f /sys/devices/platform/battery/power_supply/battery/thermal_input_current ]; then
-  echo "文件存在"
-   elif
-  [ -f /sys/devices/platform/11cb1000.i2c9/i2c-9/9-0055/power_supply/bms/current_max ]; then
-  echo "文件存在"
-   elif
-   [ -f /sys/class/power_supply/usb/current_max ]; then
-  echo "文件存在"
-  else
-echo -e "你的机型不支持调速 请反馈给Seto">>/data/adb/modules/SetoSkins/log.log
-exit 0
-  fi
   while true; do
   sleep 5
     getp
@@ -61,6 +42,8 @@ exit 0
 	  echo "$b" > /sys/devices/platform/11cb1000.i2c9/i2c-9/9-0055/power_supply/bms/current_max
 	  echo "$b" > /sys/devices/platform/mt_charger/power_supply/usb/current_max
 	  echo "$b" > /sys/firmware/devicetree/base/charger/current_max
+	    echo "$b" > "$int"
+	    echo "$b" > "$int2"
       echo "触发一限温度阈值 temp:$a current:$b"|tee -a $log
         kill -19 $pid
     elif
@@ -71,6 +54,8 @@ exit 0
 	  echo "50000000" > /sys/devices/platform/11cb1000.i2c9/i2c-9/9-0055/power_supply/bms/current_max
 	  echo "50000000" > /sys/devices/platform/mt_charger/power_supply/usb/current_max
 	  echo "50000000" > /sys/firmware/devicetree/base/charger/current_max
+	    echo "50000000" > "$int"
+	      echo "50000000" > "$int2"
 	  kill -18 $pid
       echo "触发无限制阈值 temp:$a"|tee -a $log
     elif [[ $temp -gt $a1 ]]; then
@@ -80,6 +65,8 @@ exit 0
 	  echo "$b1" > /sys/devices/platform/11cb1000.i2c9/i2c-9/9-0055/power_supply/bms/current_max
 	  echo "$b1" > /sys/devices/platform/mt_charger/power_supply/usb/current_max
 	  echo "$b1" > /sys/firmware/devicetree/base/charger/current_max
+	    echo "$b1" > "$int"
+	      echo "$b1" > "$int2"
 	   kill -19 $pid
       echo "触发二限温度阈值 temp:$a1 current:$b1"|tee -a $log
     fi
@@ -87,27 +74,6 @@ exit 0
   done
 fi
 if test $(show_value '自定义阶梯模式') == true; then
-if [ -f "/sys/class/power_supply/battery/constant_charge_current" ];then
-echo "文件存在"
- elif
-  [ -f /sys/devices/platform/battery/power_supply/battery/fast_charge_current ]; then
-  echo "文件存在"
-   elif
-   [ -f /sys/devices/platform/mt_charger/power_supply/usb/current_max ]; then
-  echo "文件存在"
-   elif
-   [ -f /sys/devices/platform/battery/power_supply/battery/thermal_input_current ]; then
-  echo "文件存在"
-   elif
-  [ -f /sys/devices/platform/11cb1000.i2c9/i2c-9/9-0055/power_supply/bms/current_max ]; then
-  echo "文件存在"
-   elif
-   [ -f /sys/class/power_supply/usb/current_max ]; then
-  echo "文件存在"
-  else
-echo -e "你的机型不支持调速 请反馈给Seto">>/data/adb/modules/SetoSkins/log.log
-exit 0
-  fi
   echo "开启自定义阶梯"
   while true; do
   sleep 10
@@ -120,6 +86,8 @@ status=$(cat /sys/class/power_supply/battery/status)
 	  echo "50000000" > /sys/devices/platform/11cb1000.i2c9/i2c-9/9-0055/power_supply/bms/current_max
 	  echo "50000000" > /sys/devices/platform/mt_charger/power_supply/usb/current_max
 	  echo "50000000" > /sys/firmware/devicetree/base/charger/current_max
+	      echo "50000000" > "$int"
+	      echo "50000000" > "$int2"
 	  sleep 10
 	        elif [[ $capacity -ge "$f" ]]; then
       echo "$f1" > /sys/class/power_supply/battery/constant_charge_current
@@ -128,6 +96,8 @@ status=$(cat /sys/class/power_supply/battery/status)
 	  echo "$f1" > /sys/devices/platform/11cb1000.i2c9/i2c-9/9-0055/power_supply/bms/current_max
 	  echo "$f1" > /sys/devices/platform/mt_charger/power_supply/usb/current_max
 	  echo "$f1" > /sys/firmware/devicetree/base/charger/current_max
+	      echo "$f1" > "$int"
+	      echo "$f1" > "$int2"
       echo "触发三限电量阈值 current:$f"|tee -a $log
           elif [[ $capacity -ge "$e" ]]; then
       echo "$e1" > /sys/class/power_supply/battery/constant_charge_current
@@ -136,6 +106,8 @@ status=$(cat /sys/class/power_supply/battery/status)
 	  echo "$e1" > /sys/devices/platform/11cb1000.i2c9/i2c-9/9-0055/power_supply/bms/current_max
 	  echo "$e1" > /sys/devices/platform/mt_charger/power_supply/usb/current_max
 	  echo "$e1" > /sys/firmware/devicetree/base/charger/current_max
+	      echo "$e1" > "$int"
+	      echo "$e1" > "$int2"
       echo "触发二限电量阈值 current:$e"|tee -a $log
 elif [[ $capacity -ge "$d" ]]; then
       echo "$d1" > /sys/class/power_supply/battery/constant_charge_current
@@ -144,6 +116,8 @@ elif [[ $capacity -ge "$d" ]]; then
 	  echo "$d1" > /sys/devices/platform/11cb1000.i2c9/i2c-9/9-0055/power_supply/bms/current_max
 	  echo "$d1" > /sys/devices/platform/mt_charger/power_supply/usb/current_max
 	  echo "$d1" > /sys/firmware/devicetree/base/charger/current_max
+	      echo "$d1" > "$int"
+	      echo "$d1" > "$int2"
       echo "触发一限电量阈值 current:$d"|tee -a $log
 	  fi
 	  done

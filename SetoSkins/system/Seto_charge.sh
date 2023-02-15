@@ -9,6 +9,8 @@ function status() {
 }
 if test $(show_value '快充模式') == true; then
 while :; do
+a=$(find /sys/devices/ -type f -iname "*constant_charge_current_max*" |sed '/hardware/d'|sed -n '1p')
+b=$(find /sys/devices/ -type f -iname "*constant_charge_current_max*" |sed '/hardware/d'|sed -n '2p')
 status1=$(cat /sys/class/power_supply/battery/status)
  if [[ "$status" = "2" ]] || [[ "$status1" == "Charging" ]]; then
  echo "0" > /sys/class/power_supply/battery/step_charging_enabled
@@ -20,6 +22,8 @@ status1=$(cat /sys/class/power_supply/battery/status)
 	  echo "50000000" > /sys/firmware/devicetree/base/charger/current_max
 	  echo "50000000" > /sys/class/power_supply/mtk-master-charger/constant_charge_current_max
 	  echo '180' > /sys/class/power_supply/bms/temp
+	  echo "50000000" > "$a"
+	    echo "50000000" > "$b"
 		sleep 1s
 elif
  [[ "$status1" == "Discharging" ]]; then

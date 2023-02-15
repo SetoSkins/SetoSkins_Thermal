@@ -221,27 +221,11 @@ if test $(show_value '关闭相机温控') == true; then
 fi
 
 if test $(show_value '开启修改电流数') == true; then
+int=$(find /sys/devices/ -type f -iname "*constant_charge_current_max*" |sed '/hardware/d'|sed -n '1p')
+int2=$(find /sys/devices/ -type f -iname "*constant_charge_current_max*" |sed '/hardware/d'|sed -n '1p')
 	b=$(grep "最大电流数" "$file1" | cut -c7-)
-if [ -f "/sys/class/power_supply/battery/constant_charge_current" ]; then
-echo "文件存在"
- elif
-  [ -f /sys/devices/platform/battery/power_supply/battery/fast_charge_current ]; then
-  echo "文件存在"
-   elif
-   [ -f /sys/devices/platform/mt_charger/power_supply/usb/current_max ]; then
-  echo "文件存在"
-   elif
-   [ -f /sys/devices/platform/battery/power_supply/battery/thermal_input_current ]; then
-  echo "文件存在"
-   elif
-  [ -f /sys/devices/platform/11cb1000.i2c9/i2c-9/9-0055/power_supply/bms/current_max ]; then
-  echo "文件存在"
-   elif
-   [ -f /sys/class/power_supply/usb/current_max ]; then
-  echo "文件存在"
-  else
-echo -e "你的机型不支持修改最大电流数 请反馈给Seto">>/data/adb/modules/SetoSkins/log.log
-  fi
+          echo "$b" > "$int"
+	      echo "$b" > "$int2"
 	  echo "$b" > /sys/class/power_supply/battery/constant_charge_current
       echo "$b" > /sys/devices/platform/battery/power_supply/battery/fast_charge_current
 	  echo "$b" > /sys/devices/platform/battery/power_supply/battery/thermal_input_current
@@ -251,6 +235,10 @@ echo -e "你的机型不支持修改最大电流数 请反馈给Seto">>/data/adb
 	  fi
 	
 	if test $(show_value '开启修改电流数') == false; then
+	int=$(find /sys/devices/ -type f -iname "*constant_charge_current_max*" |sed '/hardware/d'|sed -n '1p')
+	int2=$(find /sys/devices/ -type f -iname "*constant_charge_current_max*" |sed '/hardware/d'|sed -n '2p')
+	    echo "50000000" > "$int"
+	      echo "50000000" > "$int2"
 	  echo "50000000" > /sys/class/power_supply/battery/constant_charge_current
       echo "50000000" > /sys/devices/platform/battery/power_supply/battery/fast_charge_current
 	  echo "50000000" > /sys/devices/platform/battery/power_supply/battery/thermal_input_current

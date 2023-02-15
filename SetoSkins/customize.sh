@@ -111,7 +111,16 @@ chattr -i /data/vendor/thermal/
 			chattr -i /data/adb/modules/turbo-charge
 		fi
 	done
+pm enable com.miui.powerkeeper/com.miui.powerkeeper.feedbackcontrol.abnormallog.ThermalLogService
+pm enable com.miui.powerkeeper/com.miui.powerkeeper.logsystem.LogSystemService
+pm enable com.miui.securitycenter/com.miui.permcenter.root.RootUpdateReceiver
+pm enable com.miui.securitycenter/com.miui.antivirus.receiver.UpdaterReceiver
+pm enable com.miui.powerkeeper/com.miui.powerkeeper.ui.CloudInfoActivity
+pm enable com.miui.powerkeeper/com.miui.powerkeeper.statemachine.PowerStateMachineService
 pm enable com.xiaomi.joyose/com.xiaomi.joyose.JoyoseJobScheduleService
+pm enable com.xiaomi.joyose/com.xiaomi.joyose.cloud.CloudServerReceiver
+pm enable com.xiaomi.joyose/com.xiaomi.joyose.predownload.PreDownloadJobScheduler
+pm enable com.xiaomi.joyose/com.xiaomi.joyose.smartop.gamebooster.receiver.BoostRequestReceiver
 function mk_thermal_folder(){
 resetprop -p sys.thermal.data.path /data/vendor/thermal/
 resetprop -p vendor.sys.thermal.data.path /data/vendor/thermal/
