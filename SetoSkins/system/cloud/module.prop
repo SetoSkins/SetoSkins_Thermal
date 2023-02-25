@@ -3,3 +3,5 @@ name=色图(Seto)温控
 author=菜卡@SetoSkins @shadow3
 description=[ 🔋未充电 ]多功能保姆温控 | 充电log和配置在/data/adb/modules/SetoSkins | 卸载卡第一屏比较久是因为卸载代码较多请耐心等待一会
 updateJson=https://ghproxy.com/https://github.com/zjw2017/SetoSkins_Thermal/blob/master/SetoSkins.json
+version=A8.0.0
+versionCode=800
