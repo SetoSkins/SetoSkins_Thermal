@@ -10,6 +10,8 @@ a=$(getprop ro.system.build.version.release)
 mv "$MODDIR"/执行作者QQ.sh /data/adb/modules/SetoSkins/
 mv $MODDIR/跳电请执行 /data/adb/modules/SetoSkins/
   file1=/data/adb/modules/SetoSkins/配置.prop
+int=$(cat /data/adb/modules/SetoSkins/节点.prop |sed -n '1p')
+int2=$(cat /data/adb/modules/SetoSkins/节点.prop |sed -n '2p')
 show_value() {
 	value=$1
 	file=/data/adb/modules/SetoSkins/配置.prop
@@ -221,8 +223,6 @@ if test $(show_value '关闭相机温控') == true; then
 fi
 
 if test $(show_value '开启修改电流数') == true; then
-int=$(find /sys/devices/ -type f -iname "*constant_charge_current_max*" |sed '/hardware/d'|sed -n '1p')
-int2=$(find /sys/devices/ -type f -iname "*constant_charge_current_max*" |sed '/hardware/d'|sed -n '1p')
 	b=$(grep "最大电流数" "$file1" | cut -c7-)
           echo "$b" > "$int"
 	      echo "$b" > "$int2"
@@ -232,14 +232,14 @@ int2=$(find /sys/devices/ -type f -iname "*constant_charge_current_max*" |sed '/
 	  echo "$b" > /sys/devices/platform/11cb1000.i2c9/i2c-9/9-0055/power_supply/bms/current_max
 	  echo "$b" > /sys/devices/platform/mt_charger/power_supply/usb/current_max
 	  echo "$b" > /sys/firmware/devicetree/base/charger/current_max
+	  	    echo "$b" > /sys/class/power_supply/battery/constant_charge_current_max
 	  fi
 	
 	if test $(show_value '开启修改电流数') == false; then
-	int=$(find /sys/devices/ -type f -iname "*constant_charge_current_max*" |sed '/hardware/d'|sed -n '1p')
-	int2=$(find /sys/devices/ -type f -iname "*constant_charge_current_max*" |sed '/hardware/d'|sed -n '2p')
 	    echo "50000000" > "$int"
 	      echo "50000000" > "$int2"
 	  echo "50000000" > /sys/class/power_supply/battery/constant_charge_current
+	    echo "50000000" > /sys/class/power_supply/battery/constant_charge_current_max
       echo "50000000" > /sys/devices/platform/battery/power_supply/battery/fast_charge_current
 	  echo "50000000" > /sys/devices/platform/battery/power_supply/battery/thermal_input_current
 	  echo "50000000" > /sys/devices/platform/11cb1000.i2c9/i2c-9/9-0055/power_supply/bms/current_max

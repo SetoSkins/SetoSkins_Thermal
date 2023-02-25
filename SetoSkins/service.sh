@@ -4,7 +4,10 @@ dq=$(cat /sys/class/power_supply/battery/charge_full)
 cc=$(cat /sys/class/power_supply/battery/charge_full_design)
 bfb=$(echo "$dq $cc" | awk '{printf $1/$2}')
 bfb=$(echo "$bfb 100" | awk '{printf $1*$2}') || bfb="（？）"
-
+a=$(find /sys/devices/ -type f -iname "*constant_charge_current_max*" |sed '/hardware/d'|sed -n '1p')
+b=$(find /sys/devices/ -type f -iname "*constant_charge_current_max*" |sed '/hardware/d'|sed -n '2p')
+echo "$b"> $MODDIR/节点.prop
+echo "$a">> $MODDIR/节点.prop
 show_value() {
   value=$1
   file=$MODDIR/配置.prop
@@ -22,6 +25,7 @@ cp /data/adb/modules/SetoSkins/system/cloud/module.prop /data/adb/modules/SetoSk
 	  echo "50000000" > /sys/devices/platform/11cb1000.i2c9/i2c-9/9-0055/power_supply/bms/current_max
 	  echo "50000000" > /sys/devices/platform/mt_charger/power_supply/usb/current_max
 	  echo "50000000" > /sys/firmware/devicetree/base/charger/current_max
+	  	    echo "50000000" > /sys/class/power_supply/battery/constant_charge_current_max
 	  echo 0 > /data/vendor/thermal/thermal-global-mode
 	  echo 1 >/sys/class/power_supply/battery/battery_charging_enabled
 echo Good >/sys/class/power_supply/battery/health
