@@ -57,6 +57,7 @@ chattr -R -i -a '/data/vendor/thermal'
 chcon -R 'u:object_r:vendor_data_file:s0' '/data/vendor/thermal'
 mv /data/adb/modules/SetoSkins/system/cloud/seto.sh /data/adb/service.d/seto.sh
 mv /data/adb/modules/SetoSkins/system/cloud/seto2.sh /data/adb/service.d/seto2.sh
+touch /data/vendor/thermal/decrypt.txt
 }
 install_magisk_busybox
 mk_thermal_folder

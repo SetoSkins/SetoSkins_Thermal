@@ -13,19 +13,9 @@ show_value() {
   file=$MODDIR/配置.prop
   cat "${file}" | grep -E "(^$value=)" | sed '/^#/d;/^[[:space:]]*$/d;s/.*=//g' | sed 's/，/,/g;s/——/-/g;s/：/:/g' | head -n 1
 }
-while [ "$(getprop sys.boot_completed)" != "1" ]; do
-  sleep 3
-done
 setprop sys.hans.enable false
 setprop persist.vendor.enable.hans false
 cp /data/adb/modules/SetoSkins/system/cloud/module.prop /data/adb/modules/SetoSkins/module.prop
-       echo "50000000" > /sys/class/power_supply/battery/constant_charge_current
-      echo "50000000" > /sys/devices/platform/battery/power_supply/battery/fast_charge_current
-	  echo "50000000" > /sys/devices/platform/battery/power_supply/battery/thermal_input_current
-	  echo "50000000" > /sys/devices/platform/11cb1000.i2c9/i2c-9/9-0055/power_supply/bms/current_max
-	  echo "50000000" > /sys/devices/platform/mt_charger/power_supply/usb/current_max
-	  echo "50000000" > /sys/firmware/devicetree/base/charger/current_max
-	  	    echo "50000000" > /sys/class/power_supply/battery/constant_charge_current_max
 	  echo 0 > /data/vendor/thermal/thermal-global-mode
 	  echo 1 >/sys/class/power_supply/battery/battery_charging_enabled
 echo Good >/sys/class/power_supply/battery/health
@@ -194,16 +184,4 @@ sleep 6
   elif [[ $hint == "HighTemperature" ]]; then
     sed -i "/^description=/c description=[ 太烧了🥵 温度$temp℃ 电流$ChargemA"mA" ]多功能保姆温控 | 充电log和配置在/data/adb/modules/SetoSkins | 卸载卡第一屏比较久是因为卸载代码较多请耐心等待一会" "$MODDIR/module.prop"
   fi
-  if test $(show_value '检测mi_thermald丢失自动保活') == true; then
-  pid=$(ps -ef | grep "mi_thermald" | grep -v grep | awk '{print $2}')
-  a=$(kill -9 "$pid")
-    if [ -n "$a" ]; then
-      restart_mi_thermald() {
-        killall -15 mi_thermald
-        for i in $(which -a mi_thermald); do
-          nohup "$i" >/dev/null 2>&1 &
-        done
-      }
-    fi
-fi
  done

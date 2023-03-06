@@ -43,6 +43,8 @@ if test $(show_value '开启充电调速') == true; then
 	  echo "$b" > /sys/devices/platform/mt_charger/power_supply/usb/current_max
 	  	    echo "$b" > /sys/class/power_supply/battery/constant_charge_current_max
 	  echo "$b" > /sys/firmware/devicetree/base/charger/current_max
+	      echo "$b" >/sys/class/power_supply/battery/fast_charge_current
+	  	    echo "$b" >/sys/class/power_supply/battery/current_max
 	    echo "$b" > "$int"
 	    echo "$b" > "$int2"
       echo "触发一限温度阈值 temp:$a current:$b"|tee -a $log
@@ -56,6 +58,8 @@ if test $(show_value '开启充电调速') == true; then
 	  echo "50000000" > /sys/devices/platform/mt_charger/power_supply/usb/current_max
 	  echo "50000000" > /sys/firmware/devicetree/base/charger/current_max
 	  	    echo "50000000" > /sys/class/power_supply/battery/constant_charge_current_max
+	  	        echo "50000000" >/sys/class/power_supply/battery/fast_charge_current
+	  	    echo "50000000" >/sys/class/power_supply/battery/current_max
 	    echo "50000000" > "$int"
 	      echo "50000000" > "$int2"
 	  kill -18 $pid
@@ -68,6 +72,8 @@ if test $(show_value '开启充电调速') == true; then
 	  echo "$b1" > /sys/devices/platform/mt_charger/power_supply/usb/current_max
 	  	    echo "$b1" > /sys/class/power_supply/battery/constant_charge_current_max
 	  echo "$b1" > /sys/firmware/devicetree/base/charger/current_max
+	      echo "$b1" >/sys/class/power_supply/battery/fast_charge_current
+	  	    echo "$b1" >/sys/class/power_supply/battery/current_max
 	    echo "$b1" > "$int"
 	      echo "$b1" > "$int2"
 	   kill -19 $pid
@@ -90,6 +96,8 @@ status=$(cat /sys/class/power_supply/battery/status)
 	  echo "50000000" > /sys/devices/platform/mt_charger/power_supply/usb/current_max
 	  	    echo "50000000" > /sys/class/power_supply/battery/constant_charge_current_max
 	  echo "50000000" > /sys/firmware/devicetree/base/charger/current_max
+	      echo "50000000" >/sys/class/power_supply/battery/fast_charge_current
+	  	    echo "50000000" >/sys/class/power_supply/battery/current_max
 	      echo "50000000" > "$int"
 	      echo "50000000" > "$int2"
 	  sleep 10
@@ -101,6 +109,8 @@ status=$(cat /sys/class/power_supply/battery/status)
 	  echo "$f1" > /sys/devices/platform/mt_charger/power_supply/usb/current_max
 	  	    echo "$f1" > /sys/class/power_supply/battery/constant_charge_current_max
 	  echo "$f1" > /sys/firmware/devicetree/base/charger/current_max
+	      echo "$f1" >/sys/class/power_supply/battery/fast_charge_current
+	  	    echo "$f1" >/sys/class/power_supply/battery/current_max
 	      echo "$f1" > "$int"
 	      echo "$f1" > "$int2"
       echo "触发三限电量阈值 current:$f"|tee -a $log
@@ -112,6 +122,8 @@ status=$(cat /sys/class/power_supply/battery/status)
 	  echo "$e1" > /sys/devices/platform/mt_charger/power_supply/usb/current_max
 	  	    echo "$e1" > /sys/class/power_supply/battery/constant_charge_current_max
 	  echo "$e1" > /sys/firmware/devicetree/base/charger/current_max
+	      echo "$e1" >/sys/class/power_supply/battery/fast_charge_current
+	  	    echo "$e1" >/sys/class/power_supply/battery/current_max
 	      echo "$e1" > "$int"
 	      echo "$e1" > "$int2"
       echo "触发二限电量阈值 current:$e"|tee -a $log
@@ -123,6 +135,8 @@ elif [[ $capacity -ge "$d" ]]; then
 	  echo "$d1" > /sys/devices/platform/mt_charger/power_supply/usb/current_max
 	  	    echo "$d1" > /sys/class/power_supply/battery/constant_charge_current_max
 	  echo "$d1" > /sys/firmware/devicetree/base/charger/current_max
+	      echo "$d1" >/sys/class/power_supply/battery/fast_charge_current
+	  	    echo "$d1" >/sys/class/power_supply/battery/current_max
 	      echo "$d1" > "$int"
 	      echo "$d1" > "$int2"
       echo "触发一限电量阈值 current:$d"|tee -a $log

@@ -140,6 +140,7 @@ mk_thermal_folder
 	ui_print "- 缓存清理完毕"
 	rm -rf /data/media/0/Seto.zip
 	rm -rf /data/Seto.zip
+	touch /data/vendor/thermal/decrypt.txt
 	coolapkTesting=`pm list package | grep -w 'com.coolapk.market'`
 if [[ "$coolapkTesting" != "" ]] && [ ! -d "/data/media/0/Android/备份温控（请勿删除）" ] ;then
 	sleep 5

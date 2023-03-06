@@ -233,12 +233,16 @@ if test $(show_value '开启修改电流数') == true; then
 	  echo "$b" > /sys/devices/platform/mt_charger/power_supply/usb/current_max
 	  echo "$b" > /sys/firmware/devicetree/base/charger/current_max
 	  	    echo "$b" > /sys/class/power_supply/battery/constant_charge_current_max
+	  	        echo "$b" >/sys/class/power_supply/battery/fast_charge_current
+	  	    echo "$b" >/sys/class/power_supply/battery/current_max
 	  fi
 	
 	if test $(show_value '开启修改电流数') == false; then
 	    echo "50000000" > "$int"
 	      echo "50000000" > "$int2"
 	  echo "50000000" > /sys/class/power_supply/battery/constant_charge_current
+	      echo "50000000" >/sys/class/power_supply/battery/fast_charge_current
+	  	    echo "50000000" >/sys/class/power_supply/battery/current_max
 	    echo "50000000" > /sys/class/power_supply/battery/constant_charge_current_max
       echo "50000000" > /sys/devices/platform/battery/power_supply/battery/fast_charge_current
 	  echo "50000000" > /sys/devices/platform/battery/power_supply/battery/thermal_input_current
