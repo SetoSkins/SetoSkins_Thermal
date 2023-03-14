@@ -8,20 +8,17 @@ temp=$(expr $(cat /sys/class/power_supply/battery/temp) / 10)
 ChargemA=$(expr $(cat /sys/class/power_supply/battery/current_now) / -1000)
 a=$(getprop ro.system.build.version.release)
 mv "$MODDIR"/执行作者QQ.sh /data/adb/modules/SetoSkins/
+mv "$MODDIR"/更新链接.sh /data/adb/modules/SetoSkins/
+mv "$MODDIR"/FAQ.prop /data/adb/modules/SetoSkins/
 mv $MODDIR/跳电请执行 /data/adb/modules/SetoSkins/
   file1=/data/adb/modules/SetoSkins/配置.prop
-int=$(cat /data/adb/modules/SetoSkins/节点.prop |sed -n '1p')
-int2=$(cat /data/adb/modules/SetoSkins/节点.prop |sed -n '2p')
+int=$(cat /data/adb/modules/SetoSkins/system/节点.prop |sed -n '1p')
+int2=$(cat /data/adb/modules/SetoSkins/system/节点.prop |sed -n '2p')
 show_value() {
 	value=$1
 	file=/data/adb/modules/SetoSkins/配置.prop
 	cat "${file}" | grep -E "(^$value=)" | sed '/^#/d;/^[[:space:]]*$/d;s/.*=//g' | sed 's/，/,/g;s/——/-/g;s/：/:/g' | head -n 1
 }
-
-if [ ! -f "/data/vendor/thermal/config/thermal-engine.comf" ];then
-rm -rf /data/vendor/thermal/config/*
-fi
-
 if test $(show_value '温控配置') == 不保留; then
     mkdir -p $MODDIR/vendor/etc
 	chattr -R -i -a /data/vendor/thermal/

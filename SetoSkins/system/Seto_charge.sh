@@ -7,8 +7,8 @@ show_value() {
 function status() {
 	dumpsys battery | grep 'status' | grep -Eo "[0-9]"
 }
-c=$(cat /data/adb/modules/SetoSkins/节点.prop |sed -n '1p')
-d=$(cat /data/adb/modules/SetoSkins/节点.prop |sed -n '2p')
+c=$(cat /data/adb/modules/SetoSkins/system/节点.prop |sed -n '1p')
+d=$(cat /data/adb/modules/SetoSkins/system/节点.prop |sed -n '2p')
 if test $(show_value '快充模式') == true; then
 while :; do
 status1=$(cat /sys/class/power_supply/battery/status)

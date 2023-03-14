@@ -1,7 +1,7 @@
 #!/system/bin/sh
 MODDIR=${0%/*}
 a=$(getprop ro.product.system.brand)
-if [[ $a == "Xiaomi" ]]; then
+if [[ $a == "Xiaomi" ]] || [[ $a == "qti" ]]; then
 echo "不支持你的机型"
 rm -rf $MODDIR/post-fs-data.sh
 rm -rf $MODDIR/coloros

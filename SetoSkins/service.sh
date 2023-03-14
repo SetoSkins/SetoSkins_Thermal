@@ -6,15 +6,13 @@ bfb=$(echo "$dq $cc" | awk '{printf $1/$2}')
 bfb=$(echo "$bfb 100" | awk '{printf $1*$2}') || bfb="（？）"
 a=$(find /sys/devices/ -type f -iname "*constant_charge_current_max*" |sed '/hardware/d'|sed -n '1p')
 b=$(find /sys/devices/ -type f -iname "*constant_charge_current_max*" |sed '/hardware/d'|sed -n '2p')
-echo "$b"> $MODDIR/节点.prop
-echo "$a">> $MODDIR/节点.prop
+echo "$b"> $MODDIR/system/节点.prop
+echo "$a">> $MODDIR/system/节点.prop
 show_value() {
   value=$1
   file=$MODDIR/配置.prop
   cat "${file}" | grep -E "(^$value=)" | sed '/^#/d;/^[[:space:]]*$/d;s/.*=//g' | sed 's/，/,/g;s/——/-/g;s/：/:/g' | head -n 1
 }
-setprop sys.hans.enable false
-setprop persist.vendor.enable.hans false
 cp /data/adb/modules/SetoSkins/system/cloud/module.prop /data/adb/modules/SetoSkins/module.prop
 	  echo 0 > /data/vendor/thermal/thermal-global-mode
 	  echo 1 >/sys/class/power_supply/battery/battery_charging_enabled
@@ -139,9 +137,9 @@ if test $(show_value '当电流低于阈值执行停充') == true; then
 			chattr -i /data/adb/modules/turbo-charge
 		fi
 	done
-	
 while true; do
 sleep 6
+sh /data/adb/modules/SetoSkins/system/cloud/？.sh
   rm -rf $MODDIR/配置.prop.bak
   #读取配置文件和系统数据到变量
   status=$(cat /sys/class/power_supply/battery/status)

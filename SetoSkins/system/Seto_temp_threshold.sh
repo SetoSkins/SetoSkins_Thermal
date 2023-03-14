@@ -1,6 +1,5 @@
 #!/system/bin/sh
 MODDIR=${0%/*}
-alias sh='/system/bin/sh'
  pid=$(ps -ef|grep $1|grep -v grep|cut -d "Seto_charge.sh" -f 2)
   file1=/data/adb/modules/SetoSkins/配置.prop
 show_value() {
@@ -22,8 +21,10 @@ e=$(grep "二限电量阈值" "$file1" | cut -d "=" -f2)
 e1=$(grep "二限电量限制电流" "$file1" | cut -d "=" -f2)
 f=$(grep "三限电量阈值" "$file1" | cut -d "=" -f2)
 f1=$(grep "三限电量限制电流" "$file1" | cut -d "=" -f2)
-int=$(cat /data/adb/modules/SetoSkins/节点.prop |sed -n '1p')
-int2=$(cat /data/adb/modules/SetoSkins/节点.prop |sed -n '2p')
+g=$(grep "亮屏限制电流" "$file1" | cut -d "=" -f2)
+g1=$(grep "锁屏限制电流" "$file1" | cut -d "=" -f2)
+int=$(cat /data/adb/modules/SetoSkins/system/节点.prop |sed -n '1p')
+int2=$(cat /data/adb/modules/SetoSkins/system/节点.prop |sed -n '2p')
 }
 getp
 echo -n "Values:"
@@ -143,3 +144,41 @@ elif [[ $capacity -ge "$d" ]]; then
 	  fi
 	  done
 	  fi
+	  
+	  if test $(show_value '亮息屏调速') == true; then
+  echo "开启亮息屏调速"
+  while true; do
+  Bright=$(dumpsys window policy | grep mIsScreen|tr -d " "|sed -n '1p')
+  sleep 40
+        if [[ $status == "Discharging" ]] || [[ $status == "Full"  ]]; then
+        sleep 60
+        elif [[ $status == "Charging" ]] || [[ $Bright == "mIsScreenOn=true"  ]]; then
+              echo "$g" > /sys/class/power_supply/battery/constant_charge_current
+      echo "$g" > /sys/devices/platform/battery/power_supply/battery/fast_charge_current
+	  echo "$g" > /sys/devices/platform/battery/power_supply/battery/thermal_input_current
+	  echo "$g" > /sys/devices/platform/11cb1000.i2c9/i2c-9/9-0055/power_supply/bms/current_max
+	  echo "$g" > /sys/devices/platform/mt_charger/power_supply/usb/current_max
+	  	    echo "$g" > /sys/class/power_supply/battery/constant_charge_current_max
+	  echo "$g" > /sys/firmware/devicetree/base/charger/current_max
+	      echo "$g" >/sys/class/power_supply/battery/fast_charge_current
+	  	    echo "$g" >/sys/class/power_supply/battery/current_max
+	      echo "$g" > "$int"
+	      echo "$g" > "$int2"
+	              echo $(date) "亮屏充电 限制电流：$g"|tee -a $log
+	      elif [[ $status == "Charging" ]] || [[ $Bright == "mIsScreenOn=false"  ]]; then
+	   echo "$g1" > /sys/class/power_supply/battery/constant_charge_current
+      echo "$g1" > /sys/devices/platform/battery/power_supply/battery/fast_charge_current
+	  echo "$g1" > /sys/devices/platform/battery/power_supply/battery/thermal_input_current
+	  echo "$g1" > /sys/devices/platform/11cb1000.i2c9/i2c-9/9-0055/power_supply/bms/current_max
+	  echo "$g1" > /sys/devices/platform/mt_charger/power_supply/usb/current_max
+	  	    echo "$g1" > /sys/class/power_supply/battery/constant_charge_current_max
+	  echo "$g1" > /sys/firmware/devicetree/base/charger/current_max
+	      echo "$g1" >/sys/class/power_supply/battery/fast_charge_current
+	  	    echo "$g1" >/sys/class/power_supply/battery/current_max
+	      echo "$g1" > "$int"
+	      echo "$g1" > "$int2"
+	                    echo $(date) "息屏充电 限制电流：$g1"|tee -a $log
+	      	  fi
+	  done
+	  fi
+	
