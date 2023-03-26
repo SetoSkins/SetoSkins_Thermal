@@ -50,7 +50,7 @@ set_perm_recursive $MODPATH/Script 0 0 0755 0755
 }
 if [ -d "/data/media/0/Android/备份温控（请勿删除）" ];then
 echo "- 检测到有备份温控 鉴定为更新模块"
-Reserve
+#Reserve
 else
 echo "- 这应该是你第一次安装本模块请看好说明"
 fi

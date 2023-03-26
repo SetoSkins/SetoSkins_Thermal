@@ -19,7 +19,6 @@ show_value() {
 	file=/data/adb/modules/SetoSkins/配置.prop
 	cat "${file}" | grep -E "(^$value=)" | sed '/^#/d;/^[[:space:]]*$/d;s/.*=//g' | sed 's/，/,/g;s/——/-/g;s/：/:/g' | head -n 1
 }
-if test $(show_value '温控配置') == 不保留; then
     mkdir -p $MODDIR/vendor/etc
 	chattr -R -i -a /data/vendor/thermal/
 	rm -rf "$MODDIR"/vendor/etc/*
@@ -92,51 +91,6 @@ if test $(show_value '温控配置') == 不保留; then
 		cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/vendor/etc/thermal-k1a-mgame.conf"
 		cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/vendor/etc/thermal-k1a-video.conf"
 	fi
-elif
-	test $(show_value '温控配置') == 保留
-then
-	setprop ctl.restart thermal-engine
-	setprop ctl.restart mi_thermald
-	setprop ctl.restart thermal_manager
-	setprop ctl.restart thermal
-	mkdir -p $MODDIR/vendor/etc
-	rm -rf "$MODDIR"/vendor/etc/*
-	rm -rf /data/vendor/thermal/config/*
-	chattr -R -i -a /data/vendor/thermal/
-	#云端
-	cp "$MODDIR/cloud/thermal/thermal-normal.conf" "/data/vendor/thermal/config/thermal-normal.conf"
-	cp "$MODDIR/cloud/thermal/thermal-normal.conf" "/data/vendor/thermal/config/thermal-class0.conf"
-	cp "$MODDIR/cloud/thermal/thermal-normal.conf" "/data/vendor/thermal/config/thermal-nolimits.conf"
-	cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-tgame.conf"
-	cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-mgame.conf"
-	cp "$MODDIR/cloud/thermal/thermal-normal.conf" "/data/vendor/thermal/config/thermal-yuanshen.conf"
-	cp "$MODDIR/cloud/thermal/thermal-normal.conf" "/data/vendor/thermal/config/thermal-video.conf"
-
-	#本地
-	cp "$MODDIR/cloud/thermal/thermal-normal.conf" "$MODDIR/vendor/etc/thermal-normal.conf"
-	cp "$MODDIR/cloud/thermal/thermal-normal.conf" "$MODDIR/vendor/etc//thermal-class0.conf"
-	cp "$MODDIR/cloud/thermal/thermal-normal.conf" "$MODDIR/vendor/etc/thermal-nolimits.conf"
-	cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/vendor/etc/thermal-tgame.conf"
-	cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/vendor/etc/thermal-mgame.conf"
-	cp "$MODDIR/cloud/thermal/thermal-normal.conf" "$MODDIR/vendor/etc/thermal-yuanshen.conf"
-	cp "$MODDIR/cloud/thermal/thermal-normal.conf" "$MODDIR/vendor/etc/thermal-video.conf"
-
-	if [[ $var_device == "xagapro" ]]; then
-		#云端
-		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "/data/vendor/thermal/config/thermal-l16u-normal.conf"
-		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "/data/vendor/thermal/config/thermal-l16u-class0.conf"
-		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "/data/vendor/thermal/config/thermal-l16u-nolimits.conf"
-		cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-l16u-tgame.conf"
-		cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-l16u-mgame.conf"
-		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "/data/vendor/thermal/config/thermal-l16u-video.conf"
-		#本地
-		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "$MODDIR/vendor/etc/thermal-l16u-normal.conf"
-		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "$MODDIR/vendor/etc/thermal-l16u-class0.conf"
-		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "$MODDIR/vendor/etc/thermal-l16u-nolimits.conf"
-		cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/vendor/etc/thermal-l16u-tgame.conf"
-		cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/vendor/etc/thermal-l16u-mgame.conf"
-		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "$MODDIR/vendor/etc/thermal-l16u-video.conf.conf"
-	fi
 	
 	if [[ $var_device == "star" ]]; then
 		#云端
@@ -171,8 +125,6 @@ then
 		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "$MODDIR/vendor/etc/thermal-k1a-video.conf.conf"
 	fi
 	chmod 777 /sys/class/thermal/thermal_message/sconfig
-fi
-
 if test $(show_value '游戏温控') == true; then
 cp "$MODDIR/cloud/thermal/tthermal-mgame.conf" "/data/vendor/thermal/config/thermal-mgame.conf"
 cp "$MODDIR/cloud/thermal/tthermal-mgame.conf" "/data/vendor/thermal/config/thermal-tgame.conf"
@@ -196,7 +148,7 @@ cp "$MODDIR/cloud/thermal/tthermal-mgame.conf" "/data/vendor/thermal/config/ther
 cp "$MODDIR/cloud/thermal/thermal-magame.conf" "$MODDIR/vendor/etc/thermal-k1a-tgame.conf"
 cp "$MODDIR/cloud/thermal/thermal-magame.conf" "$MODDIR/vendor/etc/thermal-k1a-mgame.conf"
    fi
-fi
+   fi
 
 if test $(show_value '关闭录制4K温控') == true; then
 	cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-4k.conf"
@@ -351,82 +303,39 @@ pm enable com.xiaomi.joyose/com.xiaomi.joyose.smartop.gamebooster.receiver.Boost
 fi
 
 	if test $(show_value '跳电修复模式') == true; then
+		sh /data/adb/modules/SetoSkins/跳电请执行/root权限运行.sh
 	setprop ctl.restart thermal-engine
 	setprop ctl.restart mi_thermald
 	setprop ctl.restart thermal_manager
 	setprop ctl.restart thermal
 	mkdir -p $MODDIR/vendor/etc
 	rm -rf "$MODDIR"/vendor/etc/*
-	rm -rf /data/vendor/thermal/config/*
 	chattr -R -i -a /data/vendor/thermal/
 	#云端
 	cp "$MODDIR/cloud/thermal/thermal-normal.conf" "/data/vendor/thermal/config/thermal-normal.conf"
-	cp "$MODDIR/cloud/thermal/thermal-normal.conf" "/data/vendor/thermal/config/thermal-class0.conf"
-	cp "$MODDIR/cloud/thermal/thermal-normal.conf" "/data/vendor/thermal/config/thermal-nolimits.conf"
-	cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-tgame.conf"
-	cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-mgame.conf"
-	cp "$MODDIR/cloud/thermal/thermal-normal.conf" "/data/vendor/thermal/config/thermal-yuanshen.conf"
-	cp "$MODDIR/cloud/thermal/thermal-normal.conf" "/data/vendor/thermal/config/thermal-video.conf"
 
 	#本地
 	cp "$MODDIR/cloud/thermal/thermal-normal.conf" "$MODDIR/vendor/etc/thermal-normal.conf"
-	cp "$MODDIR/cloud/thermal/thermal-normal.conf" "$MODDIR/vendor/etc//thermal-class0.conf"
-	cp "$MODDIR/cloud/thermal/thermal-normal.conf" "$MODDIR/vendor/etc/thermal-nolimits.conf"
-	cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/vendor/etc/thermal-tgame.conf"
-	cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/vendor/etc/thermal-mgame.conf"
-	cp "$MODDIR/cloud/thermal/thermal-normal.conf" "$MODDIR/vendor/etc/thermal-yuanshen.conf"
-	cp "$MODDIR/cloud/thermal/thermal-normal.conf" "$MODDIR/vendor/etc/thermal-video.conf"
 
 	if [[ $var_device == "xagapro" ]]; then
 		#云端
 		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "/data/vendor/thermal/config/thermal-l16u-normal.conf"
-		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "/data/vendor/thermal/config/thermal-l16u-class0.conf"
-		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "/data/vendor/thermal/config/thermal-l16u-nolimits.conf"
-		cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-l16u-tgame.conf"
-		cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-l16u-mgame.conf"
-		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "/data/vendor/thermal/config/thermal-l16u-video.conf"
 		#本地
 		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "$MODDIR/vendor/etc/thermal-l16u-normal.conf"
-		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "$MODDIR/vendor/etc/thermal-l16u-class0.conf"
-		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "$MODDIR/vendor/etc/thermal-l16u-nolimits.conf"
-		cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/vendor/etc/thermal-l16u-tgame.conf"
-		cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/vendor/etc/thermal-l16u-mgame.conf"
-		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "$MODDIR/vendor/etc/thermal-l16u-video.conf.conf"
 	fi
 	
 	if [[ $var_device == "star" ]]; then
 		#云端
 		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "/data/vendor/thermal/config/thermal-k1a-normal.conf"
-		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "/data/vendor/thermal/config/thermal-k1a-class0.conf"
-		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "/data/vendor/thermal/config/thermal-k1a-nolimits.conf"
-		cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-k1a-tgame.conf"
-		cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-k1a-mgame.conf"
-		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "/data/vendor/thermal/config/thermal-k1a-video.conf"
 		#本地
 		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "$MODDIR/vendor/etc/thermal-k1a-normal.conf"
-		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "$MODDIR/vendor/etc/thermal-k1a-class0.conf"
-		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "$MODDIR/vendor/etc/thermal-k1a-nolimits.conf"
-		cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/vendor/etc/thermal-k1a-tgame.conf"
-		cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/vendor/etc/thermal-k1a-mgame.conf"
-		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "$MODDIR/vendor/etc/thermal-k1a-video.conf.conf"
 	fi
 		if [[ $var_device == "mars" ]]; then
 		#云端
 		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "/data/vendor/thermal/config/thermal-k1a-normal.conf"
-		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "/data/vendor/thermal/config/thermal-k1a-class0.conf"
-		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "/data/vendor/thermal/config/thermal-k1a-nolimits.conf"
-		cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-k1a-tgame.conf"
-		cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-k1a-mgame.conf"
-		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "/data/vendor/thermal/config/thermal-k1a-video.conf"
 		#本地
 		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "$MODDIR/vendor/etc/thermal-k1a-normal.conf"
-		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "$MODDIR/vendor/etc/thermal-k1a-class0.conf"
-		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "$MODDIR/vendor/etc/thermal-k1a-nolimits.conf"
-		cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/vendor/etc/thermal-k1a-tgame.conf"
-		cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/vendor/etc/thermal-k1a-mgame.conf"
-		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "$MODDIR/vendor/etc/thermal-k1a-video.conf.conf"
 	fi
-	sh /data/adb/modules/SetoSkins/跳电请执行/root权限运行.sh
 	while true; do
 	sleep 10
 	  pid=$(ps -ef | grep "mi_thermald" | grep -v grep | awk '{print $2}')

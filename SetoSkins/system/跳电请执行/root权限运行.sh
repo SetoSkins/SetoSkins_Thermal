@@ -17,13 +17,13 @@ resetprop -p sys.thermal.data.path /data/vendor/thermal/
 resetprop -p vendor.sys.thermal.data.path /data/vendor/thermal/
 	chattr -R -i "/data/vendor/thermal/config" >/dev/null 2>&1
 	chattr -R -i "/data/vendor/thermal" >/dev/null 2>&1
-echo "@coolapk10007" > "/data/vendor/thermal/config/thermal.txt" 2>/dev/null || {
-	rm -rf "/data/vendor/thermal"
+{
 	mkdir -p "/data/vendor/thermal/config"
 }
 		mkdir -p '/data/vendor/thermal/config'
 		chmod -R 0771 '/data/vendor/thermal'
 	chown -R root:system '/data/vendor/thermal'
+	touch /data/vendor/thermal/decrypt.txt
 chcon -R 'u:object_r:vendor_data_file:s0' '/data/vendor/thermal'
 }
 
@@ -43,9 +43,6 @@ cat << key
 ${file}
 key
 fi
-done
-find $(magisk --path)/.magisk/mirror/vendor/etc $(magisk --path)/.magisk/mirror/system/etc $(magisk --path)/.magisk/mirror/system_root/system/etc -maxdepth 1 -iname '*thermal*.conf' -type f  2> /dev/null | while read file ;do
-	cp -af "$file" "${target}"
 done
 		chmod -R 0771 '/data/vendor/thermal'
 	chown -R root:system '/data/vendor/thermal'

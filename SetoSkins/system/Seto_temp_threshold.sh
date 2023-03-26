@@ -23,6 +23,16 @@ f=$(grep "三限电量阈值" "$file1" | cut -d "=" -f2)
 f1=$(grep "三限电量限制电流" "$file1" | cut -d "=" -f2)
 g=$(grep "亮屏限制电流" "$file1" | cut -d "=" -f2)
 g1=$(grep "锁屏限制电流" "$file1" | cut -d "=" -f2)
+a3=$(cat "/data/adb/modules/SetoSkins/黑名单.prop" | sed -n '4p' | tr -cd "[0-9]")
+b3=$(cat "/data/adb/modules/SetoSkins/黑名单.prop" | sed -n '5p' | tr -cd "[0-9]")
+c3=$(cat "/data/adb/modules/SetoSkins/黑名单.prop" | sed -n '6p' | tr -cd "[0-9]")
+d3=$(cat "/data/adb/modules/SetoSkins/黑名单.prop" | sed -n '7p' | tr -cd "[0-9]")
+e3=$(cat "/data/adb/modules/SetoSkins/黑名单.prop" | sed -n '8p' | tr -cd "[0-9]")
+f3=$(cat "/data/adb/modules/SetoSkins/黑名单.prop" | sed -n '9p' | tr -cd "[0-9]")
+g3=$(cat "/data/adb/modules/SetoSkins/黑名单.prop" | sed -n '10p' | tr -cd "[0-9]")
+h3=$(cat "/data/adb/modules/SetoSkins/黑名单.prop" | sed -n '11p' | tr -cd "[0-9]")
+i3=$(cat "/data/adb/modules/SetoSkins/黑名单.prop" | sed -n '12p' | tr -cd "[0-9]")
+j3=$(cat "/data/adb/modules/SetoSkins/黑名单.prop" | sed -n '13p' | tr -cd "[0-9]")
 int=$(cat /data/adb/modules/SetoSkins/system/节点.prop |sed -n '1p')
 int2=$(cat /data/adb/modules/SetoSkins/system/节点.prop |sed -n '2p')
 }
@@ -181,4 +191,150 @@ elif [[ $capacity -ge "$d" ]]; then
 	      	  fi
 	  done
 	  fi
-	
+	if test $(show_value '分应用调速') == true; then
+	mv /data/adb/modules/SetoSkins/system/cloud/thermal/黑名单.prop /data/adb/modules/SetoSkins/黑名单.prop
+	while true; do
+sleep 30
+app=$(dumpsys activity activities|grep topResumedActivity=|tail -n 1|cut -d "{" -f2|cut -d "/" -f1|cut -d " " -f3)
+if [[ $(grep "$app" "/data/adb/modules/SetoSkins/黑名单.prop" | grep "A") != "" ]]; then
+   echo "$a3" > /sys/class/power_supply/battery/constant_charge_current
+      echo "$a3" > /sys/devices/platform/battery/power_supply/battery/fast_charge_current
+	  echo "$a3" > /sys/devices/platform/battery/power_supply/battery/thermal_input_current
+	  echo "$a3" > /sys/devices/platform/11cb1000.i2c9/i2c-9/9-0055/power_supply/bms/current_max
+	  echo "$a3" > /sys/devices/platform/mt_charger/power_supply/usb/current_max
+	  	    echo "$a3" > /sys/class/power_supply/battery/constant_charge_current_max
+	  echo "$a3" > /sys/firmware/devicetree/base/charger/current_max
+	      echo "$a3" >/sys/class/power_supply/battery/fast_charge_current
+	  	    echo "$a3" >/sys/class/power_supply/battery/current_max
+	    echo "$a3" > "$int"
+	    echo "$a3" > "$int2"
+fi
+sleep 1s
+if [[ $(grep "$app" "/data/adb/modules/SetoSkins/黑名单.prop" | grep "B") != "" ]]; then
+   echo "$b3" > /sys/class/power_supply/battery/constant_charge_current
+      echo "$b3" > /sys/devices/platform/battery/power_supply/battery/fast_charge_current
+	  echo "$b3" > /sys/devices/platform/battery/power_supply/battery/thermal_input_current
+	  echo "$b3" > /sys/devices/platform/11cb1000.i2c9/i2c-9/9-0055/power_supply/bms/current_max
+	  echo "$b3" > /sys/devices/platform/mt_charger/power_supply/usb/current_max
+	  	    echo "$b3" > /sys/class/power_supply/battery/constant_charge_current_max
+	  echo "$b3" > /sys/firmware/devicetree/base/charger/current_max
+	      echo "$b3" >/sys/class/power_supply/battery/fast_charge_current
+	  	    echo "$b3" >/sys/class/power_supply/battery/current_max
+	    echo "$b3" > "$int"
+	    echo "$b3" > "$int2"
+fi
+sleep 1s
+if [[ $(grep "$app" "/data/adb/modules/SetoSkins/黑名单.prop" | grep "C") != "" ]]; then
+   echo "$c3" > /sys/class/power_supply/battery/constant_charge_current
+      echo "$c3" > /sys/devices/platform/battery/power_supply/battery/fast_charge_current
+	  echo "$c3" > /sys/devices/platform/battery/power_supply/battery/thermal_input_current
+	  echo "$c3" > /sys/devices/platform/11cb1000.i2c9/i2c-9/9-0055/power_supply/bms/current_max
+	  echo "$c3" > /sys/devices/platform/mt_charger/power_supply/usb/current_max
+	  	    echo "$c3" > /sys/class/power_supply/battery/constant_charge_current_max
+	  echo "$c3" > /sys/firmware/devicetree/base/charger/current_max
+	      echo "$c3" >/sys/class/power_supply/battery/fast_charge_current
+	  	    echo "$c3" >/sys/class/power_supply/battery/current_max
+	    echo "$c3" > "$int"
+	    echo "$c3" > "$int2"
+fi
+sleep 1s
+if [[ $(grep "$app" "/data/media/0/deviceId.txt" | grep "D") != "" ]]; then
+   echo "$d3" > /sys/class/power_supply/battery/constant_charge_current
+      echo "$d3" > /sys/devices/platform/battery/power_supply/battery/fast_charge_current
+	  echo "$d3" > /sys/devices/platform/battery/power_supply/battery/thermal_input_current
+	  echo "$d3" > /sys/devices/platform/11cb1000.i2c9/i2c-9/9-0055/power_supply/bms/current_max
+	  echo "$d3" > /sys/devices/platform/mt_charger/power_supply/usb/current_max
+	  	    echo "$d3" > /sys/class/power_supply/battery/constant_charge_current_max
+	  echo "$d3" > /sys/firmware/devicetree/base/charger/current_max
+	      echo "$d3" >/sys/class/power_supply/battery/fast_charge_current
+	  	    echo "$d3" >/sys/class/power_supply/battery/current_max
+	    echo "$d3" > "$int"
+	    echo "$d3" > "$int2"
+fi
+sleep 1s
+if [[ $(grep "$app" "/data/adb/modules/SetoSkins/黑名单.prop" | grep "E") != "" ]]; then
+   echo "$e3" > /sys/class/power_supply/battery/constant_charge_current
+      echo "$e3" > /sys/devices/platform/battery/power_supply/battery/fast_charge_current
+	  echo "$e3" > /sys/devices/platform/battery/power_supply/battery/thermal_input_current
+	  echo "$e3" > /sys/devices/platform/11cb1000.i2c9/i2c-9/9-0055/power_supply/bms/current_max
+	  echo "$e3" > /sys/devices/platform/mt_charger/power_supply/usb/current_max
+	  	    echo "$e3" > /sys/class/power_supply/battery/constant_charge_current_max
+	  echo "$e3" > /sys/firmware/devicetree/base/charger/current_max
+	      echo "$e3" >/sys/class/power_supply/battery/fast_charge_current
+	  	    echo "$e3" >/sys/class/power_supply/battery/current_max
+	    echo "$e3" > "$int"
+	    echo "$e3" > "$int2"
+fi
+sleep 1s
+if [[ $(grep "$app" "/data/adb/modules/SetoSkins/黑名单.prop" | grep "F") != "" ]]; then
+   echo "$f3" > /sys/class/power_supply/battery/constant_charge_current
+      echo "$f3" > /sys/devices/platform/battery/power_supply/battery/fast_charge_current
+	  echo "$f3" > /sys/devices/platform/battery/power_supply/battery/thermal_input_current
+	  echo "$f3" > /sys/devices/platform/11cb1000.i2c9/i2c-9/9-0055/power_supply/bms/current_max
+	  echo "$f3" > /sys/devices/platform/mt_charger/power_supply/usb/current_max
+	  	    echo "$f3" > /sys/class/power_supply/battery/constant_charge_current_max
+	  echo "$f3" > /sys/firmware/devicetree/base/charger/current_max
+	      echo "$f3" >/sys/class/power_supply/battery/fast_charge_current
+	  	    echo "$f3" >/sys/class/power_supply/battery/current_max
+	    echo "$f3" > "$int"
+	    echo "$f3" > "$int2"
+fi
+sleep 1s
+if [[ $(grep "$app" "/data/adb/modules/SetoSkins/黑名单.prop" | grep "G") != "" ]]; then
+   echo "$g3" > /sys/class/power_supply/battery/constant_charge_current
+      echo "$g3" > /sys/devices/platform/battery/power_supply/battery/fast_charge_current
+	  echo "$g3" > /sys/devices/platform/battery/power_supply/battery/thermal_input_current
+	  echo "$g3" > /sys/devices/platform/11cb1000.i2c9/i2c-9/9-0055/power_supply/bms/current_max
+	  echo "$g3" > /sys/devices/platform/mt_charger/power_supply/usb/current_max
+	  	    echo "$g3" > /sys/class/power_supply/battery/constant_charge_current_max
+	  echo "$g3" > /sys/firmware/devicetree/base/charger/current_max
+	      echo "$g3" >/sys/class/power_supply/battery/fast_charge_current
+	  	    echo "$g3" >/sys/class/power_supply/battery/current_max
+	    echo "$g3" > "$int"
+	    echo "$g3" > "$int2"
+fi
+sleep 1s
+if [[ $(grep "$app" "/data/adb/modules/SetoSkins/黑名单.prop" | grep "H") != "" ]]; then
+   echo "$h3" > /sys/class/power_supply/battery/constant_charge_current
+      echo "$h3" > /sys/devices/platform/battery/power_supply/battery/fast_charge_current
+	  echo "$h3" > /sys/devices/platform/battery/power_supply/battery/thermal_input_current
+	  echo "$h3" > /sys/devices/platform/11cb1000.i2c9/i2c-9/9-0055/power_supply/bms/current_max
+	  echo "$h3" > /sys/devices/platform/mt_charger/power_supply/usb/current_max
+	  	    echo "$h3" > /sys/class/power_supply/battery/constant_charge_current_max
+	  echo "$h3" > /sys/firmware/devicetree/base/charger/current_max
+	      echo "$h3" >/sys/class/power_supply/battery/fast_charge_current
+	  	    echo "$h3" >/sys/class/power_supply/battery/current_max
+	    echo "$h3" > "$int"
+	    echo "$h3" > "$int2"
+fi
+sleep 1s
+if [[ $(grep "$app" "/data/media/0/deviceId.txt" | grep "I") != "" ]]; then
+   echo "$i3" > /sys/class/power_supply/battery/constant_charge_current
+      echo "$i3" > /sys/devices/platform/battery/power_supply/battery/fast_charge_current
+	  echo "$i3" > /sys/devices/platform/battery/power_supply/battery/thermal_input_current
+	  echo "$i3" > /sys/devices/platform/11cb1000.i2c9/i2c-9/9-0055/power_supply/bms/current_max
+	  echo "$i3" > /sys/devices/platform/mt_charger/power_supply/usb/current_max
+	  	    echo "$i3" > /sys/class/power_supply/battery/constant_charge_current_max
+	  echo "$i3" > /sys/firmware/devicetree/base/charger/current_max
+	      echo "$i3" >/sys/class/power_supply/battery/fast_charge_current
+	  	    echo "$i3" >/sys/class/power_supply/battery/current_max
+	    echo "$i3" > "$int"
+	    echo "$i3" > "$int2"
+fi
+sleep 1s
+if [[ $(grep "$app" "/data/media/0/deviceId.txt" | grep "J") != "" ]]; then
+   echo "$j3" > /sys/class/power_supply/battery/constant_charge_current
+      echo "$j3" > /sys/devices/platform/battery/power_supply/battery/fast_charge_current
+	  echo "$j3" > /sys/devices/platform/battery/power_supply/battery/thermal_input_current
+	  echo "$j3" > /sys/devices/platform/11cb1000.i2c9/i2c-9/9-0055/power_supply/bms/current_max
+	  echo "$j3" > /sys/devices/platform/mt_charger/power_supply/usb/current_max
+	  	    echo "$j3" > /sys/class/power_supply/battery/constant_charge_current_max
+	  echo "$j3" > /sys/firmware/devicetree/base/charger/current_max
+	      echo "$j3" >/sys/class/power_supply/battery/fast_charge_current
+	  	    echo "$j3" >/sys/class/power_supply/battery/current_max
+	    echo "$j3" > "$int"
+	    echo "$j3" > "$int2"
+fi
+sleep 1s
+done
+fi
