@@ -29,6 +29,7 @@ set_perm_recursive $MODPATH/Script 0 0 0755 0755
   Reserve(){
     echo "😋😋😋😋😋😋😋😋😋😋😋😋😋😋"
     echo "- 3月11日 新功能 亮屏锁屏限制电流"
+    echo "- 3月26日 新功能 分应用限流"
     echo "😋😋😋😋😋😋😋😋😋😋😋😋😋😋"
     echo "- 是否保留之前配置"
     echo "- 如果保留则无法使用到最新功能"
@@ -50,7 +51,7 @@ set_perm_recursive $MODPATH/Script 0 0 0755 0755
 }
 if [ -d "/data/media/0/Android/备份温控（请勿删除）" ];then
 echo "- 检测到有备份温控 鉴定为更新模块"
-#Reserve
+Reserve
 else
 echo "- 这应该是你第一次安装本模块请看好说明"
 fi

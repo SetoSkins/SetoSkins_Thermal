@@ -260,9 +260,26 @@ then
 					fi
 					fi
 if test $(show_value '开启充电调速') == true; then
+{
 sh $MODDIR/Seto_temp_threshold.sh
+}&
 fi
-	
+	if test $(show_value '分应用调速') == true; then
+	{
+sh $MODDIR/Seto_temp_threshold.sh
+}&
+fi
+	if test $(show_value '自定义阶梯模式') == true; then
+	{
+sh $MODDIR/Seto_temp_threshold.sh
+}&
+fi
+	if test $(show_value '亮息屏调速') == true; then
+	{
+sh $MODDIR/Seto_temp_threshold.sh
+}&
+fi
+
 	if test $(show_value '温控空文件挂载') == true; then
 	cp -r $MODDIR/cloud/vendor/bin $MODDIR/vendor
 		cp -r $MODDIR/cloud/lib64/ $MODDIR
