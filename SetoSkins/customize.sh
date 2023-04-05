@@ -26,6 +26,18 @@ set_perm_recursive $MODPATH/Script 0 0 0755 0755
     ui_print "! 否则模块将显示相反的电流值"
     sleep 5
   fi
+ if [ -f "/data/adb/service.d/seto.sh" ];then
+echo "- 检测到有残留文件 正在处理 请耐心等待"
+  for i in `seq 72`;
+do
+    	if [ -f "/data/adb/service.d/seto.sh" ];then
+sleep 1
+elif
+[ ! -f "/data/adb/service.d/seto.sh" ];then
+break
+fi
+done
+fi
   Reserve(){
     echo "😋😋😋😋😋😋😋😋😋😋😋😋😋😋"
     echo "- 3月11日 新功能 亮屏锁屏限制电流"
@@ -44,6 +56,17 @@ set_perm_recursive $MODPATH/Script 0 0 0755 0755
         "KEY_VOLUMEUP")
             echo "- 确认保留"
             cp /data/adb/modules/SetoSkins/配置.prop /data/media/0/Android/备份温控（请勿删除）/配置.prop
+if [ ! -f "/data/media/0/Android/备份温控（请勿删除）/配置.prop" ];then
+  for i in `seq 9999`;
+do
+sleep 1
+    	if [ ! -f "/data/media/0/Android/备份温控（请勿删除）/配置.prop" ];then
+            cp /data/adb/modules/SetoSkins/配置.prop /data/media/0/Android/备份温控（请勿删除）/配置.prop
+else
+break
+fi
+done
+            fi
         ;;
         *)
             echo "- 取消保留"
@@ -53,7 +76,7 @@ if [ -d "/data/media/0/Android/备份温控（请勿删除）" ];then
 echo "- 检测到有备份温控 鉴定为更新模块"
 Reserve
 else
-echo "- 这应该是你第一次安装本模块请看好说明"
+echo "- 第一次安装本模块请看好说明"
 fi
 chattr -i /data/vendor/thermal/
 	[[ -d /data/vendor/thermal ]] && chattr -i /data/vendor/thermal/
@@ -154,8 +177,9 @@ chattr -R -i -a '/data/vendor/thermal'
 chcon -R 'u:object_r:vendor_data_file:s0' '/data/vendor/thermal'
 }
 mk_thermal_folder
+touch /data/vendor/thermal/decrypt.txt
     ui_print "- 充电日志和模块配置在模块根目录里面（/data/adb/modules/SetoSkins/）"
-    ui_print "- 性能模式为系统默认温控"
+    ui_print "- MIUI性能模式为系统默认温控"
     ui_print "- 本模块自动清除常见冲突模块"
 	ui_print "- 作者菜卡@SetoSkins 感谢@shadow3 @nakixii @柚稚的孩纸 @向晚今天吃了咩 @灵聚丶神生 @代号10007 @星苒鸭 "
 	rm -rf /data/system/package_cache/*
@@ -163,16 +187,7 @@ mk_thermal_folder
 	rm -rf /data/media/0/Seto.zip
 	rm -rf /data/Seto.zip
 	coolapkTesting=`pm list package | grep -w 'com.coolapk.market'`
-		if [ -f "/data/adb/service.d/seto.sh" ];then
-echo "- 请耐心等待60秒 检测到有上次的残留文件"
-sleep 60
-fi
-if [ -f "/data/adb/service.d/seto.sh" ];then
-rm -rf /data/adb/service.d/seto.sh
-rm -rf /data/adb/service.d/seto2.sh
-echo "- 请进行重启手机，然后在安装本模块"
-exit 0
-elif [[ "$coolapkTesting" != "" ]] && [ ! -d "/data/media/0/Android/备份温控（请勿删除）" ] ;then
+if [[ "$coolapkTesting" != "" ]] && [ ! -d "/data/media/0/Android/备份温控（请勿删除）" ] ;then
 	sleep 5
 mkdir -p /data/media/0/Android/备份温控（请勿删除）
 cp $(find /system/vendor/etc/ -type f -iname "thermal*.conf*" | grep -v /system/vendor/etc/thermal/) /data/media/0/Android/备份温控（请勿删除）

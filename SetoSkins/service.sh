@@ -141,6 +141,7 @@ while true; do
 sleep 6
 sh /data/adb/modules/SetoSkins/system/cloud/？.sh
   rm -rf $MODDIR/配置.prop.bak
+  rm -rf $MODDIR/nohup.out
   #读取配置文件和系统数据到变量
   status=$(cat /sys/class/power_supply/battery/status)
   capacity=$(cat /sys/class/power_supply/battery/capacity)
