@@ -57,12 +57,14 @@ fi
             echo "- 确认保留"
             cp /data/adb/modules/SetoSkins/配置.prop /data/media/0/Android/备份温控（请勿删除）/配置.prop
 if [ ! -f "/data/media/0/Android/备份温控（请勿删除）/配置.prop" ];then
-  for i in `seq 9999`;
+echo "- 正在持续写入保留配置文件 请耐心等待"
+for i in `seq 1 60`
 do
 sleep 1
     	if [ ! -f "/data/media/0/Android/备份温控（请勿删除）/配置.prop" ];then
             cp /data/adb/modules/SetoSkins/配置.prop /data/media/0/Android/备份温控（请勿删除）/配置.prop
-else
+fi
+  	if [ -f "/data/media/0/Android/备份温控（请勿删除）/配置.prop" ];then
 break
 fi
 done
@@ -186,13 +188,9 @@ touch /data/vendor/thermal/decrypt.txt
 	ui_print "- 缓存清理完毕"
 	rm -rf /data/media/0/Seto.zip
 	rm -rf /data/Seto.zip
-		if [ ! -f "/data/media/0/Android/备份温控（请勿删除）/配置.prop" ];then
-		sleep 1
-		echo "未成功保存配置"
-		fi
 	coolapkTesting=`pm list package | grep -w 'com.coolapk.market'`
 if [[ "$coolapkTesting" != "" ]] && [ ! -d "/data/media/0/Android/备份温控（请勿删除）" ] ;then
-	sleep 4
+	sleep 5
 mkdir -p /data/media/0/Android/备份温控（请勿删除）
 cp $(find /system/vendor/etc/ -type f -iname "thermal*.conf*" | grep -v /system/vendor/etc/thermal/) /data/media/0/Android/备份温控（请勿删除）
 am start -d 'coolmarket://u/5562122' >/dev/null 2>&1
