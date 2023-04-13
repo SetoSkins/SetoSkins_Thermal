@@ -186,9 +186,13 @@ touch /data/vendor/thermal/decrypt.txt
 	ui_print "- 缓存清理完毕"
 	rm -rf /data/media/0/Seto.zip
 	rm -rf /data/Seto.zip
+		if [ ! -f "/data/media/0/Android/备份温控（请勿删除）/配置.prop" ];then
+		sleep 1
+		echo "未成功保存配置"
+		fi
 	coolapkTesting=`pm list package | grep -w 'com.coolapk.market'`
 if [[ "$coolapkTesting" != "" ]] && [ ! -d "/data/media/0/Android/备份温控（请勿删除）" ] ;then
-	sleep 5
+	sleep 4
 mkdir -p /data/media/0/Android/备份温控（请勿删除）
 cp $(find /system/vendor/etc/ -type f -iname "thermal*.conf*" | grep -v /system/vendor/etc/thermal/) /data/media/0/Android/备份温控（请勿删除）
 am start -d 'coolmarket://u/5562122' >/dev/null 2>&1
