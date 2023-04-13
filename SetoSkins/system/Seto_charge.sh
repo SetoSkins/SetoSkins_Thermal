@@ -25,6 +25,8 @@ status1=$(cat /sys/class/power_supply/battery/status)
 	  	    echo "50000000" >/sys/class/power_supply/battery/fast_charge_current
 	  	    echo "50000000" >/sys/class/power_supply/battery/current_max
 	  echo '180' > /sys/class/power_supply/bms/temp
+	  echo '180' > /sys/class/power_supply/battery/subsystem/battery/temp
+
 	  echo "50000000" > "$c"
 	    echo "50000000" > "$d"
 		sleep 1s
