@@ -55,7 +55,9 @@ fi
     case "$key_click" in
         "KEY_VOLUMEUP")
             echo "- 确认保留"
+            sleep 1
             cp /data/adb/modules/SetoSkins/配置.prop /data/media/0/Android/备份温控（请勿删除）/配置.prop
+            cp /data/adb/modules/SetoSkins/黑名单.prop /data/media/0/Android/备份温控（请勿删除）/黑名单.prop
 if [ ! -f "/data/media/0/Android/备份温控（请勿删除）/配置.prop" ];then
 echo "- 正在持续写入保留配置文件 请耐心等待"
 for i in `seq 1 60`
@@ -63,9 +65,22 @@ do
 sleep 1
     	if [ ! -f "/data/media/0/Android/备份温控（请勿删除）/配置.prop" ];then
             cp /data/adb/modules/SetoSkins/配置.prop /data/media/0/Android/备份温控（请勿删除）/配置.prop
-fi
-  	if [ -f "/data/media/0/Android/备份温控（请勿删除）/配置.prop" ];then
+            	if [ -f "/data/media/0/Android/备份温控（请勿删除）/配置.prop" ];then
 break
+fi
+fi
+done
+            fi
+            if [ ! -f "/data/media/0/Android/备份温控（请勿删除）/黑名单.prop" ];then
+echo "- 正在持续写入保留配置文件 请耐心等待"
+for i in `seq 1 60`
+do
+sleep 1
+    	if [ ! -f "/data/media/0/Android/备份温控（请勿删除）/黑名单.prop" ];then
+            cp /data/adb/modules/SetoSkins/黑名单.prop /data/media/0/Android/备份温控（请勿删除）/黑名单.prop
+            	if [ -f "/data/media/0/Android/备份温控（请勿删除）/黑名单.prop" ] || [ ! -f "/data/adb/modules/SetoSkins/黑名单.prop" ];then
+break
+fi
 fi
 done
             fi
@@ -76,7 +91,7 @@ done
 }
 if [ -d "/data/media/0/Android/备份温控（请勿删除）" ];then
 echo "- 检测到有备份温控 鉴定为更新模块"
-Reserve
+#Reserve
 else
 echo "- 第一次安装本模块请看好说明"
 fi

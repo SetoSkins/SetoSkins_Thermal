@@ -1,8 +1,7 @@
 #!/system/bin/sh
 MODDIR=${0%/*}
 chattr -i /data/cache/
-rm -rf /data/cache/*
-chmod 000 /data/cache/
+rm -rf /data/cache/magisk.log
 chattr -i /data/mdlog/
 rm -rf /data/mdlog/*
 chmod 000 /data/mdlog/
