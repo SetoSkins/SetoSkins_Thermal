@@ -1,4 +1,3 @@
-MODDIR=${0%/*}
 set_perm_recursive $MODPATH 0 0 0755 0777
 function key_source() {
 	if test -e "$1"; then
