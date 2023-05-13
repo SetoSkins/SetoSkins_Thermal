@@ -40,17 +40,19 @@ cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/vendor/etc/thermal-t
 cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/vendor/etc/thermal-mgame.conf"
 cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/vendor/etc/thermal-yuanshen.conf"
 cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/vendor/etc/thermal-video.conf"
+
 chmod 777 /sys/class/thermal/thermal_message/sconfig
+
 case "$var_device" in
-    xagapro)
-        var_device_trans=l16u
-        ;;
-    star | mars)
-        var_device_trans=k1a
-        ;;
+xagapro)
+	var_device_trans=l16u
+	;;
+star | mars)
+	var_device_trans=k1a
+	;;
 esac
-if [[ "$var_device_trans" != "" ]]; then
-    #云端
+if [[ $var_device_trans != "" ]]; then
+	#云端
 	cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-${var_device_trans}-normal.conf"
 	cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-${var_device_trans}-class0.conf"
 	cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-${var_device_trans}-nolimits.conf.conf"
@@ -72,8 +74,8 @@ if test $(show_value '游戏温控') == true; then
 	cp "$MODDIR/cloud/thermal/tthermal-mgame.conf" "/data/vendor/thermal/config/thermal-tgame.conf"
 	cp "$MODDIR/cloud/thermal/thermal-magame.conf" "$MODDIR/vendor/etc/thermal-tgame.conf"
 	cp "$MODDIR/cloud/thermal/thermal-magame.conf" "$MODDIR/vendor/etc/thermal-mgame.conf"
-	if [[ "$var_device_trans" != "" ]]; then
-	    cp "$MODDIR/cloud/thermal/tthermal-mgame.conf" "/data/vendor/thermal/config/thermal-${var_device_trans}-tgame.conf"
+	if [[ $var_device_trans != "" ]]; then
+		cp "$MODDIR/cloud/thermal/tthermal-mgame.conf" "/data/vendor/thermal/config/thermal-${var_device_trans}-tgame.conf"
 		cp "$MODDIR/cloud/thermal/tthermal-mgame.conf" "/data/vendor/thermal/config/thermal-${var_device_trans}-tgame.conf"
 		cp "$MODDIR/cloud/thermal/thermal-magame.conf" "$MODDIR/vendor/etc/thermal-${var_device_trans}-tgame.conf"
 		cp "$MODDIR/cloud/thermal/thermal-magame.conf" "$MODDIR/vendor/etc/thermal-${var_device_trans}-mgame.conf"
@@ -250,25 +252,13 @@ if test $(show_value '跳电修复模式') == true; then
 	#本地
 	cp "$MODDIR/cloud/thermal/thermal-normal.conf" "$MODDIR/vendor/etc/thermal-normal.conf"
 
-	if [[ $var_device == "xagapro" ]]; then
+	if [[ $var_device_trans != "" ]]; then
 		#云端
-		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "/data/vendor/thermal/config/thermal-l16u-normal.conf"
+		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "/data/vendor/thermal/config/thermal-${var_device_trans}-normal.conf"
 		#本地
-		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "$MODDIR/vendor/etc/thermal-l16u-normal.conf"
+		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "$MODDIR/vendor/etc/thermal-${var_device_trans}-normal.conf"
 	fi
 
-	if [[ $var_device == "star" ]]; then
-		#云端
-		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "/data/vendor/thermal/config/thermal-k1a-normal.conf"
-		#本地
-		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "$MODDIR/vendor/etc/thermal-k1a-normal.conf"
-	fi
-	if [[ $var_device == "mars" ]]; then
-		#云端
-		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "/data/vendor/thermal/config/thermal-k1a-normal.conf"
-		#本地
-		cp "$MODDIR/cloud/thermal/thermal-normal.conf" "$MODDIR/vendor/etc/thermal-k1a-normal.conf"
-	fi
 	while true; do
 		sleep 10
 		pid=$(ps -ef | grep "mi_thermald" | grep -v grep | awk '{print $2}')
