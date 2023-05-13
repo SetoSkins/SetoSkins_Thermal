@@ -13,10 +13,6 @@ show_value() {
 	file=$MODDIR/配置.prop
 	cat "${file}" | grep -E "(^$value=)" | sed '/^#/d;/^[[:space:]]*$/d;s/.*=//g' | sed 's/，/,/g;s/——/-/g;s/：/:/g' | head -n 1
 }
-echo '0' >/sys/class/power_supply/bms/temp
-echo '0' >/sys/class/power_supply/battery/subsystem/battery/temp
-echo '0' >/sys/class/power_supply/battery/temp
-echo 0 >/sys/class/qcom-battery/thermal_remove
 cp /data/adb/modules/SetoSkins/system/cloud/module.prop /data/adb/modules/SetoSkins/module.prop
 echo 0 >/data/vendor/thermal/thermal-global-mode
 echo 1 >/sys/class/power_supply/battery/battery_charging_enabled
