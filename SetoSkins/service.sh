@@ -17,7 +17,6 @@ cp /data/adb/modules/SetoSkins/system/cloud/module.prop /data/adb/modules/SetoSk
 echo 0 >/data/vendor/thermal/thermal-global-mode
 echo '0' > /sys/class/power_supply/bms/temp
 echo '0' > /sys/class/power_supply/battery/subsystem/battery/temp
-echo 1 >/sys/class/power_supply/battery/battery_charging_enabled
 echo Good >/sys/class/power_supply/battery/health
 chattr -i /sys/class/power_supply/battery/constant_charge_current_max
 chmod 777 /sys/class/power_supply/battery/constant_charge_current_max
@@ -28,7 +27,6 @@ chmod 777 /sys/class/power_supply/battery/thermal_input_current
 chmod 777 /sys/class/power_supply/battery/input_suspend
 chmod 777 /sys/class/power_supply/usb/current_max
 chmod 777 /sys/class/power_supply/battery/battery_charging_enabled
-echo '0' >/sys/class/power_supply/battery/step_charging_enabled
 echo '0' >/sys/class/power_supply/battery/input_suspend
 
 for scripts in $MODDIR/system/*.sh; do
