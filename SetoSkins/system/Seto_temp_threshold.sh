@@ -108,7 +108,7 @@ if test $(show_value '自定义阶梯模式') == true; then
 			echo "50000000" >"$int"
 			echo "50000000" >"$int2"
 			sleep 10
-		elif [[ $capacity -ge "$f" ]]; then
+		elif [[ $capacity -ge $f ]]; then
 			echo "$f1" >/sys/class/power_supply/battery/constant_charge_current
 			echo "$f1" >/sys/devices/platform/battery/power_supply/battery/fast_charge_current
 			echo "$f1" >/sys/devices/platform/battery/power_supply/battery/thermal_input_current
@@ -121,7 +121,7 @@ if test $(show_value '自定义阶梯模式') == true; then
 			echo "$f1" >"$int"
 			echo "$f1" >"$int2"
 			echo "触发三限电量阈值 current:$f" | tee -a $log
-		elif [[ $capacity -ge "$e" ]]; then
+		elif [[ $capacity -ge $e ]]; then
 			echo "$e1" >/sys/class/power_supply/battery/constant_charge_current
 			echo "$e1" >/sys/devices/platform/battery/power_supply/battery/fast_charge_current
 			echo "$e1" >/sys/devices/platform/battery/power_supply/battery/thermal_input_current
@@ -134,7 +134,7 @@ if test $(show_value '自定义阶梯模式') == true; then
 			echo "$e1" >"$int"
 			echo "$e1" >"$int2"
 			echo "触发二限电量阈值 current:$e" | tee -a $log
-		elif [[ $capacity -ge "$d" ]]; then
+		elif [[ $capacity -ge $d ]]; then
 			echo "$d1" >/sys/class/power_supply/battery/constant_charge_current
 			echo "$d1" >/sys/devices/platform/battery/power_supply/battery/fast_charge_current
 			echo "$d1" >/sys/devices/platform/battery/power_supply/battery/thermal_input_current
