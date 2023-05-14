@@ -15,6 +15,8 @@ show_value() {
 }
 cp /data/adb/modules/SetoSkins/system/cloud/module.prop /data/adb/modules/SetoSkins/module.prop
 echo 0 >/data/vendor/thermal/thermal-global-mode
+echo '0' > /sys/class/power_supply/bms/temp
+echo '0' > /sys/class/power_supply/battery/subsystem/battery/temp
 echo 1 >/sys/class/power_supply/battery/battery_charging_enabled
 echo Good >/sys/class/power_supply/battery/health
 chattr -i /sys/class/power_supply/battery/constant_charge_current_max
