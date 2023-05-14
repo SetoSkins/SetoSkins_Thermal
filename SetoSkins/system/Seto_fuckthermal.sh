@@ -69,38 +69,43 @@ if [[ $var_device_trans != "" ]]; then
 fi
 
 chmod 777 /sys/class/thermal/thermal_message/sconfig
-if test $(show_value '游戏温控') == true; then
-	cp "$MODDIR/cloud/thermal/tthermal-mgame.conf" "/data/vendor/thermal/config/thermal-mgame.conf"
-	cp "$MODDIR/cloud/thermal/tthermal-mgame.conf" "/data/vendor/thermal/config/thermal-tgame.conf"
-	cp "$MODDIR/cloud/thermal/thermal-magame.conf" "$MODDIR/vendor/etc/thermal-tgame.conf"
-	cp "$MODDIR/cloud/thermal/thermal-magame.conf" "$MODDIR/vendor/etc/thermal-mgame.conf"
-	if [[ $var_device_trans != "" ]]; then
-		cp "$MODDIR/cloud/thermal/tthermal-mgame.conf" "/data/vendor/thermal/config/thermal-${var_device_trans}-tgame.conf"
-		cp "$MODDIR/cloud/thermal/tthermal-mgame.conf" "/data/vendor/thermal/config/thermal-${var_device_trans}-tgame.conf"
-		cp "$MODDIR/cloud/thermal/thermal-magame.conf" "$MODDIR/vendor/etc/thermal-${var_device_trans}-tgame.conf"
-		cp "$MODDIR/cloud/thermal/thermal-magame.conf" "$MODDIR/vendor/etc/thermal-${var_device_trans}-mgame.conf"
-	fi
-fi
 
 if test $(show_value '关闭录制4K温控') == true; then
 	cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-4k.conf"
 	cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/vendor/etc/thermal-4k.conf"
+	if [[ $var_device_trans != "" ]]; then
+		cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-${var_device_trans}-4k.conf"
+	cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/vendor/etc/thermal-${var_device_trans}-4k.conf"
+	fi
 elif
 	test $(show_value '关闭录制4K温控') == false
 then
 	rm -rf /data/vendor/thermal/config/thermal-4k.conf
 	rm -rf $MODDIR/vendor/etc/thermal-4k.conf
+	rm -rf  $MODDIR/vendor/etc/thermal-l16u-4k.conf
+	rm -rf /data/vendor/thermal/config/thermal-l16u-4k.conf
+	rm -rf  $MODDIR/vendor/etc/thermal-k1a-4k.conf
+	rm -rf /data/vendor/thermal/config/thermal-k1a-4k.conf
 fi
 
 if test $(show_value '关闭相机温控') == true; then
 	cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-camera.conf"
 	cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/vendor/etc/thermal-camera.conf"
+		if [[ $var_device_trans != "" ]]; then
+			cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-${var_device_trans}-camera.conf"
+	cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/vendor/etc/thermal-${var_device_trans}-camera.conf"
+	fi
+	
 elif
 
 	test $(show_value '关闭相机温控') == false
 then
 	rm -rf /data/vendor/thermal/config/thermal-camera.conf
 	rm -rf $MODDIR/vendor/etc/thermal-camera.conf
+		rm -rf  $MODDIR/vendor/etc/thermal-l16u-camera.conf
+	rm -rf /data/vendor/thermal/config/thermal-l16u-camera.conf
+	rm -rf  $MODDIR/vendor/etc/thermal-k1a-camera.conf
+	rm -rf /data/vendor/thermal/config/thermal-k1a-camera.conf
 fi
 
 if test $(show_value '开启修改电流数') == true; then
