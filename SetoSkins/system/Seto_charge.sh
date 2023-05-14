@@ -28,11 +28,13 @@ if test $(show_value '快充模式') == true; then
 			echo "50000000" >"$c"
 			echo "50000000" >"$d"
 			echo 1 >/sys/class/qcom-battery/thermal_remove
+			echo '180' > /sys/class/power_supply/battery/subsystem/battery/temp
 			sleep 1s
 		elif
 			[[ $status1 == "Discharging" ]]
 		then
 			echo '0' >/sys/class/power_supply/bms/temp
+			echo '0' > /sys/class/power_supply/battery/subsystem/battery/temp
 			sleep 30s
 		fi
 	done
