@@ -87,7 +87,7 @@ Reserve() {
 }
 if [ -d "/data/media/0/Android/备份温控（请勿删除）" ]; then
 	echo "- 检测到有备份温控 鉴定为更新模块"
-#Reserve
+Reserve
 else
 	echo "- 第一次安装本模块请看好说明"
 fi
