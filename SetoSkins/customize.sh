@@ -35,10 +35,13 @@ if [ -f "/data/adb/service.d/seto.sh" ]; then
 		fi
 	done
 fi
+echo "- 6月25日 如果温控没有用或者降亮度问题，可以在配置里把温控空文件挂载打开。"
+sleep 7
 Reserve() {
 	echo "😋😋😋😋😋😋😋😋😋😋😋😋😋😋"
 	echo "- 3月11日 新功能 亮屏锁屏限制电流"
 	echo "- 3月26日 新功能 分应用限流"
+	echo "- 6月13日 回归功能 电量停冲的电流检测"
 	echo "😋😋😋😋😋😋😋😋😋😋😋😋😋😋"
 	echo "- 是否保留之前配置"
 	echo "- 如果保留则无法使用到最新功能"
@@ -87,7 +90,7 @@ Reserve() {
 }
 if [ -d "/data/media/0/Android/备份温控（请勿删除）" ]; then
 	echo "- 检测到有备份温控 鉴定为更新模块"
-Reserve
+#Reserve
 else
 	echo "- 第一次安装本模块请看好说明"
 fi

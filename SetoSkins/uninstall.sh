@@ -2,7 +2,6 @@ chattr -i /data/vendor/thermal/config
 chattr -i /data/vendor/thermal/config/*
 chmod 777 /data/vendor/thermal/config
 chmod 777 /data/vendor/thermal/config/*
-rm -rf /data/system/package_cache/*
 chattr -R -i -a /data/adb/modules/SetoSkins/
 echo 0 >/sys/class/power_supply/battery/input_suspend
 rm -rf /data/adb/post-fs-data.d/post-fs-data.sh
@@ -16,10 +15,7 @@ pm enable com.xiaomi.joyose/com.xiaomi.joyose.JoyoseJobScheduleService
 pm enable com.xiaomi.joyose/com.xiaomi.joyose.cloud.CloudServerReceiver
 pm enable com.xiaomi.joyose/com.xiaomi.joyose.predownload.PreDownloadJobScheduler
 pm enable com.xiaomi.joyose/com.xiaomi.joyose.smartop.gamebooster.receiver.BoostRequestReceiver
-echo '0' >/sys/class/power_supply/bms/temp
-echo '0' >/sys/class/power_supply/battery/subsystem/battery/temp
-echo '0' >/sys/class/power_supply/battery/temp
-echo 0 >/sys/class/qcom-battery/thermal_remove
+echo '0' >/sys/class/qcom-battery/thermal_remove
 echo "50000000" >/sys/class/power_supply/battery/constant_charge_current
 echo "50000000" >/sys/devices/platform/battery/power_supply/battery/fast_charge_current
 echo "50000000" >/sys/devices/platform/battery/power_supply/battery/thermal_input_current

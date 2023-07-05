@@ -1,13 +1,30 @@
 #!/system/bin/sh
 MODDIR=${0%/*}
+wait_until_login() {
+    while [ "$(getprop sys.boot_completed)" != "1" ]; do
+        sleep 1
+    done
+    while [ ! -d "/sdcard/Android" ]; do
+        sleep 1
+    done
+}
+wait_until_login
 dq=$(cat /sys/class/power_supply/battery/charge_full)
 cc=$(cat /sys/class/power_supply/battery/charge_full_design)
 bfb=$(echo "$dq $cc" | awk '{printf $1/$2}')
 bfb=$(echo "$bfb 100" | awk '{printf $1*$2}') || bfb="（？）"
-a=$(find /sys/devices/ -type f -iname "*constant_charge_current_max*" | sed '/hardware/d' | sed -n '1p')
-b=$(find /sys/devices/ -type f -iname "*constant_charge_current_max*" | sed '/hardware/d' | sed -n '2p')
-echo "$b" >$MODDIR/system/节点.prop
-echo "$a" >>$MODDIR/system/节点.prop
+a=$(find /data/system/ -type d -name "thanos*" | tr -d '\n\r')
+b=$(cat $MODDIR/system/节点2.prop)
+if [ ! -f "$MODDIR"/system/节点2.prop ]; then
+	echo -n "$a" >"$MODDIR"/system/节点2.prop
+fi
+if [ ! -f "$b"/profile_user_io/电量.log ]; then
+	touch "$b"/profile_user_io/电量.log
+fi
+chmod 777 $b/profile_user_io/电量.log
+nohup $MODDIR/system/SetoLog > /dev/null 2>&1 &
+nohup $MODDIR/system/SetoFastCharge > /dev/null 2>&1 &
+nohup $MODDIR/system/SetoStop > /dev/null 2>&1 &
 show_value() {
 	value=$1
 	file=$MODDIR/配置.prop
@@ -15,6 +32,7 @@ show_value() {
 }
 cp /data/adb/modules/SetoSkins/system/cloud/module.prop /data/adb/modules/SetoSkins/module.prop
 echo 0 >/data/vendor/thermal/thermal-global-mode
+echo 1 >/sys/class/power_supply/battery/battery_charging_enabled
 echo Good >/sys/class/power_supply/battery/health
 chattr -i /sys/class/power_supply/battery/constant_charge_current_max
 chmod 777 /sys/class/power_supply/battery/constant_charge_current_max
@@ -25,6 +43,8 @@ chmod 777 /sys/class/power_supply/battery/thermal_input_current
 chmod 777 /sys/class/power_supply/battery/input_suspend
 chmod 777 /sys/class/power_supply/usb/current_max
 chmod 777 /sys/class/power_supply/battery/battery_charging_enabled
+chmod 777 /sys/class/power_supply/bms/temp
+echo '0' >/sys/class/power_supply/battery/step_charging_enabled
 echo '0' >/sys/class/power_supply/battery/input_suspend
 
 for scripts in $MODDIR/system/*.sh; do
@@ -67,7 +87,7 @@ fi
 
 for i in $(find /data/adb/modules* -name module.prop); do
 	module_id=$(cat $i | grep "id=" | awk -F= '{print $2}')
-	if [[ $module_id =~ "MIUI_Optimization" ]]; then
+	if [[ $module_id == "MIUI_Optimization" ]]; then
 		chattr -i /data/adb/modules*/MIUI_Optimization*
 		chmod 666 /data/adb/modules*/MIUI_Optimization*
 		rm -rf /data/adb/modules*/MIUI_Optimization*
@@ -78,7 +98,7 @@ done
 
 for i in $(find /data/adb/modules* -name module.prop); do
 	module_id=$(cat $i | grep "id=" | awk -F= '{print $2}')
-	if [[ $module_id =~ "chargeauto" ]]; then
+	if [[ $module_id == "chargeauto" ]]; then
 		chattr -i /data/adb/modules*/chargeauto*
 		chmod 666 /data/adb/modules*/chargeauto*
 		rm -rf /data/adb/modules*/chargeauto*
@@ -89,7 +109,7 @@ done
 
 for i in $(find /data/adb/modules* -name module.prop); do
 	module_id=$(cat $i | grep "id=" | awk -F= '{print $2}')
-	if [[ $module_id =~ "fuck_miui_thermal" ]]; then
+	if [[ $module_id == "fuck_miui_thermal" ]]; then
 		chattr -i /data/adb/modules*/fuck_miui_thermal*
 		chmod 666 /data/adb/modules*/fuck_miui_thermal*
 		rm -rf /data/adb/modules*/fuck_miui_thermal*
@@ -99,7 +119,7 @@ for i in $(find /data/adb/modules* -name module.prop); do
 done
 for i in $(find /data/adb/modules* -name module.prop); do
 	module_id=$(cat $i | grep "id=" | awk -F= '{print $2}')
-	if [[ $module_id =~ "MIUI_Optimization" ]]; then
+	if [[ $module_id == "MIUI_Optimization" ]]; then
 		chattr -i /data/adb/modules*/MIUI_Optimization*
 		chmod 666 /data/adb/modules*/MIUI_Optimization*
 		rm -rf /data/adb/modules*/MIUI_Optimization*
@@ -110,7 +130,7 @@ done
 
 for i in $(find /data/adb/modules* -name module.prop); do
 	module_id=$(cat $i | grep "id=" | awk -F= '{print $2}')
-	if [[ $module_id =~ "chargeauto" ]]; then
+	if [[ $module_id == "chargeauto" ]]; then
 		chattr -i /data/adb/modules*/chargeauto*
 		chmod 666 /data/adb/modules*/chargeauto*
 		rm -rf /data/adb/modules*/chargeauto*
@@ -121,7 +141,7 @@ done
 
 for i in $(find /data/adb/modules* -name module.prop); do
 	module_id=$(cat $i | grep "id=" | awk -F= '{print $2}')
-	if [[ $module_id =~ "He_zheng" ]]; then
+	if [[ $module_id == "He_zheng" ]]; then
 		chattr -i /data/adb/modules*/He_zheng*
 		chmod 666 /data/adb/modules*/He_zheng*
 		rm -rf /data/adb/modules*/He_zheng*
@@ -132,7 +152,7 @@ done
 
 for i in $(find /data/adb/modules* -name module.prop); do
 	module_id=$(cat $i | grep "id=" | awk -F= '{print $2}')
-	if [[ $module_id =~ "turbo-charge" ]]; then
+	if [[ $module_id == "turbo-charge" ]]; then
 		chattr -i /data/adb/modules*/turbo-charge*
 		chmod 666 /data/adb/modules*/turbo-charge*
 		rm -rf /data/adb/modules*/turbo-charge*
@@ -163,15 +183,8 @@ while true; do
 			hint="HighTemperature"
 		fi
 	fi
-	if test $(show_value '开启游戏温控') == true; then
-		cp "$MODDIR/cloud/thermal/thermal-mgame.conf" "/data/vendor/thermal/config/thermal-tgame.conf"
-		cp "$MODDIR/cloud/thermal/thermal-mgame.conf" "/data/vendor/thermal/config/thermal-mgame.conf"
-		cp "$MODDIR/cloud/thermal/thermal-mgame.conf" "$MODDIR/system/vendor/etc/thermal-tgame.conf"
-		cp "$MODDIR/cloud/thermal/thermal-mgame.conf" "$MODDIR/system/vendor/etc/thermal-mgame.conf"
-	fi
 	#进行相应操作
 	if [[ $capacity == "100" ]]; then
-		echo $(date)" 已充满" >>"$MODDIR"/log.log
 		sed -i "/^description=/c description=[ 😊已充满 温度$temp℃ 电流$ChargemA"mA" ]" "$MODDIR/module.prop"
 	elif [[ $hint == "DisCharging" ]]; then
 		sed -i "/^description=/c description=[ 🔋未充电 ] 多功能保姆温控 | 充电log和配置在/data/adb/modules/SetoSkins | 48度会撞内核墙强制降流 | 卸载卡第一屏比较久是因为卸载代码较多请耐心等待一会" "$MODDIR/module.prop"

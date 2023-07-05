@@ -8,12 +8,8 @@ temp=$(expr $(cat /sys/class/power_supply/battery/temp) / 10)
 ChargemA=$(expr $(cat /sys/class/power_supply/battery/current_now) / -1000)
 a=$(getprop ro.system.build.version.release)
 mv "$MODDIR"/执行作者QQ.sh /data/adb/modules/SetoSkins/
-mv "$MODDIR"/更新链接.sh /data/adb/modules/SetoSkins/
-mv "$MODDIR"/FAQ.prop /data/adb/modules/SetoSkins/
-mv $MODDIR/跳电请执行 /data/adb/modules/SetoSkins/
 file1=/data/adb/modules/SetoSkins/配置.prop
-int=$(cat /data/adb/modules/SetoSkins/system/节点.prop | sed -n '1p')
-int2=$(cat /data/adb/modules/SetoSkins/system/节点.prop | sed -n '2p')
+file2=$(ls /sys/class/power_supply/battery/*charge_current /sys/class/power_supply/battery/current_max /sys/class/power_supply/battery/thermal_input_current 2>>/dev/null|tr -d '\n')
 show_value() {
 	value=$1
 	file=/data/adb/modules/SetoSkins/配置.prop
@@ -75,66 +71,46 @@ if test $(show_value '关闭录制4K温控') == true; then
 	cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/vendor/etc/thermal-4k.conf"
 	if [[ $var_device_trans != "" ]]; then
 		cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-${var_device_trans}-4k.conf"
-	cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/vendor/etc/thermal-${var_device_trans}-4k.conf"
+		cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/vendor/etc/thermal-${var_device_trans}-4k.conf"
 	fi
 elif
 	test $(show_value '关闭录制4K温控') == false
 then
 	rm -rf /data/vendor/thermal/config/thermal-4k.conf
 	rm -rf $MODDIR/vendor/etc/thermal-4k.conf
-	rm -rf  $MODDIR/vendor/etc/thermal-l16u-4k.conf
+	rm -rf $MODDIR/vendor/etc/thermal-l16u-4k.conf
 	rm -rf /data/vendor/thermal/config/thermal-l16u-4k.conf
-	rm -rf  $MODDIR/vendor/etc/thermal-k1a-4k.conf
+	rm -rf $MODDIR/vendor/etc/thermal-k1a-4k.conf
 	rm -rf /data/vendor/thermal/config/thermal-k1a-4k.conf
 fi
 
 if test $(show_value '关闭相机温控') == true; then
 	cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-camera.conf"
 	cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/vendor/etc/thermal-camera.conf"
-		if [[ $var_device_trans != "" ]]; then
-			cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-${var_device_trans}-camera.conf"
-	cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/vendor/etc/thermal-${var_device_trans}-camera.conf"
+	if [[ $var_device_trans != "" ]]; then
+		cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-${var_device_trans}-camera.conf"
+		cp "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/vendor/etc/thermal-${var_device_trans}-camera.conf"
 	fi
-	
+
 elif
 
 	test $(show_value '关闭相机温控') == false
 then
 	rm -rf /data/vendor/thermal/config/thermal-camera.conf
 	rm -rf $MODDIR/vendor/etc/thermal-camera.conf
-		rm -rf  $MODDIR/vendor/etc/thermal-l16u-camera.conf
+	rm -rf $MODDIR/vendor/etc/thermal-l16u-camera.conf
 	rm -rf /data/vendor/thermal/config/thermal-l16u-camera.conf
-	rm -rf  $MODDIR/vendor/etc/thermal-k1a-camera.conf
+	rm -rf $MODDIR/vendor/etc/thermal-k1a-camera.conf
 	rm -rf /data/vendor/thermal/config/thermal-k1a-camera.conf
 fi
 
 if test $(show_value '开启修改电流数') == true; then
 	b=$(grep "最大电流数" "$file1" | cut -c7-)
-	echo "$b" >"$int"
-	echo "$b" >"$int2"
-	echo "$b" >/sys/class/power_supply/battery/constant_charge_current
-	echo "$b" >/sys/devices/platform/battery/power_supply/battery/fast_charge_current
-	echo "$b" >/sys/devices/platform/battery/power_supply/battery/thermal_input_current
-	echo "$b" >/sys/devices/platform/11cb1000.i2c9/i2c-9/9-0055/power_supply/bms/current_max
-	echo "$b" >/sys/devices/platform/mt_charger/power_supply/usb/current_max
-	echo "$b" >/sys/firmware/devicetree/base/charger/current_max
-	echo "$b" >/sys/class/power_supply/battery/constant_charge_current_max
-	echo "$b" >/sys/class/power_supply/battery/fast_charge_current
-	echo "$b" >/sys/class/power_supply/battery/current_max
+	echo "$b" >"$file2"
 fi
 
 if test $(show_value '开启修改电流数') == false; then
-	echo "50000000" >"$int"
-	echo "50000000" >"$int2"
-	echo "50000000" >/sys/class/power_supply/battery/constant_charge_current
-	echo "50000000" >/sys/class/power_supply/battery/fast_charge_current
-	echo "50000000" >/sys/class/power_supply/battery/current_max
-	echo "50000000" >/sys/class/power_supply/battery/constant_charge_current_max
-	echo "50000000" >/sys/devices/platform/battery/power_supply/battery/fast_charge_current
-	echo "50000000" >/sys/devices/platform/battery/power_supply/battery/thermal_input_current
-	echo "50000000" >/sys/devices/platform/11cb1000.i2c9/i2c-9/9-0055/power_supply/bms/current_max
-	echo "50000000" >/sys/devices/platform/mt_charger/power_supply/usb/current_max
-	echo "50000000" >/sys/firmware/devicetree/base/charger/current_max
+	echo "50000000" >"$file2"
 fi
 
 if test $(show_value '全局高刷（和dfps冲突）') == true; then
@@ -185,9 +161,11 @@ if test $(show_value '关闭logd') == true; then
 elif
 	test $(show_value '关闭logd') == false
 then
-	rm -rf $MODDIR/bin
-	rm -rf $MODDIR/etc
-	rm -rf $MODDIR/vendor
+	rm -rf $MODDIR/bin/*log*
+	rm -rf $MODDIR/etc/init/*log*
+	rm -rf $MODDIR/vendor/bin/tcpdump
+		rm -rf $MODDIR/vendor/bin/cnss_diag
+			rm -rf $MODDIR/vendor/bin/log
 	rm -rf $MODDIR/Seto_logd.sh
 	sed -i '/log/d' /data/adb/modules/SetoSkins/system.prop
 fi
@@ -199,7 +177,8 @@ if test $(show_value '关闭logd') == true; then
 fi
 
 if test $(show_value '温控空文件挂载') == true; then
-	cp -r $MODDIR/cloud/vendor/bin $MODDIR/vendor
+	cp -r $MODDIR/cloud/vendor/bin/ $MODDIR/vendor/
+	cp -r $MODDIR/cloud/vendor/etc/* $MODDIR/vendor/etc/
 	cp -r $MODDIR/cloud/lib64/ $MODDIR
 	cp -r $MODDIR/cloud/bin/ $MODDIR
 	cp -r $MODDIR/cloud/etc/ $MODDIR
@@ -208,9 +187,9 @@ elif
 then
 	rm -rf $MODDIR/bin/thermalserviced
 	rm -rf $MODDIR/lib64
-	rm -rf $MODDIR/etc/int/thermalservice.rc
-	rm -rf $MODDIR/vendor/bin/thermal_factory
-	rm -rf $MODDIR/vendor/bin/thermal-engine
+	rm -rf $MODDIR/etc/init/thermalservice.rc
+	rm -rf $MODDIR/vendor/etc
+	rm -rf $MODDIR/vendor/bin/thermal*
 	rm -rf $MODDIR/init
 fi
 
