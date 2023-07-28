@@ -38,7 +38,7 @@ jobs:
       - name: 4. 再次初始化仓库
         run: |
           rm -rf $GITHUB_WORKSPACE/*
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@main
       - name: 5. 更新下载链接
         run: |
           git config --global user.email "102343110+SetoSKins@users.noreply.github.com"
