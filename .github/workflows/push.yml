@@ -17,6 +17,9 @@ jobs:
           sudo apt install aria2
           mkdir -p "$GITHUB_WORKSPACE"/GithubRelease
           browser_download_url=$(curl -L   -H "Accept: application/vnd.github+json"   -H "Authorization: Bearer ${{ github.token }}"   -H "X-GitHub-Api-Version: 2022-11-28"   https://api.github.com/repos/zjw2017/SetoSkins_Thermal/releases/tags/'${{ matrix.tag }}' | jq -r .assets[].browser_download_url | cut -d'"' -f2)
+          if [[ ! -n $browser_download_url ]]; then
+              browser_download_url=$(curl -L   -H "Accept: application/vnd.github+json"   -H "Authorization: Bearer ${{ github.token }}"   -H "X-GitHub-Api-Version: 2022-11-28"   https://api.github.com/repos/zjw2017/SetoSkins_Thermal/releases/tags/'"${{ matrix.tag }}"' | jq -r .assets[].browser_download_url | cut -d'"' -f2)
+          fi
           aria2c -x16 -j$(nproc) -U "Mozilla/5.0" -d "$GITHUB_WORKSPACE"/GithubRelease $browser_download_url
           tag='${{ matrix.tag }}'
           echo "version=${tag//\"/}" >> $GITHUB_ENV
