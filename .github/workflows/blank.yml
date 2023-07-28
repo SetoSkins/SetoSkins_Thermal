@@ -1,0 +1,34 @@
+name: Matrix Push
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        tag: ["R1.2", "R1.1", "R1", "A9.0.5", "A9.0.4", "A9.0.3", "A9.0.2", "A9.0.1", "A9.0.0", "A8.0.1", "A8.0.0", "A7.1.6", "A7.1.5", "A7.1.4", "A7.1.3", "A7.1.2", "A7.1.1", "A7.1", "A7.0.0", "A6.1.3", "A6.1.1", "A6.0.0", "A5.1.3", "A5.1.2", "A5.1.1", "A5.0.3", "A4.0.1", "A3.2", "A3", "A2.1", "A2", "A1", 195, 22.5, 22, 21.5, 21, 20.5, 20, 19.5, 19, 18.5, 18, 17]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@main
+      - name: 3.上传到Github Release
+        run: |
+          sudo apt install aria2
+          mkdir -p "$GITHUB_WORKSPACE"/GithubRelease
+          browser_download_url=$(curl -L   -H "Accept: application/vnd.github+json"   -H "Authorization: Bearer ${{ github.token }}"   -H "X-GitHub-Api-Version: 2022-11-28"   https://api.github.com/repos/zjw2017/SetoSkins_Thermal/releases/tags/'${{ matrix.tag }}' | jq -r .assets[].browser_download_url | cut -d'"' -f2)
+          aria2c -x16 -j$(nproc) -U "Mozilla/5.0" -d "$GITHUB_WORKSPACE"/GithubRelease $browser_download_url
+          tag='${{ matrix.tag }}'
+          echo "version=${tag//\"/}" >> $GITHUB_ENV
+          cd "$GITHUB_WORKSPACE"
+          touch file.log
+          echo "SetoSkins_Thermal.zip" > file.log
+      - name: 3.上传到Github Release
+        uses: ncipollo/release-action@main
+        with:
+          artifacts: ${{ github.workspace }}/GithubRelease/*
+          name: "Seto温控 ${{ env.version }}"
+          tag: "${{ env.version }}"
+          bodyFile: "${{ github.workspace }}/file.log"
+          allowUpdates: true
+          artifactErrorsFailBuild: true
+          makeLatest: true
