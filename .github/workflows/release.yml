@@ -63,7 +63,7 @@ jobs:
       - name: 7.同步仓库
         uses: dmnemec/copy_file_to_another_repo_action@main
         env:
-          API_TOKEN_GITHUB: ${{ github.token }}
+          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
         with:
           source_file: 'SetoSkins.json'
           destination_repo: 'zjw2017/SetoSkins_Thermal'
