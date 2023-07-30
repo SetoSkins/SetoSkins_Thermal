@@ -60,3 +60,12 @@ jobs:
         uses: ad-m/github-push-action@master
         with:
           branch: ${{ github.ref }}
+      - name: 7.同步仓库
+        uses: dmnemec/copy_file_to_another_repo_action@main
+        env:
+          API_TOKEN_GITHUB: ${{ github.token }}
+        with:
+          source_file: 'SetoSKins.json'
+          destination_repo: 'zjw2017/SetoSkins_Thermal'
+          user_email: '102343110+SetoSKins@users.noreply.github.com'
+          user_name: 'SetoSKins'
