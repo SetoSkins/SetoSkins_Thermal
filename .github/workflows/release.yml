@@ -69,3 +69,4 @@ jobs:
           destination_repo: 'zjw2017/SetoSkins_Thermal'
           user_email: '102343110+SetoSKins@users.noreply.github.com'
           user_name: 'SetoSKins'
+          destination_branch: 'master'
