@@ -1,2 +1,2 @@
-# SetoSkins_Thermal
-Seto温控
+# Seto温控
+世界上功能最多的Miui温控
