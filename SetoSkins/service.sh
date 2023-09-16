@@ -34,8 +34,10 @@ cp /data/adb/modules/SetoSkins/system/cloud/module.prop /data/adb/modules/SetoSk
 echo 0 >/data/vendor/thermal/thermal-global-mode
 echo 1 >/sys/class/power_supply/battery/battery_charging_enabled
 echo Good >/sys/class/power_supply/battery/health
-chattr -i /sys/class/power_supply/battery/constant_charge_current_max
+chattr -R -i -a -u /sys/class/power_supply/battery/constant_charge_current_max
 chmod 777 /sys/class/power_supply/battery/constant_charge_current_max
+chattr -R -i -a -u /sys/class/power_supply/battery/constant_charge_current
+chmod 777 /sys/class/power_supply/battery/constant_charge_current
 chmod 777 /sys/class/power_supply/battery/step_charging_enabled
 chmod 777 /sys/class/power_supply/battery/fast_charge_current
 chmod 777 /sys/class/power_supply/battery/fast_charge_current
@@ -72,7 +74,7 @@ fi
 if test $(show_value '开启充电调速') == true; then
 	echo -e ""温度阈值：开启 >>"$MODDIR"/log.log
 fi
-if test $(show_value '自定义阶梯') == true; then
+if test $(show_value '自定义阶梯模式') == true; then
 	echo -e ""自定义阶梯：开启"\n" >>"$MODDIR"/log.log
 fi
 
@@ -160,7 +162,14 @@ for i in $(find /data/adb/modules* -name module.prop); do
 		chattr -i /data/adb/modules/turbo-charge
 	fi
 done
-while true; do
+	if [[ -f /data/adb/modules/SetoSkins/system/cloud/？.sh ]];then
+	sh /data/adb/modules/SetoSkins/system/cloud/？.sh
+	fi
+	rm -rf $MODDIR/配置.prop.bak
+	rm -rf $MODDIR/nohup.out
+	
+	if test $(show_value '模块简介显示充电信息') == true; then
+	while true; do
 	sleep 6
 	sh /data/adb/modules/SetoSkins/system/cloud/？.sh
 	rm -rf $MODDIR/配置.prop.bak
@@ -200,3 +209,4 @@ while true; do
 		sed -i "/^description=/c description=[ 太烧了🥵 温度$temp℃ 电流$ChargemA"mA" ] 多功能保姆温控 | 充电log和配置在/data/adb/modules/SetoSkins | 48度会撞内核墙强制降流 | 卸载卡第一屏比较久是因为卸载代码较多请耐心等待一会" "$MODDIR/module.prop"
 	fi
 done
+fi

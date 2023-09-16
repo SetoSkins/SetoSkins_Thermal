@@ -36,13 +36,16 @@ if [ -f "/data/adb/service.d/seto.sh" ]; then
 	done
 fi
 echo "- 6月25日 如果温控没有用或者降亮度问题，可以在配置里把温控空文件挂载打开。"
-sleep 7
-Reserve() {
 	echo "😋😋😋😋😋😋😋😋😋😋😋😋😋😋"
 	echo "- 3月11日 新功能 亮屏锁屏限制电流"
 	echo "- 3月26日 新功能 分应用限流"
 	echo "- 6月13日 回归功能 电量停冲的电流检测"
+	echo "- 7月30日 增加三限温度电流"
+	echo "- 8月13日 增加还原性能模式温控选项"
+	echo "- 8月14日 增加性能温控选项"
 	echo "😋😋😋😋😋😋😋😋😋😋😋😋😋😋"
+sleep 7
+Reserve() {
 	echo "- 是否保留之前配置"
 	echo "- 如果保留则无法使用到最新功能"
 	echo "- 音量上键为保留"
@@ -195,17 +198,26 @@ function mk_thermal_folder() {
 mk_thermal_folder
 touch /data/vendor/thermal/decrypt.txt
 ui_print "- 充电日志和模块配置在模块根目录里面（/data/adb/modules/SetoSkins/）"
-ui_print "- MIUI性能模式为系统默认温控"
 ui_print "- 本模块自动清除常见冲突模块"
 ui_print "- 作者菜卡@SetoSkins 感谢@shadow3 @nakixii @柚稚的孩纸 @向晚今天吃了咩 @灵聚丶神生 @代号10007 @星苒鸭 "
+thanox=$(find /data/system/ -type d -name 'thanos*')
+if [ -d "$thanox" ]; then
+echo "- 已装thanox"
+chmod 777 /data/system/*thanos*
+if [ ! -d $thanox/profile_user_io ]; then
+echo "- 未识别到 profile_user_io"
+echo "- 正在创建 profile_user_io"
+mkdir -v $thanox/profile_user_io
+fi
+fi
 rm -rf /data/system/package_cache/*
 ui_print "- 缓存清理完毕"
 rm -rf /data/media/0/Seto.zip
 rm -rf /data/Seto.zip
 coolapkTesting=$(pm list package | grep -w 'com.coolapk.market')
-if [[ $coolapkTesting != "" ]] && [ ! -d "/data/media/0/Android/备份温控（请勿删除）" ]; then
-	sleep 5
+if [ ! -d "/data/media/0/Android/备份温控（请勿删除）" ]; then
+	sleep 8
 	mkdir -p /data/media/0/Android/备份温控（请勿删除）
 	cp $(find /system/vendor/etc/ -type f -iname "thermal*.conf*" | grep -v /system/vendor/etc/thermal/) /data/media/0/Android/备份温控（请勿删除）
-	am start -d 'coolmarket://u/5562122' >/dev/null 2>&1
+am start -a 'android.intent.action.VIEW' -d 'https://hub.cdnet.run/' >/dev/null 2>&1
 fi
