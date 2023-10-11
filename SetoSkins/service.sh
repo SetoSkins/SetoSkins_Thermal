@@ -15,6 +15,11 @@ bfb=$(echo "$dq $cc" | awk '{printf $1/$2}')
 bfb=$(echo "$bfb 100" | awk '{printf $1*$2}') || bfb="（？）"
 a=$(find /data/system/ -type d -name "thanos*" | tr -d '\n\r')
 b=$(cat $MODDIR/system/节点2.prop)
+show_value() {
+	value=$1
+	file=/data/adb/modules/SetoSkins/配置.prop
+	cat "${file}" | grep -E "(^$value=)" | sed '/^#/d;/^[[:space:]]*$/d;s/.*=//g' | sed 's/，/,/g;s/——/-/g;s/：/:/g' | head -n 1
+}
 if [ ! -f "$MODDIR"/system/节点2.prop ]; then
 	echo -n "$a" >"$MODDIR"/system/节点2.prop
 fi
@@ -22,7 +27,9 @@ if [ ! -f "$b"/profile_user_io/电量.log ]; then
 	touch "$b"/profile_user_io/电量.log
 fi
 chmod 777 $b/profile_user_io/电量.log
+if test $(show_value '开启充电Log') == true; then
 nohup $MODDIR/system/SetoLog > /dev/null 2>&1 &
+fi
 nohup $MODDIR/system/SetoFastCharge > /dev/null 2>&1 &
 nohup $MODDIR/system/SetoStop > /dev/null 2>&1 &
 show_value() {
@@ -209,4 +216,10 @@ done
 		sed -i "/^description=/c description=[ 太烧了🥵 温度$temp℃ 电流$ChargemA"mA" ] 多功能保姆温控 | 充电log和配置在/data/adb/modules/SetoSkins | 48度会撞内核墙强制降流 | 卸载卡第一屏比较久是因为卸载代码较多请耐心等待一会" "$MODDIR/module.prop"
 	fi
 done
+fi
+sleep 60
+# 检测文件是否存在并为空
+if [ -f "/data/adb/modules/SetoSkins/system.prop" ] && [ ! -s "/data/adb/modules/SetoSkins/system.prop" ]; then
+    # 文件存在并为空，删除文件
+    rm -rf /data/adb/modules/SetoSkins/system.prop
 fi

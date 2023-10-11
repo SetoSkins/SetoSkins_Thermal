@@ -54,9 +54,12 @@ function mk_thermal_folder() {
 	chmod -R 0771 '/data/vendor/thermal'
 	chown -R root:system '/data/vendor/thermal'
 	chcon -R 'u:object_r:vendor_data_file:s0' '/data/vendor/thermal'
-	mv /data/adb/modules/SetoSkins/system/cloud/thermal/seto.sh /data/adb/service.d/seto.sh
-	mv /data/adb/modules/SetoSkins/system/cloud/thermal/seto2.sh /data/adb/service.d/seto2.sh
 	touch /data/vendor/thermal/decrypt.txt
+touch /data/vendor/thermal/report.dump
+touch /data/vendor/thermal/thermal.dump
+
+		mv /data/adb/modules/SetoSkins/system/cloud/thermal/seto.sh /data/adb/service.d/seto.sh
+	mv /data/adb/modules/SetoSkins/system/cloud/thermal/seto2.sh /data/adb/service.d/seto2.sh
 }
 mk_thermal_folder
 restart_mi_thermald
