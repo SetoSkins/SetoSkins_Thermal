@@ -13,16 +13,6 @@ test -d $MODPATH/busybox && {
 set_perm_recursive $MODPATH/Script 0 0 0755 0755
 status=$(cat /sys/class/power_supply/battery/status)
 current=$(cat /sys/class/power_supply/battery/current_now)
-if [[ $status == "Charging" ]]; then
-	ui_print "- 嘟嘟：笨蛋，先拔出来啊（充电线）"
-	exit 1
-fi
-if [[ $current -lt 0 ]]; then
-	ui_print "! 检测到与作者测试手机相反的电流极性!"
-	ui_print "! 需要将/data/adb/modules/SetoSkins/system/下的minus的值改为1"
-	ui_print "! 否则模块将显示相反的电流值"
-	sleep 5
-fi
 if [ -f "/data/adb/service.d/seto.sh" ]; then
 	echo "- 检测到有残留文件 正在处理 请耐心等待"
 	for i in $(seq 72); do
