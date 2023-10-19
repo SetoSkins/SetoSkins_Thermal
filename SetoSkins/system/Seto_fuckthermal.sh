@@ -79,9 +79,9 @@ if [ -f /odm/etc/thermal-highfps.conf ]; then
 					mkdir -p /data/adb/modules/SetoSkins/vendor/etc
 			#本地
 			cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-per-huanji.conf" "/data/adb/modules/SetoSkins/vendor/etc/thermal-normal.conf"
-			cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-per-huanji.conf" "/data/adb/modules/SetoSkins/vendor/etc//thermal-class0.conf"
+			cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-per-huanji.conf" "/data/adb/modules/SetoSkins/vendor/etc/thermal-class0.conf"
 			cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-per-huanji.conf" "/data/adb/modules/SetoSkins/vendor/etc/thermal-per-normal.conf"
-			cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-per-huanji.conf" "/data/adb/modules/SetoSkins/vendor/etc//thermal-per-class0.conf"
+			cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-per-huanji.conf" "/data/adb/modules/SetoSkins/vendor/etc/thermal-per-class0.conf"
 			cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-per-huanji.conf" "/data/adb/modules/SetoSkins/vendor/etc/thermal-nolimits.conf"
 			cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-per-huanji.conf" "/data/adb/modules/SetoSkins/vendor/etc/thermal-tgame.conf"
 			cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-per-huanji.conf" "/data/adb/modules/SetoSkins/vendor/etc/thermal-mgame.conf"
@@ -89,6 +89,19 @@ if [ -f /odm/etc/thermal-highfps.conf ]; then
 			cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-per-huanji.conf" "/data/adb/modules/SetoSkins/vendor/etc/thermal-video.conf"
 			cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-per-huanji.conf" "/data/adb/modules/SetoSkins/vendor/etc/thermal-per-video.conf"
 			cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-per-huanji.conf" "/data/adb/modules/SetoSkins/vendor/etc/thermal-nolimits.conf"
+				cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-highfps.conf"
+					
+			cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-normal.conf"
+			cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-class0.conf"
+			cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-per-normal.conf"
+			cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-per-class0.conf"
+			cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-nolimits.conf"
+			cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-tgame.conf"
+			cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-mgame.conf"
+			cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-yuanshen.conf"
+			cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-video.conf"
+			cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-per-video.conf"
+			cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-nolimits.conf"
 			chmod 777 /sys/class/thermal/thermal_message/sconfig
 
 			case "$var_device" in
@@ -126,7 +139,6 @@ if [ -f /odm/etc/thermal-highfps.conf ]; then
 fi
 fi
 chmod 777 /sys/class/thermal/thermal_message/sconfig
-
 if [ -f /data/media/0/Android/备份温控（请勿删除）/thermal-normal.conf ]; then
 if test $(show_value '均衡式性能温控') == true; then
 
