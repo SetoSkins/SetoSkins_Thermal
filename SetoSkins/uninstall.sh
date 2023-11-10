@@ -25,14 +25,7 @@ echo "50000000" >/sys/firmware/devicetree/base/charger/current_max
 echo "50000000" >/sys/class/power_supply/battery/constant_charge_current_max
 echo "50000000" >/sys/class/power_supply/battery/fast_charge_current
 echo "50000000" >/sys/class/power_supply/battery/current_max
-{
-	until [[ "$(getprop sys.boot_completed)" == "1" ]]; do
-		sleep 1
-	done
-	settings put system min_refresh_rate
-	service call SurfaceFlinger 1035 i32
-} &
-/sbin/.magisk/busybox/chattr -i -a -A /cache/magisk.log
+rm -rf /data/adb/magisk/Delta.prop
 chmod 777 /cache/magisk.log
 setprop ctl.restart thermal-engine
 setprop ctl.restart mi_thermald

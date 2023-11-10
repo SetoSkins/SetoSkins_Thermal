@@ -36,6 +36,30 @@ echo "- 如果温控没有用或者降亮度问题，可以在配置里把温控
 	echo "- 9月26日 增加充电Log开关选项"
 	echo "😋😋😋😋😋😋😋😋😋😋😋😋😋😋"
 sleep 7
+Local() {
+echo "————————————"
+echo "- 是否已安装Magisk Delta？"
+	echo "- 音量上键为是"
+	echo "- 音量下键为否"
+		key_click=""
+	while [ "$key_click" = "" ]; do
+		key_click="$(getevent -qlc 1 | awk '{ print $3 }' | grep 'KEY_')"
+		sleep 0.2
+	done
+	case "$key_click" in
+	"KEY_VOLUMEUP")
+		echo "- 已启用本地+云端配置"
+			echo "- 如果选错，请卸载模块并重新安装。"
+		sleep 3
+		touch /data/adb/magisk/Delta.prop
+			;;
+	*)
+		echo "- 已启用云端配置"
+			echo "- 如果选错，请卸载模块并重新安装。"
+		    sleep 3
+		;;
+	esac
+}
 Reserve() {
 	echo "- 是否保留之前配置"
 	echo "- 如果保留则无法使用到最新功能"
@@ -49,6 +73,7 @@ Reserve() {
 	case "$key_click" in
 	"KEY_VOLUMEUP")
 		echo "- 确认保留"
+		echo "————————————"
 		sleep 1
 		cp /data/adb/modules/SetoSkins/配置.prop /data/media/0/Android/备份温控（请勿删除）/配置.prop
 		cp /data/adb/modules/SetoSkins/黑名单.prop /data/media/0/Android/备份温控（请勿删除）/黑名单.prop
@@ -79,12 +104,19 @@ Reserve() {
 		;;
 	*)
 		echo "- 取消保留"
+		echo "————————————"
 		;;
 	esac
 }
+if [ -f "/odm/etc/thermal-normal.conf" ];then
+if [ ! -f "/data/adb/magisk/Delta.prop" ];then
+Local
+fi
+fi
 if [ -d "/data/media/0/Android/备份温控（请勿删除）" ]; then
+echo "————————————"
 	echo "- 检测到有备份温控 鉴定为更新模块"
-#Reserve
+Reserve
 else
 	echo "- 第一次安装本模块请看好说明"
 fi
@@ -210,7 +242,10 @@ if [ ! -d "/data/media/0/Android/备份温控（请勿删除）" ]; then
 	sleep 8
 	
 			mkdir -p /data/media/0/Android/备份温控（请勿删除）
+			if [ -f "/odm/etc/thermal-normal.conf" ];then
+				cp $(find /odm/etc/ -type f -iname "thermal*.conf*") /data/media/0/Android/备份温控（请勿删除）
+			else
 	cp $(find /system/vendor/etc/ -type f -iname "thermal*.conf*" | grep -v /system/vendor/etc/thermal/) /data/media/0/Android/备份温控（请勿删除）
-	
+	fi
 am start -a 'android.intent.action.VIEW' -d 'https://hub.cdnet.run/' >/dev/null 2>&1
 fi
