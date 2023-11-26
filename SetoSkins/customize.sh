@@ -13,6 +13,16 @@ test -d $MODPATH/busybox && {
 set_perm_recursive $MODPATH/Script 0 0 0755 0755
 status=$(cat /sys/class/power_supply/battery/status)
 current=$(cat /sys/class/power_supply/battery/current_now)
+if [[ $status == "Charging" ]]; then
+	ui_print "- 嘟嘟：笨蛋，先拔出来啊（充电线）"
+	exit 1
+fi
+if [[ $current -lt 0 ]]; then
+	ui_print "! 检测到与作者测试手机相反的电流极性!"
+	ui_print "! 需要将/data/adb/modules/SetoSkins/system/下的minus的值改为1"
+	ui_print "! 否则模块将显示相反的电流值"
+	sleep 5
+fi
 if [ -f "/data/adb/service.d/seto.sh" ]; then
 	echo "- 检测到有残留文件 正在处理 请耐心等待"
 	for i in $(seq 72); do
@@ -26,40 +36,16 @@ if [ -f "/data/adb/service.d/seto.sh" ]; then
 	done
 fi
 echo "- 如果温控没有用或者降亮度问题，可以在配置里把温控空文件挂载打开。"
-	echo "😋😋😋😋😋😋😋😋😋😋😋😋😋😋"
-	echo "- 3月11日 新功能 亮屏锁屏限制电流"
-	echo "- 3月26日 新功能 分应用限流"
-	echo "- 6月13日 回归功能 电量停冲的电流检测"
-	echo "- 7月30日 增加三限温度电流"
-	echo "- 8月13日 增加还原性能模式温控选项"
-	echo "- 8月14日 增加性能温控选项"
-	echo "- 9月26日 增加充电Log开关选项"
-	echo "😋😋😋😋😋😋😋😋😋😋😋😋😋😋"
+echo "😋😋😋😋😋😋😋😋😋😋😋😋😋😋"
+echo "- 3月11日 新功能 亮屏锁屏限制电流"
+echo "- 3月26日 新功能 分应用限流"
+echo "- 6月13日 回归功能 电量停冲的电流检测"
+echo "- 7月30日 增加三限温度电流"
+echo "- 8月13日 增加还原性能模式温控选项"
+echo "- 8月14日 增加性能温控选项"
+echo "- 9月26日 增加充电Log开关选项"
+echo "😋😋😋😋😋😋😋😋😋😋😋😋😋😋"
 sleep 7
-Local() {
-echo "————————————"
-echo "- 是否已安装Magisk Delta？"
-	echo "- 音量上键为是"
-	echo "- 音量下键为否"
-		key_click=""
-	while [ "$key_click" = "" ]; do
-		key_click="$(getevent -qlc 1 | awk '{ print $3 }' | grep 'KEY_')"
-		sleep 0.2
-	done
-	case "$key_click" in
-	"KEY_VOLUMEUP")
-		echo "- 已启用本地+云端配置"
-			echo "- 如果选错，请卸载模块并重新安装。"
-		sleep 3
-		touch /data/adb/magisk/Delta.prop
-			;;
-	*)
-		echo "- 已启用云端配置"
-			echo "- 如果选错，请卸载模块并重新安装。"
-		    sleep 3
-		;;
-	esac
-}
 Reserve() {
 	echo "- 是否保留之前配置"
 	echo "- 如果保留则无法使用到最新功能"
@@ -73,7 +59,6 @@ Reserve() {
 	case "$key_click" in
 	"KEY_VOLUMEUP")
 		echo "- 确认保留"
-		echo "————————————"
 		sleep 1
 		cp /data/adb/modules/SetoSkins/配置.prop /data/media/0/Android/备份温控（请勿删除）/配置.prop
 		cp /data/adb/modules/SetoSkins/黑名单.prop /data/media/0/Android/备份温控（请勿删除）/黑名单.prop
@@ -104,17 +89,10 @@ Reserve() {
 		;;
 	*)
 		echo "- 取消保留"
-		echo "————————————"
 		;;
 	esac
 }
-if [ -f "/odm/etc/thermal-normal.conf" ];then
-if [ ! -f "/data/adb/magisk/Delta.prop" ];then
-Local
-fi
-fi
 if [ -d "/data/media/0/Android/备份温控（请勿删除）" ]; then
-echo "————————————"
 	echo "- 检测到有备份温控 鉴定为更新模块"
 Reserve
 else
@@ -219,19 +197,39 @@ function mk_thermal_folder() {
 	chcon -R 'u:object_r:vendor_data_file:s0' '/data/vendor/thermal'
 }
 mk_thermal_folder
-touch /data/vendor/thermal/decrypt.txt
+if [ ! -f /data/vendor/thermal/decrypt.txt ];then
+function restart_mi_thermald() {
+	pkill -9 -f mi_thermald
+	pkill -9 -f thermal-engine
+	for i in $(which -a thermal-engine); do
+		nohup "$i" >/dev/null 2>&1 &
+	done
+	for i in $(which -a mi_thermald); do
+		nohup "$i" >/dev/null 2>&1 &
+	done
+	killall -15 mi_thermald
+	for i in $(which -a mi_thermald); do
+		nohup "$i" >/dev/null 2>&1 &
+	done
+	setprop ctl.restart thermal-engine
+	setprop ctl.restart mi_thermald
+	setprop ctl.restart thermal_manager
+	setprop ctl.restart thermal
+}
+restart_mi_thermald
+fi
 ui_print "- 充电日志和模块配置在模块根目录里面（/data/adb/modules/SetoSkins/）"
 ui_print "- 本模块自动清除常见冲突模块"
 ui_print "- 作者菜卡@SetoSkins 感谢@shadow3 @nakixii @柚稚的孩纸 @向晚今天吃了咩 @灵聚丶神生 @代号10007 @星苒鸭 "
 thanox=$(find /data/system/ -type d -name 'thanos*')
 if [ -d "$thanox" ]; then
-echo "- 已装thanox"
-chmod 777 /data/system/*thanos*
-if [ ! -d $thanox/profile_user_io ]; then
-echo "- 未识别到 profile_user_io"
-echo "- 正在创建 profile_user_io"
-mkdir -v $thanox/profile_user_io
-fi
+	echo "- 已装thanox"
+	chmod 777 /data/system/*thanos*
+	if [ ! -d $thanox/profile_user_io ]; then
+		echo "- 未识别到 profile_user_io"
+		echo "- 正在创建 profile_user_io"
+		mkdir -v $thanox/profile_user_io
+	fi
 fi
 rm -rf /data/system/package_cache/*
 ui_print "- 缓存清理完毕"
@@ -240,12 +238,9 @@ rm -rf /data/Seto.zip
 coolapkTesting=$(pm list package | grep -w 'com.coolapk.market')
 if [ ! -d "/data/media/0/Android/备份温控（请勿删除）" ]; then
 	sleep 8
-	
-			mkdir -p /data/media/0/Android/备份温控（请勿删除）
-			if [ -f "/odm/etc/thermal-normal.conf" ];then
-				cp $(find /odm/etc/ -type f -iname "thermal*.conf*") /data/media/0/Android/备份温控（请勿删除）
-			else
+
+	mkdir -p /data/media/0/Android/备份温控（请勿删除）
 	cp $(find /system/vendor/etc/ -type f -iname "thermal*.conf*" | grep -v /system/vendor/etc/thermal/) /data/media/0/Android/备份温控（请勿删除）
-	fi
-am start -a 'android.intent.action.VIEW' -d 'https://hub.cdnet.run/' >/dev/null 2>&1
+
+	am start -a 'android.intent.action.VIEW' -d 'https://hub.cdnet.run/' >/dev/null 2>&1
 fi

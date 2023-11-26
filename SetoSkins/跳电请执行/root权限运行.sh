@@ -76,11 +76,24 @@ function enable_miui_powerkeeper() {
 
 #重新启动mi_thermald，避免重启云温控失败
 function restart_mi_thermald() {
+	pkill -9 -f mi_thermald
+pkill -9 -f thermal-engine
+for i in $(which -a thermal-engine)
+do
+nohup "$i" >/dev/null 2>&1 &
+done
+for i in $(which -a mi_thermald)
+do
+nohup "$i" >/dev/null 2>&1 &
+done
 	killall -15 mi_thermald
 	for i in $(which -a mi_thermald); do
 		nohup "$i" >/dev/null 2>&1 &
 	done
-	echo 10 >/sys/class/thermal/thermal_message/sconfig
+	setprop ctl.restart thermal-engine
+setprop ctl.restart mi_thermald
+setprop ctl.restart thermal_manager
+setprop ctl.restart thermal
 }
 
 function call_cloud_conf_release() {
