@@ -1,28 +1,6 @@
-set_perm_recursive $MODPATH 0 0 0755 0777
-function key_source() {
-	if test -e "$1"; then
-		source "$1"
-		rm -rf "$1"
-	fi
-}
-key_source $MODPATH/busybox.sh
-test -d $MODPATH/busybox && {
-	set_perm $magiskbusybox 0 0 0755
-	chmod -R 0755 $MODPATH/busybox
-}
-set_perm_recursive $MODPATH/Script 0 0 0755 0755
+#!/system/bin/sh
 status=$(cat /sys/class/power_supply/battery/status)
 current=$(cat /sys/class/power_supply/battery/current_now)
-if [[ $status == "Charging" ]]; then
-	ui_print "- 嘟嘟：笨蛋，先拔出来啊（充电线）"
-	exit 1
-fi
-if [[ $current -lt 0 ]]; then
-	ui_print "! 检测到与作者测试手机相反的电流极性!"
-	ui_print "! 需要将/data/adb/modules/SetoSkins/system/下的minus的值改为1"
-	ui_print "! 否则模块将显示相反的电流值"
-	sleep 5
-fi
 if [ -f "/data/adb/service.d/seto.sh" ]; then
 	echo "- 检测到有残留文件 正在处理 请耐心等待"
 	for i in $(seq 72); do
@@ -37,27 +15,42 @@ if [ -f "/data/adb/service.d/seto.sh" ]; then
 fi
 echo "- 如果温控没有用或者降亮度问题，可以在配置里把温控空文件挂载打开。"
 echo "😋😋😋😋😋😋😋😋😋😋😋😋😋😋"
-echo "- 3月11日 新功能 亮屏锁屏限制电流"
-echo "- 3月26日 新功能 分应用限流"
-echo "- 6月13日 回归功能 电量停冲的电流检测"
-echo "- 7月30日 增加三限温度电流"
-echo "- 8月13日 增加还原性能模式温控选项"
-echo "- 8月14日 增加性能温控选项"
-echo "- 9月26日 增加充电Log开关选项"
+echo "- 2023.3.11 新功能 亮屏锁屏限制电流"
+echo "- 2023.3.26 新功能 分应用限流"
+echo "- 2023.6.13 回归功能 电量停冲的电流检测"
+echo "- 2023.7.30 增加三限温度电流"
+echo "- 2023.8.13 增加还原性能模式温控选项"
+echo "- 2023.8.13 增加性能温控选项"
+echo "- 2023.9.26 增加充电Log开关选项"
 echo "😋😋😋😋😋😋😋😋😋😋😋😋😋😋"
-sleep 7
+sleep 5
+key_check() {
+  while true; do
+    key_check=$(/system/bin/getevent -qlc 1)
+    key_event=$(echo "$key_check" | awk '{ print $3 }' | grep 'KEY_')
+    key_status=$(echo "$key_check" | awk '{ print $4 }')
+    if [[ "$key_event" == *"KEY_"* && "$key_status" == "DOWN" ]]; then
+      keycheck="$key_event"
+      break
+    fi
+  done
+  while true; do
+    key_check=$(/system/bin/getevent -qlc 1)
+    key_event=$(echo "$key_check" | awk '{ print $3 }' | grep 'KEY_')
+    key_status=$(echo "$key_check" | awk '{ print $4 }')
+    if [[ "$key_event" == *"KEY_"* && "$key_status" == "UP" ]]; then
+      break
+    fi
+  done
+}
 Reserve() {
 	echo "- 是否保留之前配置"
 	echo "- 如果保留则无法使用到最新功能"
 	echo "- 音量上键为保留"
 	echo "- 音量下键为取消"
-	key_click=""
-	while [ "$key_click" = "" ]; do
-		key_click="$(getevent -qlc 1 | awk '{ print $3 }' | grep 'KEY_')"
-		sleep 0.2
-	done
-	case "$key_click" in
-	"KEY_VOLUMEUP")
+key_check
+ case "$keycheck" in
+  "KEY_VOLUMEUP")
 		echo "- 确认保留"
 		sleep 1
 		cp /data/adb/modules/SetoSkins/配置.prop /data/media/0/Android/备份温控（请勿删除）/配置.prop
@@ -220,7 +213,7 @@ restart_mi_thermald
 fi
 ui_print "- 充电日志和模块配置在模块根目录里面（/data/adb/modules/SetoSkins/）"
 ui_print "- 本模块自动清除常见冲突模块"
-ui_print "- 作者菜卡@SetoSkins 感谢@shadow3 @nakixii @柚稚的孩纸 @向晚今天吃了咩 @灵聚丶神生 @代号10007 @星苒鸭 "
+ui_print "- 作者菜卡@SetoSkins 感谢@shadow3 @nakixii @柚稚的孩纸 @灵聚丶神生 @代号10007"
 thanox=$(find /data/system/ -type d -name 'thanos*')
 if [ -d "$thanox" ]; then
 	echo "- 已装thanox"
