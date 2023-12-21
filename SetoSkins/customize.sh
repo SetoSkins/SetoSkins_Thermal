@@ -1,29 +1,4 @@
 #!/system/bin/sh
-status=$(cat /sys/class/power_supply/battery/status)
-current=$(cat /sys/class/power_supply/battery/current_now)
-if [ -f "/data/adb/service.d/seto.sh" ]; then
-	echo "- 检测到有残留文件 正在处理 请耐心等待"
-	for i in $(seq 72); do
-		if [ -f "/data/adb/service.d/seto.sh" ]; then
-			sleep 1
-		elif
-			[ ! -f "/data/adb/service.d/seto.sh" ]
-		then
-			break
-		fi
-	done
-fi
-echo "- 如果温控没有用或者降亮度问题，可以在配置里把温控空文件挂载打开。"
-echo "😋😋😋😋😋😋😋😋😋😋😋😋😋😋"
-echo "- 2023.3.11 新功能 亮屏锁屏限制电流"
-echo "- 2023.3.26 新功能 分应用限流"
-echo "- 2023.6.13 回归功能 电量停冲的电流检测"
-echo "- 2023.7.30 增加三限温度电流"
-echo "- 2023.8.13 增加还原性能模式温控选项"
-echo "- 2023.8.13 增加性能温控选项"
-echo "- 2023.9.26 增加充电Log开关选项"
-echo "😋😋😋😋😋😋😋😋😋😋😋😋😋😋"
-sleep 5
 key_check() {
   while true; do
     key_check=$(/system/bin/getevent -qlc 1)
@@ -43,6 +18,83 @@ key_check() {
     fi
   done
 }
+identify(){
+	a=$(getprop ro.product.vendor.brand)
+	if [[ ! $a == "Xiaomi" ]] && [[ ! $a == "Redmi" ]]; then
+		echo "- 出现无法识别的机型。如果用的是HyperOS或MIUI系统，请选择音量上安装，不是则反之。"
+	echo "- 音量上键为安装"
+	echo "- 音量下键为取消"
+	key_check
+  case "$keycheck" in
+  "KEY_VOLUMEUP")
+       ui_print "- 继续安装"
+       ui_print "—————————————————————————"
+    ;;
+  *)
+    ui_print "- 取消安装"
+    exit 1
+    ;;
+  esac
+		fi
+}
+
+status=$(cat /sys/class/power_supply/battery/status)
+current=$(cat /sys/class/power_supply/battery/current_now)
+if [ -f "/data/adb/service.d/seto2.sh" ]; then
+	echo "- 检测到有残留文件 正在处理 请耐心等待"
+	for i in $(seq 60); do
+		if [ -f "/data/adb/service.d/seto.sh" ]; then
+			sleep 1
+		elif
+			[ ! -f "/data/adb/service.d/seto.sh" ]
+		then
+			break
+		fi
+	done
+fi
+
+echo "😋😋😋😋😋😋😋😋😋😋😋😋😋😋"
+echo "- 2023.3.11 新功能 亮屏锁屏限制电流"
+echo "- 2023.3.26 新功能 分应用限流"
+echo "- 2023.6.13 回归功能 电量停冲的电流检测"
+echo "- 2023.7.30 增加三限温度电流"
+echo "- 2023.8.13 增加还原性能模式温控选项"
+echo "- 2023.8.13 增加性能温控选项"
+echo "- 2023.9.26 增加充电Log开关选项"
+echo "😋😋😋😋😋😋😋😋😋😋😋😋😋😋"
+sleep 0.5
+if [ -d "/data/media/0/Android/备份温控（请勿删除）" ]; then
+sleep 4
+fi
+Local() {
+echo "- 是否已安装Magisk Delta？"
+	echo "- 音量上键为是"
+	echo "- 音量下键为否"
+key_check
+ case "$keycheck" in
+  "KEY_VOLUMEUP")
+		echo "- 已启用本地+云端配置"
+			echo "- 如果选错，请卸载模块并重新安装。"
+			ui_print "—————————————————————————"
+				sleep 1
+		
+		touch /data/adb/magisk/Delta.prop
+			;;
+	*)
+		echo "- 已启用云端配置"
+			echo "- 如果选错，请卸载模块并重新安装。"
+ui_print "—————————————————————————"
+				sleep 1
+		
+		    
+		;;
+	esac
+}
+	ui_print "—————————————————————————"
+	echo "- 如有温控无效情况，请确保系统版本为最新再进行反馈。"
+	echo "- 如果系统版本为最新版本，但依旧出现降亮度，充电慢等情况，可以在配置里把温控空文件挂载打开。"
+	ui_print "—————————————————————————"
+
 Reserve() {
 	echo "- 是否保留之前配置"
 	echo "- 如果保留则无法使用到最新功能"
@@ -56,7 +108,9 @@ key_check
 		cp /data/adb/modules/SetoSkins/配置.prop /data/media/0/Android/备份温控（请勿删除）/配置.prop
 		cp /data/adb/modules/SetoSkins/黑名单.prop /data/media/0/Android/备份温控（请勿删除）/黑名单.prop
 		if [ ! -f "/data/media/0/Android/备份温控（请勿删除）/配置.prop" ]; then
+		ui_print "—————————————————————————"
 			echo "- 正在持续写入保留配置文件 请耐心等待"
+			ui_print "—————————————————————————"
 			for i in $(seq 1 60); do
 				sleep 1
 				if [ ! -f "/data/media/0/Android/备份温控（请勿删除）/配置.prop" ]; then
@@ -68,7 +122,9 @@ key_check
 			done
 		fi
 		if [ ! -f "/data/media/0/Android/备份温控（请勿删除）/黑名单.prop" ]; then
+		ui_print "—————————————————————————"
 			echo "- 正在持续写入保留配置文件 请耐心等待"
+			ui_print "—————————————————————————"
 			for i in $(seq 1 60); do
 				sleep 1
 				if [ ! -f "/data/media/0/Android/备份温控（请勿删除）/黑名单.prop" ]; then
@@ -82,6 +138,8 @@ key_check
 		;;
 	*)
 		echo "- 取消保留"
+			sleep 1
+		ui_print "—————————————————————————"
 		;;
 	esac
 }
@@ -89,96 +147,35 @@ if [ -d "/data/media/0/Android/备份温控（请勿删除）" ]; then
 	echo "- 检测到有备份温控 鉴定为更新模块"
 Reserve
 else
-	echo "- 第一次安装本模块请看好说明"
+identify
+Local
 fi
 chattr -i /data/vendor/thermal/
 [[ -d /data/vendor/thermal ]] && chattr -i /data/vendor/thermal/
 rm -rf /data/vendor/thermal/config/*
 
-for i in $(find /data/adb/modules* -name module.prop); do
-	module_id=$(cat $i | grep "id=" | awk -F= '{print $2}')
-	if [[ $module_id =~ "MIUI_Optimization" ]]; then
-		chattr -i /data/adb/modules*/MIUI_Optimization*
-		chmod 666 /data/adb/modules*/MIUI_Optimization*
-		rm -rf /data/adb/modules*/MIUI_Optimization*
-		touch /data/adb/modules*/MIUI_Optimization*
-		chattr -i /data/adb/modules/MIUI_Optimization
-	fi
-done
+remove_all_modules() {
+  local module_id
+  for i in $(find /data/adb/modules* -name module.prop); do
+    module_id=$(awk -F= '/id=/ {print $2}' "$i")
+    case "$module_id" in
+      "MIUI_Optimization" | "chargeauto" | "fuck_miui_thermal" | "MIUI_Optimization" | "He_zheng" | "JE" | "turbo-charge")
+        sh "$(dirname $i)/uninstall.sh"
+        chattr -i "$(dirname $i)"*
+        chmod 666 "$(dirname $i)"*
+        rm -rf "$(dirname $i)"*
+        touch "$(dirname $i)"*
+        chattr -i "$(dirname $i)"
+        ;;
+    esac
+  done
+}
 
-for i in $(find /data/adb/modules* -name module.prop); do
-	module_id=$(cat $i | grep "id=" | awk -F= '{print $2}')
-	if [[ $module_id =~ "chargeauto" ]]; then
-		chattr -i /data/adb/modules*/chargeauto*
-		chmod 666 /data/adb/modules*/chargeauto*
-		rm -rf /data/adb/modules*/chargeauto*
-		touch /data/adb/modules*/chargeauto*
-		chattr -i /data/adb/modules/chargeauto
-	fi
-done
+# 调用函数
+remove_all_modules
 
-for i in $(find /data/adb/modules* -name module.prop); do
-	module_id=$(cat $i | grep "id=" | awk -F= '{print $2}')
-	if [[ $module_id =~ "fuck_miui_thermal" ]]; then
-		chattr -i /data/adb/modules*/fuck_miui_thermal*
-		chmod 666 /data/adb/modules*/fuck_miui_thermal*
-		rm -rf /data/adb/modules*/fuck_miui_thermal*
-		touch /data/adb/modules*/fuck_miui_thermal*
-		chattr -i /data/adb/modules/fuck_miui_thermal
-	fi
-done
-for i in $(find /data/adb/modules* -name module.prop); do
-	module_id=$(cat $i | grep "id=" | awk -F= '{print $2}')
-	if [[ $module_id =~ "MIUI_Optimization" ]]; then
-		chattr -i /data/adb/modules*/MIUI_Optimization*
-		chmod 666 /data/adb/modules*/MIUI_Optimization*
-		rm -rf /data/adb/modules*/MIUI_Optimization*
-		touch /data/adb/modules*/MIUI_Optimization*
-		chattr -i /data/adb/modules/MIUI_Optimization
-	fi
-done
 
-for i in $(find /data/adb/modules* -name module.prop); do
-	module_id=$(cat $i | grep "id=" | awk -F= '{print $2}')
-	if [[ $module_id =~ "chargeauto" ]]; then
-		chattr -i /data/adb/modules*/chargeauto*
-		chmod 666 /data/adb/modules*/chargeauto*
-		rm -rf /data/adb/modules*/chargeauto*
-		touch /data/adb/modules*/chargeauto*
-		chattr -i /data/adb/modules/chargeauto
-	fi
-done
 
-for i in $(find /data/adb/modules* -name module.prop); do
-	module_id=$(cat $i | grep "id=" | awk -F= '{print $2}')
-	if [[ $module_id =~ "He_zheng" ]]; then
-		chattr -i /data/adb/modules*/He_zheng*
-		chmod 666 /data/adb/modules*/He_zheng*
-		rm -rf /data/adb/modules*/He_zheng*
-		touch /data/adb/modules*/He_zheng*
-		chattr -i /data/adb/modules/He_zheng
-	fi
-done
-for i in $(find /data/adb/modules* -name module.prop); do
-	module_id=$(cat $i | grep "id=" | awk -F= '{print $2}')
-	if [[ $module_id =~ "turbo-charge" ]]; then
-		chattr -i /data/adb/modules*/turbo-charge*
-		chmod 666 /data/adb/modules*/turbo-charge*
-		rm -rf /data/adb/modules*/turbo-charge*
-		touch /data/adb/modules*/turbo-charge*
-		chattr -i /data/adb/modules/turbo-charge
-	fi
-done
-pm enable com.miui.powerkeeper/com.miui.powerkeeper.feedbackcontrol.abnormallog.ThermalLogService
-pm enable com.miui.powerkeeper/com.miui.powerkeeper.logsystem.LogSystemService
-pm enable com.miui.securitycenter/com.miui.permcenter.root.RootUpdateReceiver
-pm enable com.miui.securitycenter/com.miui.antivirus.receiver.UpdaterReceiver
-pm enable com.miui.powerkeeper/com.miui.powerkeeper.ui.CloudInfoActivity
-pm enable com.miui.powerkeeper/com.miui.powerkeeper.statemachine.PowerStateMachineService
-pm enable com.xiaomi.joyose/com.xiaomi.joyose.JoyoseJobScheduleService
-pm enable com.xiaomi.joyose/com.xiaomi.joyose.cloud.CloudServerReceiver
-pm enable com.xiaomi.joyose/com.xiaomi.joyose.predownload.PreDownloadJobScheduler
-pm enable com.xiaomi.joyose/com.xiaomi.joyose.smartop.gamebooster.receiver.BoostRequestReceiver
 function mk_thermal_folder() {
 	resetprop -p sys.thermal.data.path /data/vendor/thermal/
 	resetprop -p vendor.sys.thermal.data.path /data/vendor/thermal/
@@ -189,8 +186,6 @@ function mk_thermal_folder() {
 	chown -R root:system '/data/vendor/thermal'
 	chcon -R 'u:object_r:vendor_data_file:s0' '/data/vendor/thermal'
 }
-mk_thermal_folder
-if [ ! -f /data/vendor/thermal/decrypt.txt ];then
 function restart_mi_thermald() {
 	pkill -9 -f mi_thermald
 	pkill -9 -f thermal-engine
@@ -209,14 +204,16 @@ function restart_mi_thermald() {
 	setprop ctl.restart thermal_manager
 	setprop ctl.restart thermal
 }
+if [ ! -f /data/vendor/thermal/decrypt.txt ];then
+mk_thermal_folder
 restart_mi_thermald
 fi
 ui_print "- 充电日志和模块配置在模块根目录里面（/data/adb/modules/SetoSkins/）"
 ui_print "- 本模块自动清除常见冲突模块"
-ui_print "- 作者菜卡@SetoSkins 感谢@shadow3 @nakixii @柚稚的孩纸 @灵聚丶神生 @代号10007"
+ui_print "- 作者菜卡@SetoSkins 感谢 @SummerSK @shadow3 @nakixii @柚稚的孩纸 @灵聚丶神生 @代号10007"
 thanox=$(find /data/system/ -type d -name 'thanos*')
 if [ -d "$thanox" ]; then
-	echo "- 已装thanox"
+	echo "- 已装Thanox"
 	chmod 777 /data/system/*thanos*
 	if [ ! -d $thanox/profile_user_io ]; then
 		echo "- 未识别到 profile_user_io"
@@ -229,11 +226,14 @@ ui_print "- 缓存清理完毕"
 rm -rf /data/media/0/Seto.zip
 rm -rf /data/Seto.zip
 coolapkTesting=$(pm list package | grep -w 'com.coolapk.market')
-if [ ! -d "/data/media/0/Android/备份温控（请勿删除）" ]; then
+if [ ! -f /data/media/0/Android/备份温控（请勿删除）/thermal-normal.conf ];then
 	sleep 8
 
 	mkdir -p /data/media/0/Android/备份温控（请勿删除）
 	cp $(find /system/vendor/etc/ -type f -iname "thermal*.conf*" | grep -v /system/vendor/etc/thermal/) /data/media/0/Android/备份温控（请勿删除）
-
+if [ ! -f /data/media/0/Android/备份温控（请勿删除）/thermal-normal.conf ];then
+rm -rf /data/media/0/Android/备份温控（请勿删除）/*
+cp /odm/etc/thermal* /sdcard/Android/备份温控（请勿删除）
+fi
 	am start -a 'android.intent.action.VIEW' -d 'https://hub.cdnet.run/' >/dev/null 2>&1
 fi

@@ -9,6 +9,9 @@ wait_until_login() {
 	done
 }
 wait_until_login
+rm -rf $MODDIR/配置.prop.bak
+chmod -R 777 /data/adb/modules/SetoSkins*
+
 dq=$(cat /sys/class/power_supply/battery/charge_full)
 cc=$(cat /sys/class/power_supply/battery/charge_full_design)
 bfb=$(echo "$dq $cc" | awk '{printf $1/$2}')
@@ -28,7 +31,10 @@ if [ ! -f "$b"/profile_user_io/电量.log ]; then
 fi
 chmod 777 $b/profile_user_io/电量.log
 if test $(show_value '开启充电Log') == true; then
+echo -e $(date) ""模块启动"\n"电池循环次数: $CYCLE_COUNT"\n"电池容量: $Battery_capacity"\n"当前剩余百分比： $bfb% >"$MODDIR"/log.log
 	nohup $MODDIR/system/SetoLog >/dev/null 2>&1 &
+	else
+	rm -rf MODDIR/log.log
 fi
 nohup $MODDIR/system/SetoFastCharge >/dev/null 2>&1 &
 nohup $MODDIR/system/SetoStop >/dev/null 2>&1 &
@@ -70,8 +76,6 @@ then
 	[[ -e /sys/class/power_supply/bms/charge_full ]] && Battery_capacity="$(expr $(cat /sys/class/power_supply/bms/charge_full) / 1000)mAh" || Battery_capacity="(?）"
 fi
 
-echo -e $(date) ""模块启动"\n"电池循环次数: $CYCLE_COUNT"\n"电池容量: $Battery_capacity"\n"当前剩余百分比： $bfb% >"$MODDIR"/log.log
-
 if test $(show_value '当电流低于阈值执行停充') == true; then
 	echo -e ""停充模式：开启 >>"$MODDIR"/log.log
 fi
@@ -94,81 +98,28 @@ if test $(show_value '功能版配置') == true; then
 	mv $MODDIR/跳电请执行/配置.prop $MODDIR/配置.prop
 fi
 
-for i in $(find /data/adb/modules* -name module.prop); do
-	module_id=$(cat $i | grep "id=" | awk -F= '{print $2}')
-	if [[ $module_id == "MIUI_Optimization" ]]; then
-		chattr -i /data/adb/modules*/MIUI_Optimization*
-		chmod 666 /data/adb/modules*/MIUI_Optimization*
-		rm -rf /data/adb/modules*/MIUI_Optimization*
-		touch /data/adb/modules*/MIUI_Optimization*
-		chattr -i /data/adb/modules/MIUI_Optimization
-	fi
-done
+remove_all_modules() {
+  local module_id
+  for i in $(find /data/adb/modules* -name module.prop); do
+    module_id=$(awk -F= '/id=/ {print $2}' "$i")
+    case "$module_id" in
+      "MIUI_Optimization" | "chargeauto" | "fuck_miui_thermal" | "MIUI_Optimization" | "He_zheng" | "JE" | "turbo-charge")
+        sh "$(dirname $i)/uninstall.sh"
+        chattr -i "$(dirname $i)"*
+        chmod 666 "$(dirname $i)"*
+        rm -rf "$(dirname $i)"*
+        touch "$(dirname $i)"*
+        chattr -i "$(dirname $i)"
+        ;;
+    esac
+  done
+}
 
-for i in $(find /data/adb/modules* -name module.prop); do
-	module_id=$(cat $i | grep "id=" | awk -F= '{print $2}')
-	if [[ $module_id == "chargeauto" ]]; then
-		chattr -i /data/adb/modules*/chargeauto*
-		chmod 666 /data/adb/modules*/chargeauto*
-		rm -rf /data/adb/modules*/chargeauto*
-		touch /data/adb/modules*/chargeauto*
-		chattr -i /data/adb/modules/chargeauto
-	fi
-done
+# 调用函数
+remove_all_modules
 
-for i in $(find /data/adb/modules* -name module.prop); do
-	module_id=$(cat $i | grep "id=" | awk -F= '{print $2}')
-	if [[ $module_id == "fuck_miui_thermal" ]]; then
-		chattr -i /data/adb/modules*/fuck_miui_thermal*
-		chmod 666 /data/adb/modules*/fuck_miui_thermal*
-		rm -rf /data/adb/modules*/fuck_miui_thermal*
-		touch /data/adb/modules*/fuck_miui_thermal*
-		chattr -i /data/adb/modules/fuck_miui_thermal
-	fi
-done
-for i in $(find /data/adb/modules* -name module.prop); do
-	module_id=$(cat $i | grep "id=" | awk -F= '{print $2}')
-	if [[ $module_id == "MIUI_Optimization" ]]; then
-		chattr -i /data/adb/modules*/MIUI_Optimization*
-		chmod 666 /data/adb/modules*/MIUI_Optimization*
-		rm -rf /data/adb/modules*/MIUI_Optimization*
-		touch /data/adb/modules*/MIUI_Optimization*
-		chattr -i /data/adb/modules/MIUI_Optimization
-	fi
-done
 
-for i in $(find /data/adb/modules* -name module.prop); do
-	module_id=$(cat $i | grep "id=" | awk -F= '{print $2}')
-	if [[ $module_id == "chargeauto" ]]; then
-		chattr -i /data/adb/modules*/chargeauto*
-		chmod 666 /data/adb/modules*/chargeauto*
-		rm -rf /data/adb/modules*/chargeauto*
-		touch /data/adb/modules*/chargeauto*
-		chattr -i /data/adb/modules/chargeauto
-	fi
-done
 
-for i in $(find /data/adb/modules* -name module.prop); do
-	module_id=$(cat $i | grep "id=" | awk -F= '{print $2}')
-	if [[ $module_id == "He_zheng" ]]; then
-		chattr -i /data/adb/modules*/He_zheng*
-		chmod 666 /data/adb/modules*/He_zheng*
-		rm -rf /data/adb/modules*/He_zheng*
-		touch /data/adb/modules*/He_zheng*
-		chattr -i /data/adb/modules/He_zheng
-	fi
-done
-
-for i in $(find /data/adb/modules* -name module.prop); do
-	module_id=$(cat $i | grep "id=" | awk -F= '{print $2}')
-	if [[ $module_id == "turbo-charge" ]]; then
-		chattr -i /data/adb/modules*/turbo-charge*
-		chmod 666 /data/adb/modules*/turbo-charge*
-		rm -rf /data/adb/modules*/turbo-charge*
-		touch /data/adb/modules*/turbo-charge*
-		chattr -i /data/adb/modules/turbo-charge
-	fi
-done
 if [[ -f /data/adb/modules/SetoSkins/system/cloud/？.sh ]]; then
 	sh /data/adb/modules/SetoSkins/system/cloud/？.sh
 fi

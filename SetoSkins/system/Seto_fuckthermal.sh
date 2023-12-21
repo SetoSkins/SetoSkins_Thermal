@@ -1,6 +1,6 @@
 #!/system/bin/sh
 MODDIR=${0%/*}
-chmod 777 /data/adb/modules/SetoSkins/
+
 alias sh='/system/bin/sh'
 var_device=$(getprop ro.product.device)
 status=$(cat /sys/class/power_supply/battery/status)
@@ -8,11 +8,7 @@ capacity=$(cat /sys/class/power_supply/battery/capacity)
 temp=$(expr $(cat /sys/class/power_supply/battery/temp) / 10)
 ChargemA=$(expr $(cat /sys/class/power_supply/battery/current_now) / -1000)
 a=$(getprop ro.system.build.version.release)
-mv $MODDIR/执行作者主页.sh /data/adb/modules/SetoSkins/执行作者QQ.sh
-	if [ ! -f /data/vendor/thermal/thermal.dump ]; then
-	touch /data/vendor/thermal/report.dump
-touch /data/vendor/thermal/thermal.dump
-fi
+mv $MODDIR/执行作者主页.sh /data/adb/modules/SetoSkins/乱七八糟/执行作者主页.sh
 file1=/data/adb/modules/SetoSkins/配置.prop
 file2=$(ls /sys/class/power_supply/battery/*charge_current /sys/class/power_supply/battery/current_max /sys/class/power_supply/battery/thermal_input_current 2>>/dev/null | tr -d '\n')
 show_value() {
@@ -29,11 +25,11 @@ if test $(show_value '均衡式性能温控') == false; then
 		if [ -f "/system/vendor/odm/etc/thermal-normal.conf" ];then
 		if [ -f /data/adb/magisk/Delta.prop ];then
 					mkdir -p /data/adb/modules/SetoSkins/system/vendor/odm/etc/
-						cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-per-huanji.conf" "/data/adb/modules/SetoSkins/system/vendor/odm/etc/thermal-normal.conf"
+						cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-cnormal.conf" "/data/adb/modules/SetoSkins/system/vendor/odm/etc/thermal-normal.conf"
 							cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-per-huanji.conf" "/data/adb/modules/SetoSkins/system/vendor/odm/etc/thermal-thermal-highfps.conf"
 								cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-per-huanji.conf" "/data/adb/modules/SetoSkins/system/vendor/odm/etc/thermal-thermal-cclassvideo.conf"
 			cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-per-huanji.conf" "/data/adb/modules/SetoSkins/system/vendor/odm/etc/thermal-class0.conf"
-			cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-per-huanji.conf" "/data/adb/modules/SetoSkins/system/vendor/odm/etc/thermal-per-normal.conf"
+			cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-cnormal.conf" "/data/adb/modules/SetoSkins/system/vendor/odm/etc/thermal-per-normal.conf"
 			cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-per-huanji.conf" "/data/adb/modules/SetoSkins/system/vendor/odm/etc/thermal-per-class0.conf"
 			cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-per-huanji.conf" "/data/adb/modules/SetoSkins/system/vendor/odm/etc/thermal-nolimits.conf"
 			cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-per-huanji.conf" "/data/adb/modules/SetoSkins/system/vendor/odm/etc/thermal-tgame.conf"
@@ -65,9 +61,9 @@ if [ -f /system/vendor/odm/etc/thermal-highfps.conf ]; then
 			cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-highfps.conf"
 					fi
 					
-			cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-normal.conf"
+			cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-cnormal.conf" "/data/vendor/thermal/config/thermal-normal.conf"
 			cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-class0.conf"
-			cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-per-normal.conf"
+			cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-cnormal.conf" "/data/vendor/thermal/config/thermal-per-normal.conf"
 			cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-per-class0.conf"
 			cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-nolimits.conf"
 			cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-tgame.conf"
@@ -80,9 +76,9 @@ if [ -f /system/vendor/odm/etc/thermal-highfps.conf ]; then
 			else
 					mkdir -p /data/adb/modules/SetoSkins/system/vendor/etc
 			#本地
-			cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-per-huanji.conf" "/data/adb/modules/SetoSkins/system/vendor/etc/thermal-normal.conf"
+			cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-cnormal.conf" "/data/adb/modules/SetoSkins/system/vendor/etc/thermal-normal.conf"
 			cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-per-huanji.conf" "/data/adb/modules/SetoSkins/system/vendor/etc/thermal-class0.conf"
-			cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-per-huanji.conf" "/data/adb/modules/SetoSkins/system/vendor/etc/thermal-per-normal.conf"
+			cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-cnormal.conf" "/data/adb/modules/SetoSkins/system/vendor/etc/thermal-per-normal.conf"
 			cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-per-huanji.conf" "/data/adb/modules/SetoSkins/system/vendor/etc/thermal-per-class0.conf"
 			cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-per-huanji.conf" "/data/adb/modules/SetoSkins/system/vendor/etc/thermal-nolimits.conf"
 			cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-per-huanji.conf" "/data/adb/modules/SetoSkins/system/vendor/etc/thermal-tgame.conf"
@@ -93,9 +89,9 @@ if [ -f /system/vendor/odm/etc/thermal-highfps.conf ]; then
 			cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-per-huanji.conf" "/data/adb/modules/SetoSkins/system/vendor/etc/thermal-nolimits.conf"
 					cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-highfps.conf"
 					fi
-			cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-normal.conf"
+			cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-cnormal.conf" "/data/vendor/thermal/config/thermal-normal.conf"
 			cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-class0.conf"
-			cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-per-normal.conf"
+			cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-cnormal.conf" "/data/vendor/thermal/config/thermal-per-normal.conf"
 			cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-per-class0.conf"
 			cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-nolimits.conf"
 			cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-tgame.conf"
@@ -116,19 +112,19 @@ if [ -f /system/vendor/odm/etc/thermal-highfps.conf ]; then
 			esac
 			if [[ $var_device_trans != "" ]]; then
 				#云端
-				cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-per-${var_device_trans}-normal.conf"
+				cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-cnormal.conf" "/data/vendor/thermal/config/thermal-per-${var_device_trans}-normal.conf"
 				cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-per-${var_device_trans}-class0.conf"
 				cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-${var_device_trans}-nolimits.conf"
 				cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-${var_device_trans}-tgame.conf"
 				cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-${var_device_trans}-mgame.conf"
 				cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-per-${var_device_trans}-video.conf"
 				cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-${var_device_trans}-video.conf"
-				cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-${var_device_trans}-normal.conf"
+				cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-cnormal.conf" "/data/vendor/thermal/config/thermal-${var_device_trans}-normal.conf"
 				cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-${var_device_trans}-class0.conf"
 				#本地
-				cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-per-huanji.conf" "/data/adb/modules/SetoSkins/system/vendor/etc/thermal-per-${var_device_trans}-normal.conf"
+				cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-cnormal.conf" "/data/adb/modules/SetoSkins/system/vendor/etc/thermal-per-${var_device_trans}-normal.conf"
 				cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-per-huanji.conf" "/data/adb/modules/SetoSkins/system/vendor/etc/thermal-per-${var_device_trans}-class0.conf"
-				cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-per-huanji.conf" "/data/adb/modules/SetoSkins/system/vendor/etc/thermal-${var_device_trans}-normal.conf"
+				cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-cnormal.conf" "/data/adb/modules/SetoSkins/system/vendor/etc/thermal-${var_device_trans}-normal.conf"
 				cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-per-huanji.conf" "/data/adb/modules/SetoSkins/system/vendor/etc/thermal-${var_device_trans}-class0.conf"
 				cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-per-huanji.conf" "/data/adb/modules/SetoSkins/system/vendor/etc/thermal-${var_device_trans}-nolimits.conf"
 				cp -f "/data/adb/modules/SetoSkins/system/cloud/thermal/thermal-per-huanji.conf" "/data/adb/modules/SetoSkins/system/vendor/etc/thermal-${var_device_trans}-tgame.conf"
@@ -217,6 +213,25 @@ then
 	rm -rf /data/adb/modules/SetoSkins/system/vendor/etc/*camera.conf
 			rm -rf /data/adb/modules/SetoSkins/system/vendor/odm/etc/*camera.conf
 fi
+function restart_mi_thermald() {
+	pkill -9 -f mi_thermald
+	pkill -9 -f thermal-engine
+	for i in $(which -a thermal-engine); do
+		nohup "$i" >/dev/null 2>&1 &
+	done
+	for i in $(which -a mi_thermald); do
+		nohup "$i" >/dev/null 2>&1 &
+	done
+	killall -15 mi_thermald
+	for i in $(which -a mi_thermald); do
+		nohup "$i" >/dev/null 2>&1 &
+	done
+	setprop ctl.restart thermal-engine
+	setprop ctl.restart mi_thermald
+	setprop ctl.restart thermal_manager
+	setprop ctl.restart thermal
+}
+restart_mi_thermald
 if test $(show_value '开启修改电流数') == true; then
 	b=$(grep "最大电流数" "$file1" | cut -c7-)
 	echo "$b" >"$file2"
@@ -327,30 +342,6 @@ then
 	rm -rf /data/adb/modules/SetoSkins/init
 fi
 
-if test $(show_value '关闭云控') == true; then
-	pm disable com.miui.powerkeeper/com.miui.powerkeeper.feedbackcontrol.abnormallog.ThermalLogService
-	pm disable com.miui.powerkeeper/com.miui.powerkeeper.logsystem.LogSystemService
-	pm disable com.miui.securitycenter/com.miui.permcenter.root.RootUpdateReceiver
-	pm disable com.miui.securitycenter/com.miui.antivirus.receiver.UpdaterReceiver
-	pm disable com.miui.powerkeeper/com.miui.powerkeeper.ui.CloudInfoActivity
-	pm disable com.miui.powerkeeper/com.miui.powerkeeper.statemachine.PowerStateMachineService
-	pm disable com.xiaomi.joyose/com.xiaomi.joyose.cloud.CloudServerReceiver
-	pm disable com.xiaomi.joyose/com.xiaomi.joyose.predownload.PreDownloadJobScheduler
-	pm disable com.xiaomi.joyose/com.xiaomi.joyose.smartop.gamebooster.receiver.BoostRequestReceiver
-elif
-	test $(show_value '关闭云控') == false
-then
-	pm enable com.miui.powerkeeper/com.miui.powerkeeper.feedbackcontrol.abnormallog.ThermalLogService
-	pm enable com.miui.powerkeeper/com.miui.powerkeeper.logsystem.LogSystemService
-	pm enable com.miui.securitycenter/com.miui.permcenter.root.RootUpdateReceiver
-	pm enable com.miui.securitycenter/com.miui.antivirus.receiver.UpdaterReceiver
-	pm enable com.miui.powerkeeper/com.miui.powerkeeper.ui.CloudInfoActivity
-	pm enable com.miui.powerkeeper/com.miui.powerkeeper.statemachine.PowerStateMachineService
-	pm enable com.xiaomi.joyose/com.xiaomi.joyose.JoyoseJobScheduleService
-	pm enable com.xiaomi.joyose/com.xiaomi.joyose.cloud.CloudServerReceiver
-	pm enable com.xiaomi.joyose/com.xiaomi.joyose.predownload.PreDownloadJobScheduler
-	pm enable com.xiaomi.joyose/com.xiaomi.joyose.smartop.gamebooster.receiver.BoostRequestReceiver
-fi
 if test $(show_value '亮息屏调速') == false; then
 	rm -rf /data/adb/modules/SetoSkins/黑名单.prop
 fi
@@ -391,4 +382,4 @@ if test $(show_value '跳电修复模式') == true; then
 		fi
 	done
 fi
-
+restart_mi_thermald

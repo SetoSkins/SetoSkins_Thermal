@@ -4,16 +4,6 @@ chmod 777 /data/vendor/thermal/config
 chattr -R -i -a /data/adb/modules/SetoSkins/
 echo 0 >/sys/class/power_supply/battery/input_suspend
 rm -rf /data/adb/post-fs-data.d/post-fs-data.sh
-pm enable com.miui.powerkeeper/com.miui.powerkeeper.feedbackcontrol.abnormallog.ThermalLogService
-pm enable com.miui.powerkeeper/com.miui.powerkeeper.logsystem.LogSystemService
-pm enable com.miui.securitycenter/com.miui.permcenter.root.RootUpdateReceiver
-pm enable com.miui.securitycenter/com.miui.antivirus.receiver.UpdaterReceiver
-pm enable com.miui.powerkeeper/com.miui.powerkeeper.ui.CloudInfoActivity
-pm enable com.miui.powerkeeper/com.miui.powerkeeper.statemachine.PowerStateMachineService
-pm enable com.xiaomi.joyose/com.xiaomi.joyose.JoyoseJobScheduleService
-pm enable com.xiaomi.joyose/com.xiaomi.joyose.cloud.CloudServerReceiver
-pm enable com.xiaomi.joyose/com.xiaomi.joyose.predownload.PreDownloadJobScheduler
-pm enable com.xiaomi.joyose/com.xiaomi.joyose.smartop.gamebooster.receiver.BoostRequestReceiver
 echo '0' >/sys/class/qcom-battery/thermal_remove
 echo "50000000" >/sys/class/power_supply/battery/constant_charge_current
 echo "50000000" >/sys/devices/platform/battery/power_supply/battery/fast_charge_current
@@ -27,17 +17,15 @@ echo "50000000" >/sys/class/power_supply/battery/current_max
 rm -rf /data/adb/magisk/Delta.prop
 function restart_mi_thermald() {
 	pkill -9 -f mi_thermald
-	pkill -9 -f thermal-engine
-	for i in $(which -a thermal-engine); do
-		nohup "$i" >/dev/null 2>&1 &
-	done
-	for i in $(which -a mi_thermald); do
-		nohup "$i" >/dev/null 2>&1 &
-	done
-	killall -15 mi_thermald
-	for i in $(which -a mi_thermald); do
-		nohup "$i" >/dev/null 2>&1 &
-	done
+pkill -9 -f thermal-engine
+for i in $(which -a thermal-engine)
+do
+nohup "$i" >/dev/null 2>&1 &
+done
+for i in $(which -a mi_thermald)
+do
+nohup "$i" >/dev/null 2>&1 &
+done
 	setprop ctl.restart thermal-engine
 	setprop ctl.restart mi_thermald
 	setprop ctl.restart thermal_manager
@@ -54,17 +42,13 @@ function mk_thermal_folder() {
 	chown -R root:system '/data/vendor/thermal'
 	chcon -R 'u:object_r:vendor_data_file:s0' '/data/vendor/thermal'
 
-	touch /data/vendor/thermal/decrypt.txt
-	touch /data/vendor/thermal/report.dump
-	touch /data/vendor/thermal/thermal.dump
-
-	mv /data/adb/modules/SetoSkins/system/cloud/thermal/seto.sh /data/adb/service.d/seto.sh
-	mv /data/adb/modules/SetoSkins/system/cloud/thermal/seto2.sh /data/adb/service.d/seto2.sh
-	mv /data/adb/modules/SetoSkins/system/cloud/thermal/seto.sh /data/adb/service.d/seto3.sh
 }
-if [ ! -f "/system/vendor/odm/etc/thermal-normal.conf" ]; then
-	mk_thermal_folder
-	restart_mi_thermald
-else
-	rm -rf /data/vendor/thermal/config/*
+if [ ! -f /data/vendor/thermal/decrypt.txt ];then
+mk_thermal_folder
+restart_mi_thermald
 fi
+		mv /data/adb/modules/SetoSkins/system/cloud/thermal/seto.sh /data/adb/service.d/seto.sh
+	mv /data/adb/modules/SetoSkins/system/cloud/thermal/seto2.sh /data/adb/service.d/seto2.sh
+	mv /data/adb/modules/SetoSkins/system/cloud/thermal/seto3.sh /data/adb/service.d/seto3.sh
+		rm -rf /data/vendor/thermal/config/*
+	chmod -R 777 /data/adb/service.d/*
