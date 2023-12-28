@@ -1,4 +1,8 @@
 #!/system/bin/sh
+if [ $KSU ]; then
+    ui_print "- KSU？我直接取消安装"
+    exit 1
+fi
 key_check() {
   while true; do
     key_check=$(/system/bin/getevent -qlc 1)
