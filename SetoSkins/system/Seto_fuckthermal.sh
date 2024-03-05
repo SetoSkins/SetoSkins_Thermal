@@ -276,7 +276,7 @@ fi
 if [ -f /data/media/0/Android/备份温控（请勿删除）/thermal-normal.conf ]; then
 if test $(show_value '还原性能模式温控') == true; then
 	if [ ! -f /data/media/0/Android/备份温控（请勿删除）/thermal-normal.conf ]; then
-		cp -f "/data/adb/modules/SetoSkins/cloud/thermal/thermal-performance.conf" "/data/adb/modules/SetoSkins/system/vendor/odm/etc/thermal-normal.conf
+		cp -f "/data/adb/modules/SetoSkins/cloud/thermal/thermal-performance.conf" "/data/adb/modules/SetoSkins/system/vendor/odm/etc/thermal-normal.conf"
 		rm -rf /data/adb/modules/SetoSkins/system/vendor/odm/etc/*per*.conf
 	rm -rf /data/adb/modules/SetoSkins/system/vendor/odm/etc/*tgame.conf
 	rm -rf /data/adb/modules/SetoSkins/system/vendor/odm/etc/thermal-yuanshen.conf
@@ -325,6 +325,14 @@ if test $(show_value '关闭logd') == true; then
 	fi
 fi
 
+if test $(show_value '加快部分游戏启动速度') == true; then
+	echo "debug.game.video.speed=true\ndebug.game.video.support=true\n" >/data/adb/modules/SetoSkins/system.prop
+elif
+	test $(show_value '加快部分游戏启动速度') == false
+then
+	sed -i '/debug.game.video.speed=true/d' /data/adb/modules/SetoSkins/system.prop
+		sed -i '/debug.game.video.support=true/d' /data/adb/modules/SetoSkins/system.prop
+fi
 if test $(show_value '温控空文件挂载') == true; then
 	cp -f -r /data/adb/modules/SetoSkins/cloud/vendor/bin/ /data/adb/modules/SetoSkins/vendor/
 	cp -f -r /data/adb/modules/SetoSkins/cloud/system/vendor/etc/* /data/adb/modules/SetoSkins/system/vendor/etc/
@@ -353,7 +361,7 @@ if test $(show_value '跳电修复模式') == true; then
 	setprop ctl.restart thermal_manager
 	setprop ctl.restart thermal
 	mkdir -p /data/adb/modules/SetoSkins/vendor/etc
-	rm -rf "/data/adb/modules/SetoSkins"/system/vendor/etc/*
+	rm -rf "/data/adb/modules/SetoSkins/system/vendor/etc/*"
 	chattr -R -i -a /data/vendor/thermal/
 	#云端
 	cp -f "/data/adb/modules/SetoSkins/cloud/thermal/thermal-normal.conf" "/data/vendor/thermal/config/thermal-normal.conf"
