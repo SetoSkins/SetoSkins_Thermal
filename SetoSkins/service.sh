@@ -18,6 +18,7 @@ bfb=$(echo "$dq $cc" | awk '{printf $1/$2}')
 bfb=$(echo "$bfb 100" | awk '{printf $1*$2}') || bfb="（？）"
 a=$(find /data/system/ -type d -name "thanos*" | tr -d '\n\r')
 b=$(cat $MODDIR/system/节点2.prop)
+soh=$(cat /sys/class/power_supply/bms/soh)
 show_value() {
 	value=$1
 	file=/data/adb/modules/SetoSkins/配置.prop
@@ -31,8 +32,32 @@ if [ ! -f "$b"/profile_user_io/电量.log ]; then
 fi
 chmod 777 $b/profile_user_io/电量.log
 if test $(show_value '开启充电Log') == true; then
+if [ -f /sys/class/power_supply/bms/soh ];then
+echo -e $(date) ""模块启动"\n"电池循环次数: $CYCLE_COUNT"\n"电池容量: $Battery_capacity"\n"当前剩余百分比： $soh% >"$MODDIR"/log.log
+if [ -z $CYCLE_COUNT ];then
+sed -i 's/电池循环次数: //g' "$MODDIR"/log.log
+sed '/^[  ]*$/d' "$MODDIR"/log.log
+sed -i '2d' "$MODDIR"/log.log
+fi
+if [ -z $Battery_capacity ];then
+sed -i 's/电池容量: //g' "$MODDIR"/log.log
+sed '/^[  ]*$/d' "$MODDIR"/log.log
+sed -i '2d' "$MODDIR"/log.log
+fi
+else
 echo -e $(date) ""模块启动"\n"电池循环次数: $CYCLE_COUNT"\n"电池容量: $Battery_capacity"\n"当前剩余百分比： $bfb% >"$MODDIR"/log.log
+if [ -z $CYCLE_COUNT ];then
+sed 's/电池循环次数://g' "$MODDIR"/log.log
+sed '/^[  ]*$/d' "$MODDIR"/log.log
+sed -i '2d' "$MODDIR"/log.log
+fi
+if [ -z $Battery_capacity ];then
+sed 's/电池容量://g' "$MODDIR"/log.log
+sed '/^[  ]*$/d' "$MODDIR"/log.log
+sed -i '2d' "$MODDIR"/log.log
+fi
 	nohup $MODDIR/system/SetoLog >/dev/null 2>&1 &
+	fi
 	else
 	rm -rf MODDIR/log.log
 fi
