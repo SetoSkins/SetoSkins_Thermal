@@ -45,6 +45,7 @@ if test $(show_value '开启充电调速') == true; then
 		if [[ $temp -gt $a && $temp -lt $a1 ]]; then
 			echo "$b" >"$file2"
 					echo "$b" >/sys/class/power_supply/battery/constant_charge_current_max
+					echo "$b" >/sys/class/power_supply/battery/constant_charge_current
 			echo "触发一限温度阈值 temp:$a current:$b" | tee -a $log
 			kill -19 $pid
 		elif
@@ -52,16 +53,19 @@ if test $(show_value '开启充电调速') == true; then
 		then
 			echo "50000000" >"$file2"
 					echo "50000000" >/sys/class/power_supply/battery/constant_charge_current_max
+					echo "50000000" >/sys/class/power_supply/battery/constant_charge_current
 			kill -18 $pid
 			echo "触发无限制阈值 temp:$a" | tee -a $log
 		elif [[ $temp -gt $a1 ]]; then
 			echo "$b1" >"$file2"
 					echo "$b1" >/sys/class/power_supply/battery/constant_charge_current_max
+						echo "$b1" >/sys/class/power_supply/battery/constant_charge_current
 			kill -19 $pid
 			echo "触发二限温度阈值 temp:$a1 current:$b1" | tee -a $log
 		elif [[ $temp -gt $a2 ]]; then
 			echo "$b2" >"$file2"
 					echo "$b1" >/sys/class/power_supply/battery/constant_charge_current_max
+					echo "$b1" >/sys/class/power_supply/battery/constant_charge_current
 			kill -19 $pid
 			echo "触发三限温度阈值 temp:$a2 current:$b2" | tee -a $log
 		fi
@@ -77,18 +81,22 @@ if test $(show_value '自定义阶梯模式') == true; then
 		if [[ $status == "Discharging" ]] || [[ $status == "Full" ]]; then
 			echo "50000000" >"$file2"
 					echo "50000000" >/sys/class/power_supply/battery/constant_charge_current_max
+					echo "50000000" >/sys/class/power_supply/battery/constant_charge_current
 			sleep 10
 		elif [[ $capacity -ge $f ]]; then
 			echo "$f1" >"$file2"
 					echo "$f1" >/sys/class/power_supply/battery/constant_charge_current_max
+					echo "$f1" >/sys/class/power_supply/battery/constant_charge_current
 			echo "触发三限电量阈值 current:$f" | tee -a $log
 		elif [[ $capacity -ge $e ]]; then
 			echo "$e1" >"$file2"
 					echo "$e1" >/sys/class/power_supply/battery/constant_charge_current_max
+					echo "$e1" >/sys/class/power_supply/battery/constant_charge_current
 			echo "触发二限电量阈值 current:$e" | tee -a $log
 		elif [[ $capacity -ge $d ]]; then
 			echo "$d1" >"$file2"
 					echo "$d1" >/sys/class/power_supply/battery/constant_charge_current_max
+					echo "$d1" >/sys/class/power_supply/battery/constant_charge_current
 			echo "触发一限电量阈值 current:$d" | tee -a $log
 		fi
 	done
@@ -104,10 +112,12 @@ if test $(show_value '亮息屏调速') == true; then
 		elif [[ $status == "Charging" ]] || [[ $Bright == "mIsScreenOn=true" ]]; then
 			echo "$g" >"$file2"
 					echo "$g" >/sys/class/power_supply/battery/constant_charge_current_max
+					echo "$g" >/sys/class/power_supply/battery/constant_charge_current
 			echo $(date) "亮屏充电 限制电流：$g" | tee -a $log
 		elif [[ $status == "Charging" ]] || [[ $Bright == "mIsScreenOn=false" ]]; then
 			echo "$g1" >"$file2"
 					echo "$g1" >/sys/class/power_supply/battery/constant_charge_current_max
+					echo "$g1" >/sys/class/power_supply/battery/constant_charge_current
 			echo $(date) "息屏充电 限制电流：$g1" | tee -a $log
 		fi
 	done
@@ -133,12 +143,14 @@ if test $(show_value '分应用调速') == true; then
 		if [[ $(grep "$app" "/data/adb/modules/SetoSkins/黑名单.prop" | grep "A") != "" ]]; then
 			echo "$a3" >"$file2"
 					echo "$a3" >/sys/class/power_supply/battery/constant_charge_current_max
+					echo "$a3" >/sys/class/power_supply/battery/constant_charge_current
 		elif
 			sleep 1s
 			[[ $(grep "$app" "/data/adb/modules/SetoSkins/黑名单.prop" | grep "B") != "" ]]
 		then
 			echo "$b3" >"$file2"
 					echo "$b3" >/sys/class/power_supply/battery/constant_charge_current_max
+					echo "$b3" >/sys/class/power_supply/battery/constant_charge_current
 			echo "应用调速开" >$MODDIR/检测.log
 		elif
 			sleep 1s
@@ -146,6 +158,7 @@ if test $(show_value '分应用调速') == true; then
 		then
 			echo "$c3" >"$file2"
 			 		echo "$c3" >/sys/class/power_supply/battery/constant_charge_current_max
+					echo "$c3" >/sys/class/power_supply/battery/constant_charge_current
 			echo "应用调速开" >$MODDIR/检测.log
 		elif
 			sleep 1s
@@ -153,6 +166,7 @@ if test $(show_value '分应用调速') == true; then
 		then
 			echo "$d3" >"$file2"
 					echo "$d3" >/sys/class/power_supply/battery/constant_charge_current_max
+					echo "$d3" >/sys/class/power_supply/battery/constant_charge_current
 			echo "应用调速开" >$MODDIR/检测.log
 		elif
 			sleep 1s
@@ -160,6 +174,7 @@ if test $(show_value '分应用调速') == true; then
 		then
 			echo "$e3" >"$file2"
 					echo "$e3" >/sys/class/power_supply/battery/constant_charge_current_max
+					echo "$e3" >/sys/class/power_supply/battery/constant_charge_current
 			echo "应用调速开" >$MODDIR/检测.log
 		elif
 			sleep 1s
@@ -167,6 +182,7 @@ if test $(show_value '分应用调速') == true; then
 		then
 			echo "$f3" >"$file2"
 					echo "$f3" >/sys/class/power_supply/battery/constant_charge_current_max
+					echo "$f3" >/sys/class/power_supply/battery/constant_charge_current
 			echo "应用调速开" >$MODDIR/检测.log
 		elif
 			sleep 1s
@@ -174,6 +190,7 @@ if test $(show_value '分应用调速') == true; then
 		then
 			echo "$g3" >"$file2"
 					echo "$g3" >/sys/class/power_supply/battery/constant_charge_current_max
+					echo "$g3" >/sys/class/power_supply/battery/constant_charge_current
 			echo "应用调速开" >$MODDIR/检测.log
 		elif
 			sleep 1s
@@ -181,6 +198,7 @@ if test $(show_value '分应用调速') == true; then
 		then
 			echo "$h3" >"$file2"
 					echo "$h3" >/sys/class/power_supply/battery/constant_charge_current_max
+					echo "$h3" >/sys/class/power_supply/battery/constant_charge_current
 			echo "应用调速开" >$MODDIR/检测.log
 		elif
 			sleep 1s
@@ -188,12 +206,14 @@ if test $(show_value '分应用调速') == true; then
 		then
 			echo "$i3" >"$file2"
 					echo "$i3" >/sys/class/power_supply/battery/constant_charge_current_max
+					echo "$i3" >/sys/class/power_supply/battery/constant_charge_current
 			echo "应用调速开" >$MODDIR/检测.log
 		elif
 			sleep 1s
 			[[ $(grep "$app" "/data/adb/modules/SetoSkins/黑名单.prop" | grep "J") != "" ]]
 		then
 				echo "$j3" >/sys/class/power_supply/battery/constant_charge_current_max
+				echo "$j3" >/sys/class/power_supply/battery/constant_charge_current
 			echo "$j3" >"$file2"
 			echo "应用调速开" >$MODDIR/检测.log
 		else
