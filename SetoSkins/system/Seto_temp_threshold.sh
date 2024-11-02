@@ -3,6 +3,7 @@ MODDIR=${0%/*}
 pid=$(ps -ef | grep $1 | grep -v grep | cut -d "Seto_charge.sh" -f 2)
 file1=/data/adb/modules/SetoSkins/配置.prop
 file2=$(ls /sys/class/power_supply/battery/*charge_current /sys/class/power_supply/battery/current_max /sys/class/power_supply/battery/thermal_input_current 2>>/dev/null |tr -d '\n')
+file3=$(ls /sys/class/power_supply/*/constant_charge_current_max /sys/class/power_supply/*/fast_charge_current /sys/class/power_supply/*/thermal_input_current 2>/dev/null |tr -d ' ')
 show_value() {
 	local value=$1
 	local file=/data/adb/modules/SetoSkins/配置.prop
@@ -44,28 +45,28 @@ if test $(show_value '开启充电调速') == true; then
 		sleep $c
 		if [[ $temp -gt $a && $temp -lt $a1 ]]; then
 			echo "$b" >"$file2"
+				echo "$b" >"$file3"
 					echo "$b" >/sys/class/power_supply/battery/constant_charge_current_max
-					echo "$b" >/sys/class/power_supply/battery/constant_charge_current
 			echo "触发一限温度阈值 temp:$a current:$b" | tee -a $log
 			kill -19 $pid
 		elif
 			[[ $temp -lt $a ]]
 		then
 			echo "50000000" >"$file2"
+			echo "50000000" >"$file3"
 					echo "50000000" >/sys/class/power_supply/battery/constant_charge_current_max
-					echo "50000000" >/sys/class/power_supply/battery/constant_charge_current
 			kill -18 $pid
 			echo "触发无限制阈值 temp:$a" | tee -a $log
 		elif [[ $temp -gt $a1 ]]; then
 			echo "$b1" >"$file2"
+			echo "$b1" >"$file3"
 					echo "$b1" >/sys/class/power_supply/battery/constant_charge_current_max
-						echo "$b1" >/sys/class/power_supply/battery/constant_charge_current
 			kill -19 $pid
 			echo "触发二限温度阈值 temp:$a1 current:$b1" | tee -a $log
 		elif [[ $temp -gt $a2 ]]; then
 			echo "$b2" >"$file2"
+				echo "$b2" >"$file3"
 					echo "$b1" >/sys/class/power_supply/battery/constant_charge_current_max
-					echo "$b1" >/sys/class/power_supply/battery/constant_charge_current
 			kill -19 $pid
 			echo "触发三限温度阈值 temp:$a2 current:$b2" | tee -a $log
 		fi
@@ -80,23 +81,23 @@ if test $(show_value '自定义阶梯模式') == true; then
 		status=$(cat /sys/class/power_supply/battery/status)
 		if [[ $status == "Discharging" ]] || [[ $status == "Full" ]]; then
 			echo "50000000" >"$file2"
+			echo "50000000" >"$file3"
 					echo "50000000" >/sys/class/power_supply/battery/constant_charge_current_max
-					echo "50000000" >/sys/class/power_supply/battery/constant_charge_current
 			sleep 10
 		elif [[ $capacity -ge $f ]]; then
 			echo "$f1" >"$file2"
+			echo "$f1" >"$file3"
 					echo "$f1" >/sys/class/power_supply/battery/constant_charge_current_max
-					echo "$f1" >/sys/class/power_supply/battery/constant_charge_current
 			echo "触发三限电量阈值 current:$f" | tee -a $log
 		elif [[ $capacity -ge $e ]]; then
 			echo "$e1" >"$file2"
+			echo "$e1" >"$file3"
 					echo "$e1" >/sys/class/power_supply/battery/constant_charge_current_max
-					echo "$e1" >/sys/class/power_supply/battery/constant_charge_current
 			echo "触发二限电量阈值 current:$e" | tee -a $log
 		elif [[ $capacity -ge $d ]]; then
 			echo "$d1" >"$file2"
+			echo "$d1" >"$file3"
 					echo "$d1" >/sys/class/power_supply/battery/constant_charge_current_max
-					echo "$d1" >/sys/class/power_supply/battery/constant_charge_current
 			echo "触发一限电量阈值 current:$d" | tee -a $log
 		fi
 	done
@@ -111,13 +112,13 @@ if test $(show_value '亮息屏调速') == true; then
 			sleep 60
 		elif [[ $status == "Charging" ]] || [[ $Bright == "mIsScreenOn=true" ]]; then
 			echo "$g" >"$file2"
+			echo "$g" >"$file3"
 					echo "$g" >/sys/class/power_supply/battery/constant_charge_current_max
-					echo "$g" >/sys/class/power_supply/battery/constant_charge_current
 			echo $(date) "亮屏充电 限制电流：$g" | tee -a $log
 		elif [[ $status == "Charging" ]] || [[ $Bright == "mIsScreenOn=false" ]]; then
+			echo "$g1" >"$file3"
 			echo "$g1" >"$file2"
 					echo "$g1" >/sys/class/power_supply/battery/constant_charge_current_max
-					echo "$g1" >/sys/class/power_supply/battery/constant_charge_current
 			echo $(date) "息屏充电 限制电流：$g1" | tee -a $log
 		fi
 	done
@@ -142,79 +143,79 @@ if test $(show_value '分应用调速') == true; then
 		app=$(dumpsys activity activities | grep topResumedActivity= | tail -n 1 | cut -d "{" -f2 | cut -d "/" -f1 | cut -d " " -f3)
 		if [[ $(grep "$app" "/data/adb/modules/SetoSkins/黑名单.prop" | grep "A") != "" ]]; then
 			echo "$a3" >"$file2"
+				echo "$a3" >"$file3"
 					echo "$a3" >/sys/class/power_supply/battery/constant_charge_current_max
-					echo "$a3" >/sys/class/power_supply/battery/constant_charge_current
 		elif
 			sleep 1s
 			[[ $(grep "$app" "/data/adb/modules/SetoSkins/黑名单.prop" | grep "B") != "" ]]
 		then
 			echo "$b3" >"$file2"
+				echo "$b3" >"$file3"
 					echo "$b3" >/sys/class/power_supply/battery/constant_charge_current_max
-					echo "$b3" >/sys/class/power_supply/battery/constant_charge_current
 			echo "应用调速开" >$MODDIR/检测.log
 		elif
 			sleep 1s
 			[[ $(grep "$app" "/data/adb/modules/SetoSkins/黑名单.prop" | grep "C") != "" ]]
 		then
 			echo "$c3" >"$file2"
+			echo "$c3" >"$file3"
 			 		echo "$c3" >/sys/class/power_supply/battery/constant_charge_current_max
-					echo "$c3" >/sys/class/power_supply/battery/constant_charge_current
 			echo "应用调速开" >$MODDIR/检测.log
 		elif
 			sleep 1s
 			[[ $(grep "$app" "/data/adb/modules/SetoSkins/黑名单.prop" | grep "D") != "" ]]
 		then
 			echo "$d3" >"$file2"
+				echo "$d3" >"$file3"
 					echo "$d3" >/sys/class/power_supply/battery/constant_charge_current_max
-					echo "$d3" >/sys/class/power_supply/battery/constant_charge_current
 			echo "应用调速开" >$MODDIR/检测.log
 		elif
 			sleep 1s
 			[[ $(grep "$app" "/data/adb/modules/SetoSkins/黑名单.prop" | grep "E") != "" ]]
 		then
 			echo "$e3" >"$file2"
+			echo "$e3" >"$file3"
 					echo "$e3" >/sys/class/power_supply/battery/constant_charge_current_max
-					echo "$e3" >/sys/class/power_supply/battery/constant_charge_current
 			echo "应用调速开" >$MODDIR/检测.log
 		elif
 			sleep 1s
 			[[ $(grep "$app" "/data/adb/modules/SetoSkins/黑名单.prop" | grep "F") != "" ]]
 		then
 			echo "$f3" >"$file2"
+			echo "$f3" >"$file3"
 					echo "$f3" >/sys/class/power_supply/battery/constant_charge_current_max
-					echo "$f3" >/sys/class/power_supply/battery/constant_charge_current
 			echo "应用调速开" >$MODDIR/检测.log
 		elif
 			sleep 1s
 			[[ $(grep "$app" "/data/adb/modules/SetoSkins/黑名单.prop" | grep "G") != "" ]]
 		then
 			echo "$g3" >"$file2"
+			echo "$g3" >"$file3"
 					echo "$g3" >/sys/class/power_supply/battery/constant_charge_current_max
-					echo "$g3" >/sys/class/power_supply/battery/constant_charge_current
 			echo "应用调速开" >$MODDIR/检测.log
 		elif
 			sleep 1s
 			[[ $(grep "$app" "/data/adb/modules/SetoSkins/黑名单.prop" | grep "H") != "" ]]
 		then
 			echo "$h3" >"$file2"
+			echo "$h3" >"$file3"
 					echo "$h3" >/sys/class/power_supply/battery/constant_charge_current_max
-					echo "$h3" >/sys/class/power_supply/battery/constant_charge_current
 			echo "应用调速开" >$MODDIR/检测.log
 		elif
 			sleep 1s
 			[[ $(grep "$app" "/data/adb/modules/SetoSkins/黑名单.prop" | grep "I") != "" ]]
 		then
 			echo "$i3" >"$file2"
+				echo "$i3" >"$file3"
 					echo "$i3" >/sys/class/power_supply/battery/constant_charge_current_max
-					echo "$i3" >/sys/class/power_supply/battery/constant_charge_current
 			echo "应用调速开" >$MODDIR/检测.log
 		elif
 			sleep 1s
 			[[ $(grep "$app" "/data/adb/modules/SetoSkins/黑名单.prop" | grep "J") != "" ]]
 		then
 				echo "$j3" >/sys/class/power_supply/battery/constant_charge_current_max
-				echo "$j3" >/sys/class/power_supply/battery/constant_charge_current
 			echo "$j3" >"$file2"
+				echo "$j3" >"$file3"
 			echo "应用调速开" >$MODDIR/检测.log
 		else
 			echo "应用调速关" >$MODDIR/检测.log

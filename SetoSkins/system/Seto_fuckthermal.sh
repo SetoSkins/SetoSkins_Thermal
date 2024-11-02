@@ -11,6 +11,7 @@ a=$(getprop ro.system.build.version.release)
 mv $MODDIR/执行作者主页.sh /data/adb/modules/SetoSkins/乱七八糟/执行作者主页.sh
 file1=/data/adb/modules/SetoSkins/配置.prop
 file2=$(ls /sys/class/power_supply/battery/*charge_current /sys/class/power_supply/battery/current_max /sys/class/power_supply/battery/thermal_input_current 2>>/dev/null | tr -d '\n')
+file3=$(ls /sys/class/power_supply/*/constant_charge_current_max /sys/class/power_supply/*/fast_charge_current /sys/class/power_supply/*/thermal_input_current 2>/dev/null |tr -d ' ')
 show_value() {
 	value=$1
 	file=/data/adb/modules/SetoSkins/配置.prop
@@ -234,11 +235,13 @@ function restart_mi_thermald() {
 restart_mi_thermald
 if test $(show_value '开启修改电流数') == true; then
 	b=$(grep "最大电流数" "$file1" | cut -c7-)
+		echo "$b" >"$file3"
 	echo "$b" >"$file2"
 fi
 
 if test $(show_value '开启修改电流数') == false; then
 	echo "50000000" >"$file2"
+	echo "50000000" >"$file3"
 fi
 
 if test $(show_value '全局高刷（和dfps冲突）') == true; then

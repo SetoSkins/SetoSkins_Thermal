@@ -66,6 +66,7 @@ echo "- 2023.8.13 增加还原性能模式温控选项"
 echo "- 2023.8.13 增加性能温控选项"
 echo "- 2023.9.26 增加充电Log开关选项"
 echo "- 2024.3.1 加快部分游戏启动速度"
+echo "- 2024.11.1 Fix Bugs"
 echo "😋😋😋😋😋😋😋😋😋😋😋😋😋😋"
 sleep 0.5
 if [ -d "/data/media/0/Android/备份温控（请勿删除）" ]; then
@@ -227,10 +228,10 @@ if [ -d "$thanox" ]; then
 	fi
 fi
 rm -rf /data/system/package_cache/*
+rm -rf /data/adb/1
 ui_print "- 缓存清理完毕"
 rm -rf /data/media/0/Seto.zip
 rm -rf /data/Seto.zip
-coolapkTesting=$(pm list package | grep -w 'com.coolapk.market')
 if [ ! -f /data/media/0/Android/备份温控（请勿删除）/thermal-normal.conf ];then
 	sleep 8
 
