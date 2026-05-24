@@ -1,5 +1,7 @@
 id=SetoSkins
-name=色图(Seto)温控
-author=菜卡@SetoSkins @shadow3
-description=多功能保姆温控 | 充电Log和配置在/data/adb/modules/SetoSkins
-updateJson=https://ghproxy.com/https://github.com/SetoSkins/SetoSkins_Thermal/blob/master/SetoSkins.json
+name=Seto Thermal Control (色图温控)
+version=__VERSION__
+versionCode=__VERSIONCODE__
+author=SetoSkins Team (@SetoSkins @shadow3)
+description=Multi-function thermal control for MIUI/HyperOS | Supports Magisk, KernelSU, SukiSU
+updateJson=https://raw.githubusercontent.com/SetoSKins/SetoSkins_Thermal/master/SetoSkins.json

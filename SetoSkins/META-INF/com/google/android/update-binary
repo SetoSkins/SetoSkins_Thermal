@@ -25,6 +25,12 @@ ZIPFILE=$3
 
 mount /data 2>/dev/null
 
+# KernelSU / SukiSU handle installation natively via their own installer
+# This update-binary is only invoked by Magisk
+if [ -n "$KSU" ]; then
+  exit 0
+fi
+
 [ -f /data/adb/magisk/util_functions.sh ] || require_new_magisk
 . /data/adb/magisk/util_functions.sh
 [ $MAGISK_VER_CODE -lt 20400 ] && require_new_magisk

@@ -1,7 +1,8 @@
+MODDIR=${0%/*}
 chattr -i /data/vendor/thermal/config
 chattr -i /data/vendor/thermal/config/*
 chmod 777 /data/vendor/thermal/config
-chattr -R -i -a /data/adb/modules/SetoSkins/
+chattr -R -i -a $MODDIR/
 echo 0 >/sys/class/power_supply/battery/input_suspend
 rm -rf /data/adb/post-fs-data.d/post-fs-data.sh
 echo '0' >/sys/class/qcom-battery/thermal_remove
@@ -14,7 +15,8 @@ echo "50000000" >/sys/firmware/devicetree/base/charger/current_max
 echo "50000000" >/sys/class/power_supply/battery/constant_charge_current_max
 echo "50000000" >/sys/class/power_supply/battery/fast_charge_current
 echo "50000000" >/sys/class/power_supply/battery/current_max
-rm -rf /data/adb/magisk/Delta.prop
+# Cleanup legacy files
+rm -rf /data/adb/magisk/Delta.prop 2>/dev/null
 function restart_mi_thermald() {
 	pkill -9 -f mi_thermald
 pkill -9 -f thermal-engine
@@ -32,8 +34,8 @@ done
 	setprop ctl.restart thermal
 }
 function mk_thermal_folder() {
-	resetprop -p sys.thermal.data.path /data/vendor/thermal/
-	resetprop -p vendor.sys.thermal.data.path /data/vendor/thermal/
+	resetprop -n sys.thermal.data.path /data/vendor/thermal/
+	resetprop -n vendor.sys.thermal.data.path /data/vendor/thermal/
 
 	chattr -R -i -a '/data/vendor/thermal'
 	rm -rf '/data/vendor/thermal'
@@ -47,8 +49,8 @@ if [ ! -f /data/vendor/thermal/decrypt.txt ];then
 mk_thermal_folder
 restart_mi_thermald
 fi
-		mv /data/adb/modules/SetoSkins/system/cloud/thermal/seto.sh /data/adb/service.d/seto.sh
-	mv /data/adb/modules/SetoSkins/system/cloud/thermal/seto2.sh /data/adb/service.d/seto2.sh
-	mv /data/adb/modules/SetoSkins/system/cloud/thermal/seto3.sh /data/adb/service.d/seto3.sh
+		mv $MODDIR/system/cloud/thermal/seto.sh /data/adb/service.d/seto.sh
+	mv $MODDIR/system/cloud/thermal/seto2.sh /data/adb/service.d/seto2.sh
+	mv $MODDIR/system/cloud/thermal/seto3.sh /data/adb/service.d/seto3.sh
 		rm -rf /data/vendor/thermal/config/*
 	chmod -R 777 /data/adb/service.d/*

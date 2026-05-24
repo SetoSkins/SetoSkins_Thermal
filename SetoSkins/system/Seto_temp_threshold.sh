@@ -1,15 +1,15 @@
 #!/system/bin/sh
 MODDIR=${0%/*}
 pid=$(ps -ef | grep $1 | grep -v grep | cut -d "Seto_charge.sh" -f 2)
-file1=/data/adb/modules/SetoSkins/配置.prop
+file1=$MODDIR/配置.prop
 file2=$(ls /sys/class/power_supply/battery/*charge_current /sys/class/power_supply/battery/current_max /sys/class/power_supply/battery/thermal_input_current 2>>/dev/null |tr -d '\n')
 file3=$(ls /sys/class/power_supply/*/constant_charge_current_max /sys/class/power_supply/*/fast_charge_current /sys/class/power_supply/*/thermal_input_current 2>/dev/null |tr -d ' ')
 show_value() {
 	local value=$1
-	local file=/data/adb/modules/SetoSkins/配置.prop
+	local file=$MODDIR/配置.prop
 	grep "$value" "$file" | cut -d "=" -f2
 }
-log=/data/adb/modules/SetoSkins/limit.log
+log=$MODDIR/limit.log
 logc=0
 getp() {
 	temp=$(($(cat /sys/class/power_supply/battery/temp) / 10))
@@ -124,30 +124,30 @@ if test $(show_value '亮息屏调速') == true; then
 	done
 fi
 if test $(show_value '分应用调速') == true; then
-	a3=$(cat "/data/adb/modules/SetoSkins/黑名单.prop" | sed -n '4p' | tr -cd "[0-9]")
-	b3=$(cat "/data/adb/modules/SetoSkins/黑名单.prop" | sed -n '5p' | tr -cd "[0-9]")
-	c3=$(cat "/data/adb/modules/SetoSkins/黑名单.prop" | sed -n '6p' | tr -cd "[0-9]")
-	d3=$(cat "/data/adb/modules/SetoSkins/黑名单.prop" | sed -n '7p' | tr -cd "[0-9]")
-	e3=$(cat "/data/adb/modules/SetoSkins/黑名单.prop" | sed -n '8p' | tr -cd "[0-9]")
-	f3=$(cat "/data/adb/modules/SetoSkins/黑名单.prop" | sed -n '9p' | tr -cd "[0-9]")
-	g3=$(cat "/data/adb/modules/SetoSkins/黑名单.prop" | sed -n '10p' | tr -cd "[0-9]")
-	h3=$(cat "/data/adb/modules/SetoSkins/黑名单.prop" | sed -n '11p' | tr -cd "[0-9]")
-	i3=$(cat "/data/adb/modules/SetoSkins/黑名单.prop" | sed -n '12p' | tr -cd "[0-9]")
-	j3=$(cat "/data/adb/modules/SetoSkins/黑名单.prop" | sed -n '13p' | tr -cd "[0-9]")
+	a3=$(cat "$MODDIR/黑名单.prop" | sed -n '4p' | tr -cd "[0-9]")
+	b3=$(cat "$MODDIR/黑名单.prop" | sed -n '5p' | tr -cd "[0-9]")
+	c3=$(cat "$MODDIR/黑名单.prop" | sed -n '6p' | tr -cd "[0-9]")
+	d3=$(cat "$MODDIR/黑名单.prop" | sed -n '7p' | tr -cd "[0-9]")
+	e3=$(cat "$MODDIR/黑名单.prop" | sed -n '8p' | tr -cd "[0-9]")
+	f3=$(cat "$MODDIR/黑名单.prop" | sed -n '9p' | tr -cd "[0-9]")
+	g3=$(cat "$MODDIR/黑名单.prop" | sed -n '10p' | tr -cd "[0-9]")
+	h3=$(cat "$MODDIR/黑名单.prop" | sed -n '11p' | tr -cd "[0-9]")
+	i3=$(cat "$MODDIR/黑名单.prop" | sed -n '12p' | tr -cd "[0-9]")
+	j3=$(cat "$MODDIR/黑名单.prop" | sed -n '13p' | tr -cd "[0-9]")
 	touch $MODDIR/检测.log
-	if [ ! -f /data/adb/modules/SetoSkins/黑名单.prop ]; then
-		mv /data/adb/modules/SetoSkins/system/cloud/thermal/黑名单.prop /data/adb/modules/SetoSkins/黑名单.prop
+	if [ ! -f $MODDIR/黑名单.prop ]; then
+		mv $MODDIR/system/cloud/thermal/黑名单.prop $MODDIR/黑名单.prop
 	fi
 	while true; do
 		sleep 30
 		app=$(dumpsys activity activities | grep topResumedActivity= | tail -n 1 | cut -d "{" -f2 | cut -d "/" -f1 | cut -d " " -f3)
-		if [[ $(grep "$app" "/data/adb/modules/SetoSkins/黑名单.prop" | grep "A") != "" ]]; then
+		if [[ $(grep "$app" "$MODDIR/黑名单.prop" | grep "A") != "" ]]; then
 			echo "$a3" >"$file2"
 				echo "$a3" >"$file3"
 					echo "$a3" >/sys/class/power_supply/battery/constant_charge_current_max
 		elif
 			sleep 1s
-			[[ $(grep "$app" "/data/adb/modules/SetoSkins/黑名单.prop" | grep "B") != "" ]]
+			[[ $(grep "$app" "$MODDIR/黑名单.prop" | grep "B") != "" ]]
 		then
 			echo "$b3" >"$file2"
 				echo "$b3" >"$file3"
@@ -155,7 +155,7 @@ if test $(show_value '分应用调速') == true; then
 			echo "应用调速开" >$MODDIR/检测.log
 		elif
 			sleep 1s
-			[[ $(grep "$app" "/data/adb/modules/SetoSkins/黑名单.prop" | grep "C") != "" ]]
+			[[ $(grep "$app" "$MODDIR/黑名单.prop" | grep "C") != "" ]]
 		then
 			echo "$c3" >"$file2"
 			echo "$c3" >"$file3"
@@ -163,7 +163,7 @@ if test $(show_value '分应用调速') == true; then
 			echo "应用调速开" >$MODDIR/检测.log
 		elif
 			sleep 1s
-			[[ $(grep "$app" "/data/adb/modules/SetoSkins/黑名单.prop" | grep "D") != "" ]]
+			[[ $(grep "$app" "$MODDIR/黑名单.prop" | grep "D") != "" ]]
 		then
 			echo "$d3" >"$file2"
 				echo "$d3" >"$file3"
@@ -171,7 +171,7 @@ if test $(show_value '分应用调速') == true; then
 			echo "应用调速开" >$MODDIR/检测.log
 		elif
 			sleep 1s
-			[[ $(grep "$app" "/data/adb/modules/SetoSkins/黑名单.prop" | grep "E") != "" ]]
+			[[ $(grep "$app" "$MODDIR/黑名单.prop" | grep "E") != "" ]]
 		then
 			echo "$e3" >"$file2"
 			echo "$e3" >"$file3"
@@ -179,7 +179,7 @@ if test $(show_value '分应用调速') == true; then
 			echo "应用调速开" >$MODDIR/检测.log
 		elif
 			sleep 1s
-			[[ $(grep "$app" "/data/adb/modules/SetoSkins/黑名单.prop" | grep "F") != "" ]]
+			[[ $(grep "$app" "$MODDIR/黑名单.prop" | grep "F") != "" ]]
 		then
 			echo "$f3" >"$file2"
 			echo "$f3" >"$file3"
@@ -187,7 +187,7 @@ if test $(show_value '分应用调速') == true; then
 			echo "应用调速开" >$MODDIR/检测.log
 		elif
 			sleep 1s
-			[[ $(grep "$app" "/data/adb/modules/SetoSkins/黑名单.prop" | grep "G") != "" ]]
+			[[ $(grep "$app" "$MODDIR/黑名单.prop" | grep "G") != "" ]]
 		then
 			echo "$g3" >"$file2"
 			echo "$g3" >"$file3"
@@ -195,7 +195,7 @@ if test $(show_value '分应用调速') == true; then
 			echo "应用调速开" >$MODDIR/检测.log
 		elif
 			sleep 1s
-			[[ $(grep "$app" "/data/adb/modules/SetoSkins/黑名单.prop" | grep "H") != "" ]]
+			[[ $(grep "$app" "$MODDIR/黑名单.prop" | grep "H") != "" ]]
 		then
 			echo "$h3" >"$file2"
 			echo "$h3" >"$file3"
@@ -203,7 +203,7 @@ if test $(show_value '分应用调速') == true; then
 			echo "应用调速开" >$MODDIR/检测.log
 		elif
 			sleep 1s
-			[[ $(grep "$app" "/data/adb/modules/SetoSkins/黑名单.prop" | grep "I") != "" ]]
+			[[ $(grep "$app" "$MODDIR/黑名单.prop" | grep "I") != "" ]]
 		then
 			echo "$i3" >"$file2"
 				echo "$i3" >"$file3"
@@ -211,7 +211,7 @@ if test $(show_value '分应用调速') == true; then
 			echo "应用调速开" >$MODDIR/检测.log
 		elif
 			sleep 1s
-			[[ $(grep "$app" "/data/adb/modules/SetoSkins/黑名单.prop" | grep "J") != "" ]]
+			[[ $(grep "$app" "$MODDIR/黑名单.prop" | grep "J") != "" ]]
 		then
 				echo "$j3" >/sys/class/power_supply/battery/constant_charge_current_max
 			echo "$j3" >"$file2"

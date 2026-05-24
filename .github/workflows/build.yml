@@ -1,0 +1,70 @@
+name: Build Pre-release
+on:
+  push:
+    branches: [master]
+    paths-ignore:
+      - "SetoSkins.json"
+      - "SetoSkins.md"
+      - "README.md"
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@main
+
+      - name: 1. Prepare
+        run: |
+          SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
+          BASE_VERSION=$(jq -r .version $GITHUB_WORKSPACE/SetoSkins.json)
+          BASE_CODE=$(jq -r .versionCode $GITHUB_WORKSPACE/SetoSkins.json)
+          DISPLAY_VERSION="${BASE_VERSION}-${SHORT_SHA}"
+
+          echo "short_sha=${SHORT_SHA}" >> $GITHUB_ENV
+          echo "tag=pre-${SHORT_SHA}" >> $GITHUB_ENV
+          echo "display_version=${DISPLAY_VERSION}" >> $GITHUB_ENV
+          echo "base_code=${BASE_CODE}" >> $GITHUB_ENV
+          echo "zip_name=SetoSkins_Thermal_${DISPLAY_VERSION}.zip" >> $GITHUB_ENV
+
+      - name: 2. Build module zip
+        run: |
+          mkdir -p "$GITHUB_WORKSPACE"/GithubRelease
+          cd $GITHUB_WORKSPACE/SetoSkins
+
+          # Inject version into module.prop and customize.sh
+          sed -i "s|__VERSION__|${{ env.display_version }}|g" module.prop
+          sed -i "s|__VERSIONCODE__|${{ env.base_code }}|g" module.prop
+          sed -i "s|__VERSION__|${{ env.display_version }}|g" customize.sh
+
+          # Remove non-module files
+          rm -rf 工口本 system/SetoFastCharge.orig
+          # Set executable permissions
+          chmod 755 action.sh system/SetoFastCharge
+          zip -q -r "${{ env.zip_name }}" *
+          mv "${{ env.zip_name }}" "$GITHUB_WORKSPACE"/GithubRelease/
+
+      - name: 3. Delete old pre-release with same tag (if exists)
+        run: |
+          gh release delete "${{ env.tag }}" --yes 2>/dev/null || true
+          git push origin --delete "refs/tags/${{ env.tag }}" 2>/dev/null || true
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: 4. Publish pre-release
+        uses: ncipollo/release-action@main
+        with:
+          artifacts: ${{ github.workspace }}/GithubRelease/*
+          name: "Pre-release ${{ env.short_sha }}"
+          tag: "${{ env.tag }}"
+          body: |
+            Automated pre-release build from commit `${{ github.sha }}`
+
+            **Version:** `${{ env.display_version }}`
+            **Commit:** ${{ github.event.head_commit.message }}
+
+            > This is a pre-release for testing. Use the **Promote Release** workflow to publish a stable release.
+          prerelease: true
+          makeLatest: false
+          allowUpdates: true
+          artifactErrorsFailBuild: true

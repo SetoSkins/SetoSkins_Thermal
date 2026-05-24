@@ -1,0 +1,1151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Seto Thermal Control</title>
+<style>
+:root {
+  --bg: #121212;
+  --surface: #1e1e1e;
+  --surface2: #2a2a2a;
+  --primary: #bb86fc;
+  --primary-dark: #9a67ea;
+  --secondary: #03dac6;
+  --error: #cf6679;
+  --on-bg: #e1e1e1;
+  --on-surface: #ffffff;
+  --on-surface-dim: #aaaaaa;
+  --border: #333333;
+  --success: #4caf50;
+  --warning: #ff9800;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--on-bg);
+  min-height: 100vh;
+  padding-bottom: 80px;
+}
+.header {
+  background: var(--surface);
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-bottom: 1px solid var(--border);
+}
+.header h1 { font-size: 18px; color: var(--on-surface); }
+.header-right { display: flex; gap: 12px; align-items: center; }
+.lang-select {
+  background: var(--surface2);
+  color: var(--on-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 13px;
+  outline: none;
+}
+.status-bar {
+  background: var(--surface);
+  padding: 12px 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 10px;
+  border-bottom: 1px solid var(--border);
+}
+.status-item {
+  text-align: center;
+}
+.status-item .label {
+  font-size: 11px;
+  color: var(--on-surface-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.status-item .value {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--secondary);
+  margin-top: 2px;
+}
+.section {
+  margin: 12px 16px;
+  background: var(--surface);
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+.section-title {
+  padding: 14px 16px 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.config-item {
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+  min-height: 56px;
+}
+.config-item:last-child { border-bottom: none; }
+.config-item .info { flex: 1; margin-right: 12px; }
+.config-item .name {
+  font-size: 14px;
+  color: var(--on-surface);
+  font-weight: 500;
+}
+.config-item .desc {
+  font-size: 12px;
+  color: var(--on-surface-dim);
+  margin-top: 3px;
+  line-height: 1.4;
+}
+.toggle {
+  position: relative;
+  width: 48px;
+  height: 26px;
+  flex-shrink: 0;
+}
+.toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.toggle .slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: #555;
+  border-radius: 26px;
+  transition: 0.3s;
+}
+.toggle .slider:before {
+  content: "";
+  position: absolute;
+  height: 20px;
+  width: 20px;
+  left: 3px;
+  bottom: 3px;
+  background: white;
+  border-radius: 50%;
+  transition: 0.3s;
+}
+.toggle input:checked + .slider {
+  background: var(--primary);
+}
+.toggle input:checked + .slider:before {
+  transform: translateX(22px);
+}
+.number-input {
+  background: var(--surface2);
+  color: var(--on-surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 12px;
+  width: 130px;
+  font-size: 14px;
+  outline: none;
+  text-align: right;
+  flex-shrink: 0;
+}
+.number-input:focus { border-color: var(--primary); }
+.number-input::placeholder { color: var(--on-surface-dim); }
+.sub-item {
+  padding: 8px 16px 8px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+  min-height: 48px;
+  background: rgba(0,0,0,0.15);
+}
+.sub-item .name { font-size: 13px; }
+.save-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--surface);
+  padding: 12px 20px;
+  display: flex;
+  gap: 12px;
+  border-top: 1px solid var(--border);
+  z-index: 100;
+}
+.btn {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.btn-primary {
+  background: var(--primary);
+  color: #000;
+}
+.btn-primary:active { background: var(--primary-dark); }
+.btn-secondary {
+  background: var(--surface2);
+  color: var(--on-bg);
+  border: 1px solid var(--border);
+}
+.toast {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--success);
+  color: white;
+  padding: 10px 24px;
+  border-radius: 24px;
+  font-size: 14px;
+  font-weight: 500;
+  z-index: 200;
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
+.toast.show { opacity: 1; }
+.toast.error { background: var(--error); }
+.loading {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 300;
+}
+.loading.hidden { display: none; }
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid var(--border);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.warning-badge {
+  display: inline-block;
+  background: var(--error);
+  color: white;
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+</style>
+</head>
+<body>
+
+<div class="loading hidden" id="loading"><div class="spinner"></div></div>
+<div class="toast" id="toast"></div>
+
+<div class="header">
+  <h1 id="h-title">Seto Thermal</h1>
+  <div class="header-right">
+    <select class="lang-select" id="langSelect" onchange="switchLang(this.value)"></select>
+  </div>
+</div>
+
+<div class="status-bar" id="statusBar">
+  <div class="status-item"><div class="label" data-i18n="status.temp">Temperature</div><div class="value" id="st-temp">--</div></div>
+  <div class="status-item"><div class="label" data-i18n="status.current">Current</div><div class="value" id="st-current">--</div></div>
+  <div class="status-item"><div class="label" data-i18n="status.battery">Battery</div><div class="value" id="st-battery">--</div></div>
+  <div class="status-item"><div class="label" data-i18n="status.state">State</div><div class="value" id="st-status">--</div></div>
+</div>
+
+<div id="configContainer"></div>
+
+<div class="save-bar">
+  <button class="btn btn-secondary" onclick="loadConfig()" data-i18n="btn.reload">Reload</button>
+  <button class="btn btn-primary" onclick="saveAndApply()" data-i18n="btn.save">Save & Apply</button>
+</div>
+
+<script>
+// ==================== i18n ====================
+const LANGS = {
+  "en": {
+    name: "English",
+    "h.title": "Seto Thermal",
+    "status.temp": "Temperature",
+    "status.current": "Current",
+    "status.battery": "Battery",
+    "status.state": "State",
+    "btn.reload": "Reload",
+    "btn.save": "Save & Apply",
+    "msg.saved": "Config saved and applied!",
+    "msg.save_fail": "Failed to save config",
+    "msg.loading": "Loading...",
+    "msg.no_config": "Config file not found",
+    "state.charging": "Charging",
+    "state.discharging": "Discharging",
+    "state.full": "Full",
+    "state.not_charging": "Not Charging",
+    "sec.display": "Display",
+    "sec.thermal": "Thermal Control",
+    "sec.charging": "Charging Control",
+    "sec.charge_speed": "Charging Speed Control",
+    "sec.step_charge": "Step Charging (Battery Level)",
+    "sec.screen_charge": "Screen On/Off Charging",
+    "sec.app_charge": "Per-App Charging",
+    "sec.charge_stop": "Charge Stop Control",
+    "sec.thermal_opts": "Thermal Options",
+    "sec.miui": "MIUI/HyperOS",
+    "sec.other": "Other",
+    "cfg.简洁版配置": "Simple Config Mode",
+    "cfg.简洁版配置.desc": "Switch to simplified config. Set to false after switching.",
+    "cfg.模块简介显示充电信息": "Show Charging Info in Module",
+    "cfg.模块简介显示充电信息.desc": "Display current, temp in module manager. Slight battery drain.",
+    "cfg.开启充电Log": "Charging Log",
+    "cfg.开启充电Log.desc": "Low-power C++ charging log, viewable in module root.",
+    "cfg.温控空文件挂载": "Empty Thermal File Mount",
+    "cfg.温控空文件挂载.desc": "Deeper thermal removal. Enable if brightness drops or charging slows.",
+    "cfg.快充模式": "Fast Charge Mode",
+    "cfg.快充模式.desc": "Spoofs battery temp to bypass limits. DANGEROUS: may damage battery!",
+    "cfg.快充模式.warn": "DANGER",
+    "cfg.还原性能模式温控": "Restore Performance Thermal",
+    "cfg.还原性能模式温控.desc": "Restore original performance mode thermal config.",
+    "cfg.均衡式性能温控": "Balanced Performance Thermal",
+    "cfg.均衡式性能温控.desc": "Use performance thermal in balanced mode, no thermal in performance mode.",
+    "cfg.跳电修复模式": "Voltage Jump Fix",
+    "cfg.跳电修复模式.desc": "Fix battery voltage jumps on Xiaomi. Disable empty thermal mount when enabled.",
+    "cfg.开启修改电流数": "Modify Max Current",
+    "cfg.开启修改电流数.desc": "Set max charging current limit.",
+    "cfg.最大电流数": "Max Current (uA)",
+    "cfg.最大电流数.desc": "e.g. 22000000 = 22A = 22000mA",
+    "cfg.开启充电调速": "Temp-based Speed Control",
+    "cfg.开启充电调速.desc": "Auto-limit current when temperature reaches thresholds.",
+    "cfg.一限温度阈值": "Tier 1 Temp Threshold (C)",
+    "cfg.一限限制电流": "Tier 1 Current Limit (uA)",
+    "cfg.二限温度阈值": "Tier 2 Temp Threshold (C)",
+    "cfg.二限限制电流": "Tier 2 Current Limit (uA)",
+    "cfg.三限温度阈值": "Tier 3 Temp Threshold (C)",
+    "cfg.三限限制电流": "Tier 3 Current Limit (uA)",
+    "cfg.延迟温度阈值": "Delay (seconds)",
+    "cfg.自定义阶梯模式": "Custom Step Mode",
+    "cfg.自定义阶梯模式.desc": "Auto-limit current based on battery level.",
+    "cfg.一限电量阈值": "Tier 1 Battery %",
+    "cfg.一限电量限制电流": "Tier 1 Current Limit (uA)",
+    "cfg.二限电量阈值": "Tier 2 Battery %",
+    "cfg.二限电量限制电流": "Tier 2 Current Limit (uA)",
+    "cfg.三限电量阈值": "Tier 3 Battery %",
+    "cfg.三限电量限制电流": "Tier 3 Current Limit (uA)",
+    "cfg.亮息屏调速": "Screen On/Off Speed",
+    "cfg.亮息屏调速.desc": "Different charge current for screen on vs off.",
+    "cfg.亮屏限制电流": "Screen On Current (uA)",
+    "cfg.锁屏限制电流": "Screen Off Current (uA)",
+    "cfg.分应用调速": "Per-App Speed Control",
+    "cfg.分应用调速.desc": "Limit current based on foreground app. Config in blocklist.",
+    "cfg.当电流低于阈值执行停充": "Stop Charge at Threshold",
+    "cfg.当电流低于阈值执行停充.desc": "Stop charging when current drops below threshold.",
+    "cfg.电量多少检测阈值": "Battery % to Start Check",
+    "cfg.电流阈值": "Current Threshold (uA)",
+    "cfg.降低到多少电量恢复充电": "Resume at Battery %",
+    "cfg.关闭录制温控": "Disable Recording Thermal",
+    "cfg.关闭录制温控.desc": "Remove thermal limits during video recording.",
+    "cfg.关闭相机温控": "Disable Camera Thermal",
+    "cfg.关闭相机温控.desc": "Remove thermal limits for camera.",
+    "cfg.全局高刷（和dfps冲突）": "Global High Refresh Rate",
+    "cfg.全局高刷（和dfps冲突）.desc": "Remove MIUI dynamic frame rate limit. Conflicts with DFPS.",
+    "cfg.关闭logd": "Disable logd",
+    "cfg.关闭logd.desc": "Disable system logging to save minimal battery.",
+    "cfg.关闭millet": "Disable Millet",
+    "cfg.关闭millet.desc": "Disable MIUI background freezer. May improve battery life.",
+    "cfg.关闭锁游戏分辨率（记得游戏加速选高质量）": "Disable Game Resolution Lock",
+    "cfg.关闭锁游戏分辨率（记得游戏加速选高质量）.desc": "Unlock full resolution in games. Set Game Turbo to High Quality.",
+    "cfg.加快部分游戏启动速度": "Speed Up Game Launch",
+    "cfg.加快部分游戏启动速度.desc": "Faster game startup. May not work on all devices."
+  },
+  "zh-CN": {
+    name: "简体中文",
+    "h.title": "色图温控",
+    "status.temp": "温度",
+    "status.current": "电流",
+    "status.battery": "电量",
+    "status.state": "状态",
+    "btn.reload": "重新加载",
+    "btn.save": "保存并生效",
+    "msg.saved": "配置已保存并生效！",
+    "msg.save_fail": "保存配置失败",
+    "msg.loading": "加载中...",
+    "msg.no_config": "未找到配置文件",
+    "state.charging": "充电中",
+    "state.discharging": "未充电",
+    "state.full": "已充满",
+    "state.not_charging": "未充电",
+    "sec.display": "显示",
+    "sec.thermal": "温控设置",
+    "sec.charging": "充电控制",
+    "sec.charge_speed": "充电调速",
+    "sec.step_charge": "电量阶梯充电",
+    "sec.screen_charge": "亮息屏充电",
+    "sec.app_charge": "分应用充电",
+    "sec.charge_stop": "停充控制",
+    "sec.thermal_opts": "温控选项",
+    "sec.miui": "MIUI/HyperOS 专区",
+    "sec.other": "其他",
+    "cfg.简洁版配置": "简洁版配置",
+    "cfg.简洁版配置.desc": "切换到简洁配置。切换完成后记得改回false。",
+    "cfg.模块简介显示充电信息": "模块简介显示充电信息",
+    "cfg.模块简介显示充电信息.desc": "在Magisk模块界面显示电流、温度等充电信息，可能略微耗电。",
+    "cfg.开启充电Log": "开启充电Log",
+    "cfg.开启充电Log.desc": "由C++编写的低功耗充电Log，可在模块根目录查看。",
+    "cfg.温控空文件挂载": "温控空文件挂载",
+    "cfg.温控空文件挂载.desc": "温控去的更干净，如降亮度或充电慢可开启此选项。",
+    "cfg.快充模式": "快充模式",
+    "cfg.快充模式.desc": "伪装电池温度绕过限制。危险：可能损坏电池！",
+    "cfg.快充模式.warn": "危险",
+    "cfg.还原性能模式温控": "还原性能模式温控",
+    "cfg.还原性能模式温控.desc": "仅还原系统原有的性能模式温控。",
+    "cfg.均衡式性能温控": "均衡式性能温控",
+    "cfg.均衡式性能温控.desc": "均衡模式使用性能温控，性能模式无温控。",
+    "cfg.跳电修复模式": "跳电修复模式",
+    "cfg.跳电修复模式.desc": "修复小米手机跳电问题。开启后必须关闭温控空文件挂载。",
+    "cfg.开启修改电流数": "开启修改电流数",
+    "cfg.开启修改电流数.desc": "设置最大充电电流限制。",
+    "cfg.最大电流数": "最大电流数 (uA)",
+    "cfg.最大电流数.desc": "例: 22000000 = 22A = 22000mA",
+    "cfg.开启充电调速": "开启充电调速",
+    "cfg.开启充电调速.desc": "温度到达阈值时自动限制电流。",
+    "cfg.一限温度阈值": "一限温度阈值 (℃)",
+    "cfg.一限限制电流": "一限限制电流 (uA)",
+    "cfg.二限温度阈值": "二限温度阈值 (℃)",
+    "cfg.二限限制电流": "二限限制电流 (uA)",
+    "cfg.三限温度阈值": "三限温度阈值 (℃)",
+    "cfg.三限限制电流": "三限限制电流 (uA)",
+    "cfg.延迟温度阈值": "延迟检测 (秒)",
+    "cfg.自定义阶梯模式": "自定义阶梯模式",
+    "cfg.自定义阶梯模式.desc": "电量到达阈值时自动限制电流。",
+    "cfg.一限电量阈值": "一限电量阈值 (%)",
+    "cfg.一限电量限制电流": "一限电量限制电流 (uA)",
+    "cfg.二限电量阈值": "二限电量阈值 (%)",
+    "cfg.二限电量限制电流": "二限电量限制电流 (uA)",
+    "cfg.三限电量阈值": "三限电量阈值 (%)",
+    "cfg.三限电量限制电流": "三限电量限制电流 (uA)",
+    "cfg.亮息屏调速": "亮息屏调速",
+    "cfg.亮息屏调速.desc": "亮屏和息屏使用不同充电电流。",
+    "cfg.亮屏限制电流": "亮屏限制电流 (uA)",
+    "cfg.锁屏限制电流": "锁屏限制电流 (uA)",
+    "cfg.分应用调速": "分应用调速",
+    "cfg.分应用调速.desc": "根据前台应用限制充电电流。配置在黑名单文件中。",
+    "cfg.当电流低于阈值执行停充": "当电流低于阈值执行停充",
+    "cfg.当电流低于阈值执行停充.desc": "电流低于阈值时停止充电。",
+    "cfg.电量多少检测阈值": "开始检测电量 (%)",
+    "cfg.电流阈值": "电流阈值 (uA)",
+    "cfg.降低到多少电量恢复充电": "恢复充电电量 (%)",
+    "cfg.关闭录制温控": "关闭录制温控",
+    "cfg.关闭录制温控.desc": "录制视频时去除温控限制。",
+    "cfg.关闭相机温控": "关闭相机温控",
+    "cfg.关闭相机温控.desc": "相机使用时去除温控限制。",
+    "cfg.全局高刷（和dfps冲突）": "全局高刷",
+    "cfg.全局高刷（和dfps冲突）.desc": "移除MIUI动态帧率限制，与DFPS冲突。",
+    "cfg.关闭logd": "关闭logd",
+    "cfg.关闭logd.desc": "关闭系统日志以略微省电。",
+    "cfg.关闭millet": "关闭millet",
+    "cfg.关闭millet.desc": "关闭MIUI后台冻结机制，可略微延长续航。",
+    "cfg.关闭锁游戏分辨率（记得游戏加速选高质量）": "关闭锁游戏分辨率",
+    "cfg.关闭锁游戏分辨率（记得游戏加速选高质量）.desc": "解锁游戏全分辨率，记得游戏加速选高质量。",
+    "cfg.加快部分游戏启动速度": "加快部分游戏启动速度",
+    "cfg.加快部分游戏启动速度.desc": "部分机型不支持。"
+  },
+  "zh-TW": {
+    name: "繁體中文",
+    "h.title": "色圖溫控",
+    "status.temp": "溫度",
+    "status.current": "電流",
+    "status.battery": "電量",
+    "status.state": "狀態",
+    "btn.reload": "重新載入",
+    "btn.save": "儲存並套用",
+    "msg.saved": "設定已儲存並套用！",
+    "msg.save_fail": "儲存設定失敗",
+    "msg.loading": "載入中...",
+    "msg.no_config": "未找到設定檔",
+    "state.charging": "充電中",
+    "state.discharging": "未充電",
+    "state.full": "已充滿",
+    "state.not_charging": "未充電",
+    "sec.display": "顯示",
+    "sec.thermal": "溫控設定",
+    "sec.charging": "充電控制",
+    "sec.charge_speed": "充電調速",
+    "sec.step_charge": "電量階梯充電",
+    "sec.screen_charge": "亮息屏充電",
+    "sec.app_charge": "分應用充電",
+    "sec.charge_stop": "停充控制",
+    "sec.thermal_opts": "溫控選項",
+    "sec.miui": "MIUI/HyperOS 專區",
+    "sec.other": "其他"
+  },
+  "ja": {
+    name: "日本語",
+    "h.title": "Seto サーマル",
+    "status.temp": "温度",
+    "status.current": "電流",
+    "status.battery": "バッテリー",
+    "status.state": "状態",
+    "btn.reload": "再読込",
+    "btn.save": "保存して適用",
+    "msg.saved": "設定を保存して適用しました！",
+    "msg.save_fail": "設定の保存に失敗しました",
+    "msg.loading": "読み込み中...",
+    "msg.no_config": "設定ファイルが見つかりません",
+    "state.charging": "充電中",
+    "state.discharging": "放電中",
+    "state.full": "満充電",
+    "state.not_charging": "未充電",
+    "sec.display": "表示",
+    "sec.thermal": "サーマル設定",
+    "sec.charging": "充電制御",
+    "sec.charge_speed": "充電速度制御",
+    "sec.step_charge": "段階充電",
+    "sec.screen_charge": "画面オン/オフ充電",
+    "sec.app_charge": "アプリ別充電",
+    "sec.charge_stop": "充電停止制御",
+    "sec.thermal_opts": "サーマルオプション",
+    "sec.miui": "MIUI/HyperOS",
+    "sec.other": "その他"
+  },
+  "ko": {
+    name: "한국어",
+    "h.title": "Seto 온도 제어",
+    "status.temp": "온도",
+    "status.current": "전류",
+    "status.battery": "배터리",
+    "status.state": "상태",
+    "btn.reload": "새로고침",
+    "btn.save": "저장 및 적용",
+    "msg.saved": "설정이 저장되고 적용되었습니다!",
+    "msg.save_fail": "설정 저장 실패",
+    "msg.loading": "로딩 중...",
+    "msg.no_config": "설정 파일을 찾을 수 없습니다",
+    "state.charging": "충전 중",
+    "state.discharging": "방전 중",
+    "state.full": "완충",
+    "state.not_charging": "미충전",
+    "sec.display": "디스플레이",
+    "sec.thermal": "온도 제어 설정",
+    "sec.charging": "충전 제어",
+    "sec.charge_speed": "충전 속도 제어",
+    "sec.step_charge": "단계별 충전",
+    "sec.screen_charge": "화면 켜짐/꺼짐 충전",
+    "sec.app_charge": "앱별 충전",
+    "sec.charge_stop": "충전 중지 제어",
+    "sec.thermal_opts": "온도 옵션",
+    "sec.miui": "MIUI/HyperOS",
+    "sec.other": "기타"
+  },
+  "es": {
+    name: "Español",
+    "h.title": "Seto Thermal",
+    "status.temp": "Temperatura",
+    "status.current": "Corriente",
+    "status.battery": "Bateria",
+    "status.state": "Estado",
+    "btn.reload": "Recargar",
+    "btn.save": "Guardar y aplicar",
+    "msg.saved": "Configuracion guardada y aplicada!",
+    "msg.save_fail": "Error al guardar configuracion",
+    "msg.loading": "Cargando...",
+    "msg.no_config": "Archivo de configuracion no encontrado",
+    "state.charging": "Cargando",
+    "state.discharging": "Descargando",
+    "state.full": "Completa",
+    "state.not_charging": "Sin cargar",
+    "sec.display": "Pantalla",
+    "sec.thermal": "Control Termico",
+    "sec.charging": "Control de Carga",
+    "sec.charge_speed": "Velocidad de Carga",
+    "sec.step_charge": "Carga Escalonada",
+    "sec.screen_charge": "Carga Pantalla On/Off",
+    "sec.app_charge": "Carga por Aplicacion",
+    "sec.charge_stop": "Control de Parada",
+    "sec.thermal_opts": "Opciones Termicas",
+    "sec.miui": "MIUI/HyperOS",
+    "sec.other": "Otros"
+  },
+  "fr": {
+    name: "Français",
+    "h.title": "Seto Thermal",
+    "status.temp": "Temperature",
+    "status.current": "Courant",
+    "status.battery": "Batterie",
+    "status.state": "Etat",
+    "btn.reload": "Recharger",
+    "btn.save": "Sauver et appliquer",
+    "msg.saved": "Configuration sauvegardee et appliquee !",
+    "msg.save_fail": "Echec de sauvegarde",
+    "msg.loading": "Chargement...",
+    "msg.no_config": "Fichier de configuration introuvable",
+    "state.charging": "En charge",
+    "state.discharging": "Decharge",
+    "state.full": "Pleine",
+    "state.not_charging": "Pas en charge",
+    "sec.display": "Affichage",
+    "sec.thermal": "Controle Thermique",
+    "sec.charging": "Controle de Charge",
+    "sec.charge_speed": "Vitesse de Charge",
+    "sec.step_charge": "Charge par Paliers",
+    "sec.screen_charge": "Charge Ecran On/Off",
+    "sec.app_charge": "Charge par Application",
+    "sec.charge_stop": "Arret de Charge",
+    "sec.thermal_opts": "Options Thermiques",
+    "sec.miui": "MIUI/HyperOS",
+    "sec.other": "Autres"
+  },
+  "de": {
+    name: "Deutsch",
+    "h.title": "Seto Thermal",
+    "status.temp": "Temperatur",
+    "status.current": "Strom",
+    "status.battery": "Akku",
+    "status.state": "Status",
+    "btn.reload": "Neu laden",
+    "btn.save": "Speichern & Anwenden",
+    "msg.saved": "Konfiguration gespeichert und angewendet!",
+    "msg.save_fail": "Speichern fehlgeschlagen",
+    "msg.loading": "Laden...",
+    "msg.no_config": "Konfigurationsdatei nicht gefunden",
+    "state.charging": "Laden",
+    "state.discharging": "Entladen",
+    "state.full": "Voll",
+    "state.not_charging": "Nicht laden",
+    "sec.display": "Anzeige",
+    "sec.thermal": "Thermische Steuerung",
+    "sec.charging": "Ladesteuerung",
+    "sec.charge_speed": "Ladegeschwindigkeit",
+    "sec.step_charge": "Stufenladung",
+    "sec.screen_charge": "Bildschirm An/Aus Laden",
+    "sec.app_charge": "App-basiertes Laden",
+    "sec.charge_stop": "Ladestopp-Steuerung",
+    "sec.thermal_opts": "Thermische Optionen",
+    "sec.miui": "MIUI/HyperOS",
+    "sec.other": "Sonstiges"
+  },
+  "ru": {
+    name: "Русский",
+    "h.title": "Seto Thermal",
+    "status.temp": "Температура",
+    "status.current": "Ток",
+    "status.battery": "Батарея",
+    "status.state": "Статус",
+    "btn.reload": "Перезагрузить",
+    "btn.save": "Сохранить",
+    "msg.saved": "Настройки сохранены и применены!",
+    "msg.save_fail": "Ошибка сохранения",
+    "msg.loading": "Загрузка...",
+    "msg.no_config": "Файл конфигурации не найден",
+    "state.charging": "Зарядка",
+    "state.discharging": "Разрядка",
+    "state.full": "Полная",
+    "state.not_charging": "Не заряжается",
+    "sec.display": "Дисплей",
+    "sec.thermal": "Термоконтроль",
+    "sec.charging": "Управление зарядкой",
+    "sec.charge_speed": "Скорость зарядки",
+    "sec.step_charge": "Ступенчатая зарядка",
+    "sec.screen_charge": "Зарядка экран вкл/выкл",
+    "sec.app_charge": "Зарядка по приложениям",
+    "sec.charge_stop": "Остановка зарядки",
+    "sec.thermal_opts": "Термо опции",
+    "sec.miui": "MIUI/HyperOS",
+    "sec.other": "Другое"
+  },
+  "pt": {
+    name: "Português",
+    "h.title": "Seto Thermal",
+    "status.temp": "Temperatura",
+    "status.current": "Corrente",
+    "status.battery": "Bateria",
+    "status.state": "Estado",
+    "btn.reload": "Recarregar",
+    "btn.save": "Salvar e aplicar",
+    "msg.saved": "Configuracao salva e aplicada!",
+    "msg.save_fail": "Falha ao salvar configuracao",
+    "msg.loading": "Carregando...",
+    "msg.no_config": "Arquivo de configuracao nao encontrado",
+    "state.charging": "Carregando",
+    "state.discharging": "Descarregando",
+    "state.full": "Completa",
+    "state.not_charging": "Sem carga",
+    "sec.display": "Tela",
+    "sec.thermal": "Controle Termico",
+    "sec.charging": "Controle de Carga",
+    "sec.charge_speed": "Velocidade de Carga",
+    "sec.step_charge": "Carga Escalonada",
+    "sec.screen_charge": "Carga Tela Ligada/Desligada",
+    "sec.app_charge": "Carga por Aplicativo",
+    "sec.charge_stop": "Controle de Parada",
+    "sec.thermal_opts": "Opcoes Termicas",
+    "sec.miui": "MIUI/HyperOS",
+    "sec.other": "Outros"
+  }
+};
+
+let currentLang = "en";
+let configData = {};
+let modDir = "";
+
+function t(key) {
+  return LANGS[currentLang][key] || LANGS["en"][key] || LANGS["zh-CN"][key] || key;
+}
+
+function switchLang(lang) {
+  currentLang = lang;
+  localStorage.setItem("seto_lang", lang);
+  document.getElementById("h-title").textContent = t("h.title");
+  document.querySelectorAll("[data-i18n]").forEach(el => {
+    el.textContent = t(el.dataset.i18n);
+  });
+  renderConfig();
+}
+
+function detectLang() {
+  const saved = localStorage.getItem("seto_lang");
+  if (saved && LANGS[saved]) return saved;
+  const nav = (navigator.language || "en").toLowerCase();
+  if (nav.startsWith("zh-tw") || nav.startsWith("zh-hant")) return "zh-TW";
+  if (nav.startsWith("zh")) return "zh-CN";
+  for (const code of Object.keys(LANGS)) {
+    if (nav.startsWith(code.toLowerCase().split("-")[0])) return code;
+  }
+  return "en";
+}
+
+function initLangSelect() {
+  const sel = document.getElementById("langSelect");
+  sel.innerHTML = "";
+  for (const [code, data] of Object.entries(LANGS)) {
+    const opt = document.createElement("option");
+    opt.value = code;
+    opt.textContent = data.name;
+    if (code === currentLang) opt.selected = true;
+    sel.appendChild(opt);
+  }
+}
+
+// ==================== Shell Execution ====================
+async function execCmd(cmd) {
+  if (typeof ksu !== "undefined" && ksu.exec) {
+    return new Promise((resolve, reject) => {
+      const callbackName = "exec_cb_" + Date.now() + "_" + Math.random().toString(36).substr(2,5);
+      window[callbackName] = function(errno, stdout, stderr) {
+        delete window[callbackName];
+        resolve({ errno, stdout, stderr });
+      };
+      ksu.exec(cmd, "{}", callbackName);
+    });
+  } else {
+    // Magisk browser mode - use CGI
+    try {
+      const resp = await fetch("/cgi-bin/api.sh?action=exec&cmd=" + encodeURIComponent(cmd));
+      return await resp.json();
+    } catch(e) {
+      return { errno: 1, stdout: "", stderr: e.message };
+    }
+  }
+}
+
+// ==================== Config Parsing ====================
+function parseConfig(text) {
+  const config = {};
+  const lines = text.split("\n");
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (trimmed.startsWith("#") || trimmed === "") continue;
+    const eqIdx = trimmed.indexOf("=");
+    if (eqIdx === -1) continue;
+    const key = trimmed.substring(0, eqIdx).trim();
+    const val = trimmed.substring(eqIdx + 1).trim();
+    if (key && !key.startsWith("#")) {
+      config[key] = val;
+    }
+  }
+  return config;
+}
+
+function serializeConfig(config) {
+  // Rebuild the config file preserving comments from original
+  const lines = [];
+  lines.push("# Seto Thermal Config - Generated by WebUI");
+  lines.push("# " + new Date().toISOString());
+  lines.push("");
+
+  const SECTIONS = [
+    { keys: ["简洁版配置", "模块简介显示充电信息", "开启充电Log"] },
+    { keys: ["温控空文件挂载", "快充模式", "还原性能模式温控", "均衡式性能温控", "跳电修复模式"] },
+    { keys: ["开启修改电流数", "最大电流数"] },
+    { keys: ["开启充电调速", "一限温度阈值", "一限限制电流", "二限温度阈值", "二限限制电流", "三限温度阈值", "三限限制电流", "延迟温度阈值"] },
+    { keys: ["自定义阶梯模式", "一限电量阈值", "一限电量限制电流", "二限电量阈值", "二限电量限制电流", "三限电量阈值", "三限电量限制电流"] },
+    { keys: ["亮息屏调速", "亮屏限制电流", "锁屏限制电流"] },
+    { keys: ["分应用调速"] },
+    { keys: ["当电流低于阈值执行停充", "电量多少检测阈值", "电流阈值", "降低到多少电量恢复充电"] },
+    { keys: ["关闭录制温控", "关闭相机温控"] },
+    { keys: ["全局高刷（和dfps冲突）", "关闭logd", "关闭millet", "关闭锁游戏分辨率（记得游戏加速选高质量）", "加快部分游戏启动速度"] },
+  ];
+
+  const written = new Set();
+  for (const sec of SECTIONS) {
+    for (const key of sec.keys) {
+      if (key in config) {
+        lines.push(key + "=" + config[key]);
+        written.add(key);
+      }
+    }
+    lines.push("");
+  }
+
+  // Write any remaining keys
+  for (const [key, val] of Object.entries(config)) {
+    if (!written.has(key)) {
+      lines.push(key + "=" + val);
+    }
+  }
+
+  return lines.join("\n");
+}
+
+// ==================== Config Rendering ====================
+const CONFIG_LAYOUT = [
+  {
+    section: "sec.display",
+    items: [
+      { key: "模块简介显示充电信息", type: "toggle" },
+      { key: "简洁版配置", type: "toggle" },
+    ]
+  },
+  {
+    section: "sec.charging",
+    items: [
+      { key: "开启充电Log", type: "toggle" },
+      { key: "开启修改电流数", type: "toggle", children: [
+        { key: "最大电流数", type: "number" },
+      ]},
+    ]
+  },
+  {
+    section: "sec.thermal",
+    items: [
+      { key: "温控空文件挂载", type: "toggle" },
+      { key: "快充模式", type: "toggle", warn: true },
+      { key: "还原性能模式温控", type: "toggle" },
+      { key: "均衡式性能温控", type: "toggle" },
+      { key: "跳电修复模式", type: "toggle" },
+    ]
+  },
+  {
+    section: "sec.charge_speed",
+    items: [
+      { key: "开启充电调速", type: "toggle", children: [
+        { key: "一限温度阈值", type: "number" },
+        { key: "一限限制电流", type: "number" },
+        { key: "二限温度阈值", type: "number" },
+        { key: "二限限制电流", type: "number" },
+        { key: "三限温度阈值", type: "number" },
+        { key: "三限限制电流", type: "number" },
+        { key: "延迟温度阈值", type: "number" },
+      ]},
+    ]
+  },
+  {
+    section: "sec.step_charge",
+    items: [
+      { key: "自定义阶梯模式", type: "toggle", children: [
+        { key: "一限电量阈值", type: "number" },
+        { key: "一限电量限制电流", type: "number" },
+        { key: "二限电量阈值", type: "number" },
+        { key: "二限电量限制电流", type: "number" },
+        { key: "三限电量阈值", type: "number" },
+        { key: "三限电量限制电流", type: "number" },
+      ]},
+    ]
+  },
+  {
+    section: "sec.screen_charge",
+    items: [
+      { key: "亮息屏调速", type: "toggle", children: [
+        { key: "亮屏限制电流", type: "number" },
+        { key: "锁屏限制电流", type: "number" },
+      ]},
+    ]
+  },
+  {
+    section: "sec.app_charge",
+    items: [
+      { key: "分应用调速", type: "toggle" },
+    ]
+  },
+  {
+    section: "sec.charge_stop",
+    items: [
+      { key: "当电流低于阈值执行停充", type: "toggle", children: [
+        { key: "电量多少检测阈值", type: "number" },
+        { key: "电流阈值", type: "number" },
+        { key: "降低到多少电量恢复充电", type: "number" },
+      ]},
+    ]
+  },
+  {
+    section: "sec.thermal_opts",
+    items: [
+      { key: "关闭录制温控", type: "toggle" },
+      { key: "关闭相机温控", type: "toggle" },
+    ]
+  },
+  {
+    section: "sec.miui",
+    items: [
+      { key: "全局高刷（和dfps冲突）", type: "toggle" },
+      { key: "关闭logd", type: "toggle" },
+      { key: "关闭millet", type: "toggle" },
+      { key: "关闭锁游戏分辨率（记得游戏加速选高质量）", type: "toggle" },
+      { key: "加快部分游戏启动速度", type: "toggle" },
+    ]
+  },
+];
+
+function renderConfig() {
+  const container = document.getElementById("configContainer");
+  container.innerHTML = "";
+
+  for (const group of CONFIG_LAYOUT) {
+    const sec = document.createElement("div");
+    sec.className = "section";
+
+    const title = document.createElement("div");
+    title.className = "section-title";
+    title.textContent = t(group.section);
+    sec.appendChild(title);
+
+    for (const item of group.items) {
+      sec.appendChild(createConfigItem(item, false));
+      if (item.children) {
+        for (const child of item.children) {
+          const childEl = createConfigItem(child, true);
+          childEl.dataset.parent = item.key;
+          const parentVal = configData[item.key];
+          if (parentVal !== "true") {
+            childEl.style.display = "none";
+          }
+          sec.appendChild(childEl);
+        }
+      }
+    }
+
+    container.appendChild(sec);
+  }
+}
+
+function createConfigItem(item, isSub) {
+  const div = document.createElement("div");
+  div.className = isSub ? "sub-item" : "config-item";
+  div.dataset.key = item.key;
+
+  const info = document.createElement("div");
+  info.className = "info";
+
+  const name = document.createElement("div");
+  name.className = "name";
+  name.textContent = t("cfg." + item.key) || item.key;
+  if (item.warn) {
+    const badge = document.createElement("span");
+    badge.className = "warning-badge";
+    badge.textContent = t("cfg." + item.key + ".warn") || "!";
+    name.appendChild(badge);
+  }
+  info.appendChild(name);
+
+  const descKey = "cfg." + item.key + ".desc";
+  const descText = t(descKey);
+  if (descText !== descKey) {
+    const desc = document.createElement("div");
+    desc.className = "desc";
+    desc.textContent = descText;
+    info.appendChild(desc);
+  }
+
+  div.appendChild(info);
+
+  if (item.type === "toggle") {
+    const toggle = document.createElement("label");
+    toggle.className = "toggle";
+    const input = document.createElement("input");
+    input.type = "checkbox";
+    input.id = "cfg_" + item.key;
+    const val = configData[item.key];
+    input.checked = val === "true";
+    input.addEventListener("change", function() {
+      configData[item.key] = this.checked ? "true" : "false";
+      // Toggle children visibility
+      document.querySelectorAll('[data-parent="' + item.key + '"]').forEach(el => {
+        el.style.display = this.checked ? "flex" : "none";
+      });
+    });
+    const slider = document.createElement("span");
+    slider.className = "slider";
+    toggle.appendChild(input);
+    toggle.appendChild(slider);
+    div.appendChild(toggle);
+  } else if (item.type === "number") {
+    const input = document.createElement("input");
+    input.type = "text";
+    input.inputMode = "numeric";
+    input.className = "number-input";
+    input.id = "cfg_" + item.key;
+    input.value = configData[item.key] || "";
+    input.placeholder = "0";
+    input.addEventListener("input", function() {
+      configData[item.key] = this.value;
+    });
+    div.appendChild(input);
+  }
+
+  return div;
+}
+
+// ==================== Status ====================
+async function updateStatus() {
+  try {
+    const r = await execCmd(
+      'echo "$(cat /sys/class/power_supply/battery/temp 2>/dev/null)||' +
+      '$(cat /sys/class/power_supply/battery/current_now 2>/dev/null)||' +
+      '$(cat /sys/class/power_supply/battery/capacity 2>/dev/null)||' +
+      '$(cat /sys/class/power_supply/battery/status 2>/dev/null)"'
+    );
+    if (r.errno === 0 && r.stdout) {
+      const parts = r.stdout.trim().split("||");
+      if (parts.length >= 4) {
+        const temp = parseInt(parts[0]) / 10;
+        const current = Math.abs(parseInt(parts[1]) / 1000);
+        const capacity = parts[2];
+        const status = parts[3].trim();
+        document.getElementById("st-temp").textContent = temp.toFixed(1) + "°C";
+        document.getElementById("st-current").textContent = current + "mA";
+        document.getElementById("st-battery").textContent = capacity + "%";
+        const stateMap = { "Charging": "state.charging", "Discharging": "state.discharging", "Full": "state.full", "Not charging": "state.not_charging" };
+        document.getElementById("st-status").textContent = t(stateMap[status] || "state.discharging");
+      }
+    }
+  } catch(e) {}
+}
+
+// ==================== Load / Save ====================
+async function detectModDir() {
+  const r = await execCmd('ls -d /data/adb/modules/SetoSkins 2>/dev/null && echo "OK"');
+  if (r.errno === 0 && r.stdout.includes("OK")) {
+    modDir = "/data/adb/modules/SetoSkins";
+    return true;
+  }
+  return false;
+}
+
+async function loadConfig() {
+  showLoading(true);
+  try {
+    if (!modDir) await detectModDir();
+    const r = await execCmd('cat "' + modDir + '/配置.prop" 2>/dev/null');
+    if (r.errno === 0 && r.stdout) {
+      configData = parseConfig(r.stdout);
+      renderConfig();
+      updateStatus();
+    } else {
+      showToast(t("msg.no_config"), true);
+    }
+  } catch(e) {
+    showToast(t("msg.save_fail"), true);
+  }
+  showLoading(false);
+}
+
+async function saveAndApply() {
+  showLoading(true);
+  try {
+    const content = serializeConfig(configData);
+    // Escape for shell: use base64 to avoid escaping issues
+    const b64 = btoa(unescape(encodeURIComponent(content)));
+
+    // Write to module dir AND persistent dir (survives updates)
+    const writeCmd = 'echo "' + b64 + '" | base64 -d > "' + modDir + '/配置.prop" && ' +
+      'mkdir -p /data/adb/SetoSkins && ' +
+      'echo "' + b64 + '" | base64 -d > /data/adb/SetoSkins/配置.prop';
+    const r = await execCmd(writeCmd);
+    if (r.errno !== 0) {
+      showToast(t("msg.save_fail"), true);
+      showLoading(false);
+      return;
+    }
+
+    // Hot-reload: kill and restart all module scripts
+    await execCmd(
+      'pkill -f Seto_fuckthermal 2>/dev/null; ' +
+      'pkill -f Seto_description 2>/dev/null; ' +
+      'sleep 0.5; ' +
+      'nohup /system/bin/sh "' + modDir + '/system/Seto_fuckthermal.sh" >/dev/null 2>&1 &; ' +
+      'nohup /system/bin/sh "' + modDir + '/system/Seto_description.sh" >/dev/null 2>&1 &'
+    );
+
+    // Restart thermal daemons
+    await execCmd(
+      'pkill -9 -f mi_thermald 2>/dev/null; ' +
+      'sleep 0.5; ' +
+      'for i in $(which -a mi_thermald 2>/dev/null); do nohup "$i" >/dev/null 2>&1 & done; ' +
+      'setprop ctl.restart mi_thermald 2>/dev/null; ' +
+      'setprop ctl.restart thermal 2>/dev/null'
+    );
+
+    showToast(t("msg.saved"), false);
+    updateStatus();
+  } catch(e) {
+    showToast(t("msg.save_fail"), true);
+  }
+  showLoading(false);
+}
+
+// ==================== UI Helpers ====================
+function showLoading(show) {
+  document.getElementById("loading").classList.toggle("hidden", !show);
+}
+
+function showToast(msg, isError) {
+  const el = document.getElementById("toast");
+  el.textContent = msg;
+  el.className = "toast show" + (isError ? " error" : "");
+  setTimeout(() => { el.className = "toast"; }, 2500);
+}
+
+// ==================== Init ====================
+async function init() {
+  currentLang = detectLang();
+  initLangSelect();
+  switchLang(currentLang);
+
+  // Try fullscreen for KSU WebView
+  if (typeof ksu !== "undefined") {
+    try { ksu.fullScreen(true); } catch(e) {}
+  }
+
+  await loadConfig();
+
+  // Auto-refresh status every 5 seconds
+  setInterval(updateStatus, 5000);
+}
+
+init();
+</script>
+</body>
+</html>
