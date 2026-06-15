@@ -169,6 +169,29 @@ body {
   background: rgba(0,0,0,0.15);
 }
 .sub-item .name { font-size: 13px; }
+.app-list-textarea {
+  width: 100%;
+  min-height: 100px;
+  background: var(--surface2);
+  color: var(--on-surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 13px;
+  font-family: monospace;
+  outline: none;
+  resize: vertical;
+  margin: 8px 16px 12px;
+  line-height: 1.6;
+}
+.app-list-textarea:focus { border-color: var(--primary); }
+.app-list-textarea::placeholder { color: var(--on-surface-dim); }
+.number-tip {
+  font-size: 11px;
+  color: var(--on-surface-dim);
+  margin-top: 2px;
+  line-height: 1.3;
+}
 .save-bar {
   position: fixed;
   bottom: 0;
@@ -327,7 +350,7 @@ const LANGS = {
     "cfg.开启修改电流数": "Modify Max Current",
     "cfg.开启修改电流数.desc": "Set max charging current limit.",
     "cfg.最大电流数": "Max Current (uA)",
-    "cfg.最大电流数.desc": "e.g. 22000000 = 22A = 22000mA",
+    "cfg.最大电流数.tip": "e.g. 22000000 = 22A = 22000mA",
     "cfg.开启充电调速": "Temp-based Speed Control",
     "cfg.开启充电调速.desc": "Auto-limit current when temperature reaches thresholds.",
     "cfg.一限温度阈值": "Tier 1 Temp Threshold (C)",
@@ -350,7 +373,10 @@ const LANGS = {
     "cfg.亮屏限制电流": "Screen On Current (uA)",
     "cfg.锁屏限制电流": "Screen Off Current (uA)",
     "cfg.分应用调速": "Per-App Speed Control",
-    "cfg.分应用调速.desc": "Limit current based on foreground app. Config in blocklist.",
+    "cfg.分应用调速.desc": "Limit current based on foreground app.",
+    "cfg.黑名单": "Blacklist",
+    "cfg.黑名单.tip": "[Package Name] [Current Limit uA]",
+    "cfg.黑名单.placeholder": "com.example.app 50000000",
     "cfg.当电流低于阈值执行停充": "Stop Charge at Threshold",
     "cfg.当电流低于阈值执行停充.desc": "Stop charging when current drops below threshold.",
     "cfg.电量多少检测阈值": "Battery % to Start Check",
@@ -369,7 +395,11 @@ const LANGS = {
     "cfg.关闭锁游戏分辨率（记得游戏加速选高质量）": "Disable Game Resolution Lock",
     "cfg.关闭锁游戏分辨率（记得游戏加速选高质量）.desc": "Unlock full resolution in games. Set Game Turbo to High Quality.",
     "cfg.加快部分游戏启动速度": "Speed Up Game Launch",
-    "cfg.加快部分游戏启动速度.desc": "Faster game startup. May not work on all devices."
+    "cfg.加快部分游戏启动速度.desc": "Faster game startup. May not work on all devices.",
+    "cfg.指定应用无温控": "Per-App No Thermal",
+    "cfg.指定应用无温控.desc": "Disable thermal for specific foreground apps.",
+    "cfg.无温控应用.tip": "One package name per line",
+    "cfg.无温控应用.placeholder": "com.example.app"
   },
   "zh-CN": {
     name: "简体中文",
@@ -419,7 +449,7 @@ const LANGS = {
     "cfg.开启修改电流数": "开启修改电流数",
     "cfg.开启修改电流数.desc": "设置最大充电电流限制。",
     "cfg.最大电流数": "最大电流数 (uA)",
-    "cfg.最大电流数.desc": "例: 22000000 = 22A = 22000mA",
+    "cfg.最大电流数.tip": "例：22000000 = 22A = 22000mA",
     "cfg.开启充电调速": "开启充电调速",
     "cfg.开启充电调速.desc": "温度到达阈值时自动限制电流。",
     "cfg.一限温度阈值": "一限温度阈值 (℃)",
@@ -442,7 +472,10 @@ const LANGS = {
     "cfg.亮屏限制电流": "亮屏限制电流 (uA)",
     "cfg.锁屏限制电流": "锁屏限制电流 (uA)",
     "cfg.分应用调速": "分应用调速",
-    "cfg.分应用调速.desc": "根据前台应用限制充电电流。配置在黑名单文件中。",
+    "cfg.分应用调速.desc": "根据前台应用限制充电电流。",
+    "cfg.黑名单": "黑名单",
+    "cfg.黑名单.tip": "[包名] [电流限制uA]",
+    "cfg.黑名单.placeholder": "com.example.app 50000000",
     "cfg.当电流低于阈值执行停充": "当电流低于阈值执行停充",
     "cfg.当电流低于阈值执行停充.desc": "电流低于阈值时停止充电。",
     "cfg.电量多少检测阈值": "开始检测电量 (%)",
@@ -461,7 +494,13 @@ const LANGS = {
     "cfg.关闭锁游戏分辨率（记得游戏加速选高质量）": "关闭锁游戏分辨率",
     "cfg.关闭锁游戏分辨率（记得游戏加速选高质量）.desc": "解锁游戏全分辨率，记得游戏加速选高质量。",
     "cfg.加快部分游戏启动速度": "加快部分游戏启动速度",
-    "cfg.加快部分游戏启动速度.desc": "部分机型不支持。"
+    "cfg.加快部分游戏启动速度.desc": "部分机型不支持。",
+    "cfg.指定应用无温控": "指定应用无温控",
+    "cfg.指定应用无温控.desc": "前台应用为指定应用时关闭温控。",
+    "cfg.无温控应用": "无温控应用",
+    "cfg.无温控应用.tip": "每行一个包名",
+    "cfg.无温控应用.placeholder": "com.example.app"
+   
   },
   "zh-TW": {
     name: "繁體中文",
@@ -490,7 +529,15 @@ const LANGS = {
     "sec.charge_stop": "停充控制",
     "sec.thermal_opts": "溫控選項",
     "sec.miui": "MIUI/HyperOS 專區",
-    "sec.other": "其他"
+    "sec.other": "其他",
+    "cfg.分应用调速":"分應用充電",
+    "cfg.分应用调速.desc":"根據前台應用限制充電電流。",
+    "cfg.黑名单":"黑名單",
+    "cfg.黑名单.tip":"[包名] [電流限制uA]",
+    "cfg.指定应用无温控":"指定應用無溫控",
+    "cfg.指定应用无温控.desc": "前台應用為指定應用時關閉溫控。",
+    "cfg.无温控应用.tip": "每行一個套件名稱",
+    "cfg.无温控应用.placeholder": "com.example.app"
   },
   "ja": {
     name: "日本語",
@@ -519,7 +566,15 @@ const LANGS = {
     "sec.charge_stop": "充電停止制御",
     "sec.thermal_opts": "サーマルオプション",
     "sec.miui": "MIUI/HyperOS",
-    "sec.other": "その他"
+    "sec.other": "その他",
+    "cfg.指定应用无温控": "アプリ別サーマル無効",
+    "cfg.指定应用无温控.desc": "指定アプリがフォアグラウンドにある間、サーマルを停止します。",
+    "cfg.无温控应用.tip": "1行に1つのパッケージ名",
+    "cfg.无温控应用.placeholder": "com.example.app",
+    "cfg.分应用调速": "アプリ別充電速度",
+    "cfg.分应用调速.desc": "フォアグラウンドアプリに応じて充電電流を制限します。",
+    "cfg.黑名单": "ブラックリスト",
+    "cfg.黑名单.tip": "[パッケージ名] [電流制限uA]"
   },
   "ko": {
     name: "한국어",
@@ -548,7 +603,15 @@ const LANGS = {
     "sec.charge_stop": "충전 중지 제어",
     "sec.thermal_opts": "온도 옵션",
     "sec.miui": "MIUI/HyperOS",
-    "sec.other": "기타"
+    "sec.other": "기타",
+    "cfg.指定应用无温控": "앱별 온도 제어 비활성화",
+    "cfg.指定应用无温控.desc": "지정된 앱이 포그라운드에 있을 때 온도 제어를 중지합니다.",
+    "cfg.无温控应用.tip": "줄당 하나의 패키지명",
+    "cfg.无温控应用.placeholder": "com.example.app",
+    "cfg.分应用调速": "앱별 충전 속도 제어",
+    "cfg.分应用调速.desc": "포그라운드 앱에 따라 충전 전류를 제한합니다.",
+    "cfg.黑名单": "블랙리스트",
+    "cfg.黑名单.tip": "[패키지명] [전류 제한uA]"
   },
   "es": {
     name: "Español",
@@ -577,7 +640,15 @@ const LANGS = {
     "sec.charge_stop": "Control de Parada",
     "sec.thermal_opts": "Opciones Termicas",
     "sec.miui": "MIUI/HyperOS",
-    "sec.other": "Otros"
+    "sec.other": "Otros",
+    "cfg.指定应用无温控": "Sin termico por aplicacion",
+    "cfg.指定应用无温控.desc": "Detiene el control termico cuando una app especifica esta en primer plano.",
+    "cfg.无温控应用.tip": "Un nombre de paquete por linea",
+    "cfg.无温控应用.placeholder": "com.example.app",
+    "cfg.分应用调速": "Velocidad de carga por app",
+    "cfg.分应用调速.desc": "Limita la corriente de carga segun la app en primer plano.",
+    "cfg.黑名单": "Lista negra",
+    "cfg.黑名单.tip": "[Paquete] [Límite Corriente uA]"
   },
   "fr": {
     name: "Français",
@@ -606,7 +677,15 @@ const LANGS = {
     "sec.charge_stop": "Arret de Charge",
     "sec.thermal_opts": "Options Thermiques",
     "sec.miui": "MIUI/HyperOS",
-    "sec.other": "Autres"
+    "sec.other": "Autres",
+    "cfg.指定应用无温控": "Desactiver thermique par appli",
+    "cfg.指定应用无温控.desc": "Arrete le controle thermique quand une app specifique est au premier plan.",
+    "cfg.无温控应用.tip": "Un nom de paquet par ligne",
+    "cfg.无温控应用.placeholder": "com.example.app",
+    "cfg.分应用调速": "Vitesse de charge par appli",
+    "cfg.分应用调速.desc": "Limite le courant de charge selon l'application au premier plan.",
+    "cfg.黑名单": "Liste noire",
+    "cfg.黑名单.tip": "[Paquet] [Limite Courant uA]"
   },
   "de": {
     name: "Deutsch",
@@ -635,7 +714,15 @@ const LANGS = {
     "sec.charge_stop": "Ladestopp-Steuerung",
     "sec.thermal_opts": "Thermische Optionen",
     "sec.miui": "MIUI/HyperOS",
-    "sec.other": "Sonstiges"
+    "sec.other": "Sonstiges",
+    "cfg.指定应用无温控": "Thermik pro App deaktivieren",
+    "cfg.指定应用无温控.desc": "Stoppt die Thermiksteuerung, wenn eine bestimmte App im Vordergrund ist.",
+    "cfg.无温控应用.tip": "Ein Paketname pro Zeile",
+    "cfg.无温控应用.placeholder": "com.example.app",
+    "cfg.分应用调速": "Ladegeschwindigkeit pro App",
+    "cfg.分应用调速.desc": "Begrenzt den Ladestrom basierend auf der Vordergrund-App.",
+    "cfg.黑名单": "Schwarze Liste",
+    "cfg.黑名单.tip": "[Paket] [Stromgrenze uA]"
   },
   "ru": {
     name: "Русский",
@@ -664,7 +751,15 @@ const LANGS = {
     "sec.charge_stop": "Остановка зарядки",
     "sec.thermal_opts": "Термо опции",
     "sec.miui": "MIUI/HyperOS",
-    "sec.other": "Другое"
+    "sec.other": "Другое",
+    "cfg.指定应用无温控": "Откл. термоконтроль по прил.",
+    "cfg.指定应用无温控.desc": "Останавливает термоконтроль, когда указанное приложение находится на переднем плане.",
+    "cfg.无温控应用.tip": "Одно имя пакета в строке",
+    "cfg.无温控应用.placeholder": "com.example.app",
+    "cfg.分应用调速": "Скорость зарядки по приложению",
+    "cfg.分应用调速.desc": "Ограничивает ток зарядки в зависимости от приложения на переднем плане.",
+    "cfg.黑名单": "Черный список",
+    "cfg.黑名单.tip": "[Пакет] [Лимит тока uA]"
   },
   "pt": {
     name: "Português",
@@ -693,12 +788,22 @@ const LANGS = {
     "sec.charge_stop": "Controle de Parada",
     "sec.thermal_opts": "Opcoes Termicas",
     "sec.miui": "MIUI/HyperOS",
-    "sec.other": "Outros"
+    "sec.other": "Outros",
+    "cfg.指定应用无温控": "Desativar termico por aplicacao",
+    "cfg.指定应用无温控.desc": "Para o controle termico quando um aplicativo especifico esta em primeiro plano.",
+    "cfg.无温控应用.tip": "Um nome de pacote por linha",
+    "cfg.无温控应用.placeholder": "com.example.app",
+    "cfg.分应用调速": "Velocidade de carga por aplicativo",
+    "cfg.分应用调速.desc": "Limita a corrente de carga com base no aplicativo em primeiro plano.",
+    "cfg.黑名单": "Lista negra",
+    "cfg.黑名单.tip": "[Pacote] [Limite Corrente uA]"
   }
 };
 
 let currentLang = "en";
 let configData = {};
+let appListData = "";
+let blacklistData = "";
 let modDir = "";
 
 function t(key) {
@@ -887,7 +992,9 @@ const CONFIG_LAYOUT = [
   {
     section: "sec.app_charge",
     items: [
-      { key: "分应用调速", type: "toggle" },
+      { key: "分应用调速", type: "toggle", children: [
+        { key: "黑名单", type: "textarea" },
+      ]},
     ]
   },
   {
@@ -905,6 +1012,9 @@ const CONFIG_LAYOUT = [
     items: [
       { key: "关闭录制温控", type: "toggle" },
       { key: "关闭相机温控", type: "toggle" },
+      { key: "指定应用无温控", type: "toggle", children: [
+        { key: "无温控应用", type: "textarea" },
+      ]},
     ]
   },
   {
@@ -979,6 +1089,14 @@ function createConfigItem(item, isSub) {
     info.appendChild(desc);
   }
 
+  const tipText = t("cfg." + item.key + ".tip");
+  if (tipText !== "cfg." + item.key + ".tip") {
+    const tip = document.createElement("div");
+    tip.className = "number-tip";
+    tip.textContent = tipText;
+    info.appendChild(tip);
+  }
+
   div.appendChild(info);
 
   if (item.type === "toggle") {
@@ -1013,6 +1131,29 @@ function createConfigItem(item, isSub) {
       configData[item.key] = this.value;
     });
     div.appendChild(input);
+  } else if (item.type === "textarea") {
+    const listDescText = t("cfg." + item.key + ".list.desc");
+    if (listDescText !== "cfg." + item.key + ".list.desc" && listDescText) {
+      const listDesc = document.createElement("div");
+      listDesc.className = "desc";
+      listDesc.style.padding = "12px 16px 0";
+      listDesc.textContent = listDescText;
+      div.appendChild(listDesc);
+    }
+
+const textarea = document.createElement("textarea");
+textarea.className = "app-list-textarea";
+textarea.id = "cfg_" + item.key;
+textarea.value = item.key === "黑名单" ? blacklistData : appListData;
+textarea.placeholder = item.key === "黑名单" ? "com.example.app 50000000" : "com.example.app";
+textarea.addEventListener("input", function() {
+  if (item.key === "黑名单") {
+    blacklistData = this.value;
+  } else {
+    appListData = this.value;
+  }
+});
+div.appendChild(textarea);
   }
 
   return div;
@@ -1061,6 +1202,10 @@ async function loadConfig() {
     const r = await execCmd('cat "' + modDir + '/配置.prop" 2>/dev/null');
     if (r.errno === 0 && r.stdout) {
       configData = parseConfig(r.stdout);
+      const r2 = await execCmd('cat "' + modDir + '/无温控应用.prop" 2>/dev/null');
+      appListData = (r2.errno === 0 && r2.stdout) ? r2.stdout : "";
+      const r3 = await execCmd('cat "' + modDir + '/黑名单.prop" 2>/dev/null');
+      blacklistData = (r3.errno === 0 && r3.stdout) ? r3.stdout : "";
       renderConfig();
       updateStatus();
     } else {
@@ -1090,13 +1235,27 @@ async function saveAndApply() {
       return;
     }
 
+    // Save app list for SetoSpecificApp
+    const b64Apps = btoa(unescape(encodeURIComponent(appListData)));
+    await execCmd('echo "' + b64Apps + '" | base64 -d > "' + modDir + '/无温控应用.prop" && ' +
+      'echo "' + b64Apps + '" | base64 -d > /data/adb/SetoSkins/无温控应用.prop');
+
+    // Save blacklist for per-app speed control
+    const b64Blacklist = btoa(unescape(encodeURIComponent(blacklistData)));
+    await execCmd('echo "' + b64Blacklist + '" | base64 -d > "' + modDir + '/黑名单.prop" && ' +
+      'echo "' + b64Blacklist + '" | base64 -d > /data/adb/SetoSkins/黑名单.prop');
+
     // Hot-reload: kill and restart all module scripts
     await execCmd(
       'pkill -f Seto_fuckthermal 2>/dev/null; ' +
       'pkill -f Seto_description 2>/dev/null; ' +
+      'pkill -9 -f SetoSpecificApp 2>/dev/null; ' +
+      'pkill -f SetoSpecificCurrent 2>/dev/null; ' +
       'sleep 0.5; ' +
       'nohup /system/bin/sh "' + modDir + '/system/Seto_fuckthermal.sh" >/dev/null 2>&1 &; ' +
-      'nohup /system/bin/sh "' + modDir + '/system/Seto_description.sh" >/dev/null 2>&1 &'
+      'nohup /system/bin/sh "' + modDir + '/system/Seto_description.sh" >/dev/null 2>&1 &; ' +
+      'nohup "' + modDir + '/system/SetoSpecificApp" >/dev/null 2>&1 &; ' +
+      'nohup "' + modDir + '/system/SetoSpecificCurrent" >/dev/null 2>&1 &'
     );
 
     // Restart thermal daemons
