@@ -65,8 +65,8 @@ identify() {
 ##########################
 # Pre-installation Cleanup
 ##########################
-status=$(cat /sys/class/power_supply/battery/status)
-current=$(cat /sys/class/power_supply/battery/current_now)
+status=$(cat /sys/class/power_supply/battery/status 2>/dev/null) || status=""
+current=$(cat /sys/class/power_supply/battery/current_now 2>/dev/null) || current=""
 if [ -f "/data/adb/service.d/seto2.sh" ]; then
     ui_print "- Cleaning up residual files..."
     for i in $(seq 60); do
@@ -101,14 +101,15 @@ PERSISTENT_DIR="/data/adb/SetoSkins"
 
 if [ -f "$PERSISTENT_DIR/配置.prop" ]; then
     ui_print "- Found saved config, restoring automatically"
-    cp -f "$PERSISTENT_DIR/配置.prop" "$MODPATH/配置.prop"
-    [ -f "$PERSISTENT_DIR/黑名单.prop" ] && cp -f "$PERSISTENT_DIR/黑名单.prop" "$MODPATH/黑名单.prop"
+    cp -f "$PERSISTENT_DIR/配置.prop" "$MODPATH/配置.prop" 2>/dev/null || true
+    [ -f "$PERSISTENT_DIR/黑名单.prop" ] && cp -f "$PERSISTENT_DIR/黑名单.prop" "$MODPATH/黑名单.prop" || true
+    [ -f "$PERSISTENT_DIR/无温控应用.prop" ] && cp -f "$PERSISTENT_DIR/无温控应用.prop" "$MODPATH/无温控应用.prop" || true
     ui_print "- Config restored from /data/adb/SetoSkins/"
 else
     ui_print "- First install, using default config"
     identify
     # Create persistent dir for future updates
-    mkdir -p "$PERSISTENT_DIR"
+    mkdir -p "$PERSISTENT_DIR" 2>/dev/null || true
 fi
 
 ui_print "—————————————————————————"
@@ -119,9 +120,9 @@ ui_print "———————————————————————�
 ##########################
 # Thermal Setup
 ##########################
-chattr -i /data/vendor/thermal/ 2>/dev/null
-[[ -d /data/vendor/thermal ]] && chattr -i /data/vendor/thermal/ 2>/dev/null
-rm -rf /data/vendor/thermal/config/*
+chattr -i /data/vendor/thermal/ 2>/dev/null || true
+[[ -d /data/vendor/thermal ]] && chattr -i /data/vendor/thermal/ 2>/dev/null || true
+rm -rf /data/vendor/thermal/config/* 2>/dev/null || true
 
 ##########################
 # Remove Conflicting Modules
@@ -132,12 +133,12 @@ remove_all_modules() {
         module_id=$(awk -F= '/id=/ {print $2}' "$i")
         case "$module_id" in
         "MIUI_Optimization" | "chargeauto" | "fuck_miui_thermal" | "He_zheng" | "JE" | "turbo-charge")
-            sh "$(dirname $i)/uninstall.sh" 2>/dev/null
-            chattr -i "$(dirname $i)"* 2>/dev/null
-            chmod 666 "$(dirname $i)"* 2>/dev/null
-            rm -rf "$(dirname $i)"* 2>/dev/null
-            touch "$(dirname $i)"* 2>/dev/null
-            chattr -i "$(dirname $i)" 2>/dev/null
+            sh "$(dirname $i)/uninstall.sh" 2>/dev/null || true
+            chattr -i "$(dirname $i)"* 2>/dev/null || true
+            chmod 666 "$(dirname $i)"* 2>/dev/null || true
+            rm -rf "$(dirname $i)"* 2>/dev/null || true
+            touch "$(dirname $i)"* 2>/dev/null || true
+            chattr -i "$(dirname $i)" 2>/dev/null || true
             ;;
         esac
     done
@@ -148,33 +149,33 @@ remove_all_modules
 # Thermal Folder Init
 ##########################
 mk_thermal_folder() {
-    resetprop -n sys.thermal.data.path /data/vendor/thermal/
-    resetprop -n vendor.sys.thermal.data.path /data/vendor/thermal/
-    chattr -R -i -a '/data/vendor/thermal' 2>/dev/null
-    rm -rf '/data/vendor/thermal'
-    mkdir -p '/data/vendor/thermal/config'
-    chmod -R 0771 '/data/vendor/thermal'
-    chown -R root:system '/data/vendor/thermal'
-    chcon -R 'u:object_r:vendor_data_file:s0' '/data/vendor/thermal'
+    resetprop -n sys.thermal.data.path /data/vendor/thermal/ 2>/dev/null || true
+    resetprop -n vendor.sys.thermal.data.path /data/vendor/thermal/ 2>/dev/null || true
+    chattr -R -i -a '/data/vendor/thermal' 2>/dev/null || true
+    rm -rf '/data/vendor/thermal' 2>/dev/null || true
+    mkdir -p '/data/vendor/thermal/config' 2>/dev/null || true
+    chmod -R 0771 '/data/vendor/thermal' 2>/dev/null || true
+    chown -R root:system '/data/vendor/thermal' 2>/dev/null || true
+    chcon -R 'u:object_r:vendor_data_file:s0' '/data/vendor/thermal' 2>/dev/null || true
 }
 
 restart_mi_thermald() {
-    pkill -9 -f mi_thermald 2>/dev/null
-    pkill -9 -f thermal-engine 2>/dev/null
+    pkill -9 -f mi_thermald 2>/dev/null || true
+    pkill -9 -f thermal-engine 2>/dev/null || true
     for i in $(which -a thermal-engine 2>/dev/null); do
         nohup "$i" >/dev/null 2>&1 &
     done
     for i in $(which -a mi_thermald 2>/dev/null); do
         nohup "$i" >/dev/null 2>&1 &
     done
-    killall -15 mi_thermald 2>/dev/null
+    killall -15 mi_thermald 2>/dev/null || true
     for i in $(which -a mi_thermald 2>/dev/null); do
         nohup "$i" >/dev/null 2>&1 &
     done
-    setprop ctl.restart thermal-engine 2>/dev/null
-    setprop ctl.restart mi_thermald 2>/dev/null
-    setprop ctl.restart thermal_manager 2>/dev/null
-    setprop ctl.restart thermal 2>/dev/null
+    setprop ctl.restart thermal-engine 2>/dev/null || true
+    setprop ctl.restart mi_thermald 2>/dev/null || true
+    setprop ctl.restart thermal_manager 2>/dev/null || true
+    setprop ctl.restart thermal 2>/dev/null || true
 }
 
 if [ ! -f /data/vendor/thermal/decrypt.txt ]; then
@@ -205,31 +206,31 @@ ui_print "- Auto-removing conflicting modules"
 ui_print "- Author: SetoSkins | Thanks: SummerSK, shadow3, nakixii"
 
 # Thanox integration
-thanox=$(find /data/system/ -type d -name 'thanos*' 2>/dev/null)
+thanox=$(find /data/system/ -type d -name 'thanos*' 2>/dev/null) || thanox=""
 if [ -d "$thanox" ]; then
     ui_print "- Thanox detected"
-    chmod 777 /data/system/*thanos* 2>/dev/null
+    chmod 777 /data/system/*thanos* 2>/dev/null || true
     if [ ! -d "$thanox/profile_user_io" ]; then
         ui_print "- Creating profile_user_io"
-        mkdir -v "$thanox/profile_user_io"
+        mkdir -v "$thanox/profile_user_io" 2>/dev/null || true
     fi
 fi
 
 # Cleanup
-rm -rf /data/system/package_cache/*
-rm -rf /data/adb/1
+rm -rf /data/system/package_cache/* 2>/dev/null || true
+rm -rf /data/adb/1 2>/dev/null || true
 ui_print "- Cache cleaned"
-rm -rf /data/media/0/Seto.zip
-rm -rf /data/Seto.zip
+rm -rf /data/media/0/Seto.zip 2>/dev/null || true
+rm -rf /data/Seto.zip 2>/dev/null || true
 
 # Backup original thermal configs
 if [ ! -f /data/media/0/Android/备份温控（请勿删除）/thermal-normal.conf ]; then
     sleep 8
-    mkdir -p /data/media/0/Android/备份温控（请勿删除）
-    cp $(find /system/vendor/etc/ -type f -iname "thermal*.conf*" 2>/dev/null | grep -v /system/vendor/etc/thermal/) /data/media/0/Android/备份温控（请勿删除）/ 2>/dev/null
+    mkdir -p /data/media/0/Android/备份温控（请勿删除） 2>/dev/null || true
+    cp $(find /system/vendor/etc/ -type f -iname "thermal*.conf*" 2>/dev/null | grep -v /system/vendor/etc/thermal/) /data/media/0/Android/备份温控（请勿删除）/ 2>/dev/null || true
     if [ ! -f /data/media/0/Android/备份温控（请勿删除）/thermal-normal.conf ]; then
-        rm -rf /data/media/0/Android/备份温控（请勿删除）/*
-        cp /odm/etc/thermal* /sdcard/Android/备份温控（请勿删除）/ 2>/dev/null
+        rm -rf /data/media/0/Android/备份温控（请勿删除）/* 2>/dev/null || true
+        cp /odm/etc/thermal* /sdcard/Android/备份温控（请勿删除）/ 2>/dev/null || true
     fi
 fi
 

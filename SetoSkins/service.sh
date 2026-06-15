@@ -137,7 +137,8 @@ rm -rf $MODDIR/nohup.out
 PERSISTENT_DIR="/data/adb/SetoSkins"
 mkdir -p "$PERSISTENT_DIR"
 cp -f "$MODDIR/配置.prop" "$PERSISTENT_DIR/配置.prop" 2>/dev/null
-[ -f "$MODDIR/黑名单.prop" ] && cp -f "$MODDIR/黑名单.prop" "$PERSISTENT_DIR/黑名单.prop" 2>/dev/null
+[ -f "$MODDIR/黑名单.prop" ] && cp -f "$MODDIR/黑名单.prop" "$PERSISTENT_DIR/黑名单.prop" 2>/dev/null || true
+[ -f "$MODDIR/无温控应用.prop" ] && cp -f "$MODDIR/无温控应用.prop" "$PERSISTENT_DIR/无温控应用.prop" 2>/dev/null || true
 
 # Note: Seto_description.sh (charging info display) is launched
 # automatically by the 'for scripts' loop above as system/Seto_description.sh
