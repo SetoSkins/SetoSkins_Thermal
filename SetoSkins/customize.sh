@@ -12,27 +12,31 @@ is_zh() {
 
 lang_print() {
     if is_zh; then
-        eval echo "$1"
+        echo "$1"
     else
-        eval echo "$2"
+        echo "$2"
     fi
 }
 
 ##########################
 # Root Manager Detection
 ##########################
+ROOT_MANAGER="magisk"
 if [ -n "$KSU" ]; then
-    if [ -n "$KSU_SUKISU" ]; then
+    if [ -n "$KSU_SUKISU" ] || [ -n "$SUKISU" ]; then
         ROOT_MANAGER="sukisu"
         lang_print "- 检测到: SukiSU Ultra" "- Detected: SukiSU Ultra"
     else
         ROOT_MANAGER="ksu"
         lang_print "- 检测到: KernelSU" "- Detected: KernelSU"
     fi
-    lang_print "- KSU 版本: $KSU_VER ($KSU_VER_CODE)" "- KSU Version: $KSU_VER ($KSU_VER_CODE)"
+    lang_print "- KSU 版本: ${KSU_VER:-unknown} (${KSU_VER_CODE:-?})" "- KSU Version: ${KSU_VER:-unknown} (${KSU_VER_CODE:-?})"
+elif [ -n "$SUKISU" ]; then
+    ROOT_MANAGER="sukisu"
+    lang_print "- 检测到: SukiSU Ultra" "- Detected: SukiSU Ultra"
+    lang_print "- SukiSU 版本: ${SUKISU_VER:-unknown}" "- SukiSU Version: ${SUKISU_VER:-unknown}"
 else
-    ROOT_MANAGER="magisk"
-    lang_print "- 检测到: Magisk $MAGISK_VER ($MAGISK_VER_CODE)" "- Detected: Magisk $MAGISK_VER ($MAGISK_VER_CODE)"
+    lang_print "- 检测到: Magisk ${MAGISK_VER:-unknown} (${MAGISK_VER_CODE:-?})" "- Detected: Magisk ${MAGISK_VER:-unknown} (${MAGISK_VER_CODE:-?})"
 fi
 
 # Save root manager type for runtime scripts
@@ -70,7 +74,6 @@ fi
 ##########################
 ui_print "—————————————————————————"
 lang_print "- Seto 温控 __VERSION__" "- Seto Thermal __VERSION__"
-lang_print "- 支持: Magisk / KernelSU / SukiSU" "- Now supports: Magisk / KernelSU / SukiSU"
 lang_print "- 新增: WebUI 配置界面" "- New: WebUI configuration interface"
 lang_print "- 新增: 热重载 (无需重启)" "- New: Hot-reload (no reboot needed)"
 lang_print "- 新增: 多语言支持" "- New: Multi-language support"
