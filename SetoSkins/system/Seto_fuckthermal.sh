@@ -10,7 +10,7 @@ ChargemA=$(expr $(cat /sys/class/power_supply/battery/current_now) / -1000)
 a=$(getprop ro.system.build.version.release)
 mv $MODDIR/执行作者主页.sh $MODDIR/乱七八糟/执行作者主页.sh
 file1=$MODDIR/配置.prop
-file2=$(ls /sys/class/power_supply/battery/*charge_current /sys/class/power_supply/battery/current_max /sys/class/power_supply/battery/thermal_input_current 2>>/dev/null | tr -d '\n')
+file2=$(ls /sys/class/power_supply/battery/*charge_current /sys/class/power_supply/battery/current_max /sys/class/power_supply/battery/thermal_input_current 2>/dev/null | tr -d '\n')
 file3=$(ls /sys/class/power_supply/*/constant_charge_current_max /sys/class/power_supply/*/fast_charge_current /sys/class/power_supply/*/thermal_input_current 2>/dev/null |tr -d ' ')
 show_value() {
 	value=$1
@@ -20,9 +20,9 @@ show_value() {
 	rm -rf /data/vendor/thermal/config/*
 chattr -R -i -a /data/vendor/thermal/
 #云端
-if test $(show_value '均衡式性能温控') == false; then
-	if test $(show_value '跳电修复模式') == false; then
-		if test $(show_value '还原性能模式温控') == false; then
+if test "$(show_value '均衡式性能温控')" == "false"; then
+	if test "$(show_value '跳电修复模式')" == "false"; then
+		if test "$(show_value '还原性能模式温控')" == "false"; then
 		if [ -f "/system/vendor/odm/etc/thermal-normal.conf" ];then
 					mkdir -p $MODDIR/system/vendor/odm/etc/
 					for file in /odm/etc/thermal-*; do
@@ -89,32 +89,32 @@ fi
 chmod 777 /sys/class/thermal/thermal_message/sconfig
 
 if [ -f /data/media/0/Android/备份温控（请勿删除）/thermal-normal.conf ]; then
-if test $(show_value '均衡式性能温控') == true; then
+if test "$(show_value '均衡式性能温控')" == "true"; then
 
 		
 		rm -rf /data/system/thermal/*mgame.conf
-		rm -rf $MODDIR/system/system/vendor/etc/*mgame.conf
+		rm -rf $MODDIR/system/vendor/etc/*mgame.conf
 		cp -f /data/media/0/Android/备份温控（请勿删除）/thermal-tgame.conf /data/vendor/thermal/config/thermal-mgame.conf
 		cp -f /data/media/0/Android/备份温控（请勿删除）/thermal-tgame.conf $MODDIR/system/system/vendor/etc/thermal-mgame.conf
-		cp -f /data/media/0/Android/备份温控（请勿删除）/*tgame.conf /data/vendor/thermal/config/*mgame.conf
-		cp -f /data/media/0/Android/备份温控（请勿删除）/*tgame.conf $MODDIR/system/system/vendor/etc/*mgame.conf
+		for f in /data/media/0/Android/备份温控（请勿删除）/*tgame.conf; do [ -f "$f" ] && cp -f "$f" /data/vendor/thermal/config/; done
+		for f in /data/media/0/Android/备份温控（请勿删除）/*tgame.conf; do [ -f "$f" ] && cp -f "$f" $MODDIR/system/vendor/etc/; done
 				cp -f -f $MODDIR/cloud/thermal/thermal-per-huanji.conf /data/vendor/thermal/config/thermal-normal.conf
-		cp -f -f $MODDIR/cloud/thermal/thermal-thermal-per-huanji.conf $MODDIR/system/system/vendor/etc/thermal-mgame.conf
+		cp -f -f $MODDIR/cloud/thermal/thermal-per-huanji.conf $MODDIR/system/system/vendor/etc/thermal-mgame.conf
 	
 	if [[ $var_device_trans != "" ]]; then
 		
 		rm -rf /data/system/thermal/*mgame.conf
-		rm -rf $MODDIR/system/system/vendor/etc/*mgame.conf
+		rm -rf $MODDIR/system/vendor/etc/*mgame.conf
 	
-		cp -f -f "$MODDIR/cloud/thermal/thermal-thermal-per-huanji.conf" "$MODDIR/system/system/vendor/etc/thermal-${var_device_trans}-normal.conf"
-			cp -f -f "$MODDIR/cloud/thermal/thermal-thermal-per-huanji.conf /data/vendor/thermal/config/thermal-${var_device_trans}-normal.conf"
+		cp -f -f "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/system/system/vendor/etc/thermal-${var_device_trans}-normal.conf"
+			cp -f -f "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-${var_device_trans}-normal.conf"
 		cp -f "$MODDIR/cloud/thermal/thermal-${var_device_trans}-tgame.conf" "/data/vendor/thermal/config/thermal-${var_device_trans}-mgame.conf"
 		cp -f "$MODDIR/cloud/thermal/thermal-${var_device_trans}-tgame.conf" "$MODDIR/system/vendor/etc/thermal-${var_device_trans}-mgame.conf"
 	fi
 fi
 
 fi
-if test $(show_value '关闭录制温控') == true; then
+if test "$(show_value '关闭录制温控')" == "true"; then
 	if [ ! -d /data/media/0/Android/备份温控（请勿删除） ]; then
 		cp -f "$MODDIR/system/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/system/vendor/odm/etc/thermal-4k.conf"
 				cp -f "$MODDIR/system/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/system/vendor/odm/etc/thermal-8k.conf"
@@ -131,7 +131,7 @@ if test $(show_value '关闭录制温控') == true; then
 		cp -f "$MODDIR/system/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/system/vendor/etc/thermal-${var_device_trans}-8k.conf"
 	fi
 elif
-	test $(show_value '关闭录制温控') == false
+	test "$(show_value '关闭录制温控')" == "false"
 then
 	rm -rf /data/vendor/thermal/config/*4k.conf
 	rm -rf $MODDIR/system/vendor/etc/*4k.conf
@@ -141,7 +141,7 @@ then
 	rm -rf $MODDIR/system/vendor/etc/*8k.conf
 fi
 
-if test $(show_value '关闭相机温控') == true; then
+if test "$(show_value '关闭相机温控')" == "true"; then
 	if [ ! -d /data/media/0/Android/备份温控（请勿删除） ]; then
 		cp -f "$MODDIR/system/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/system/vendor/odm/etc/thermal-camera.conf"
 		else
@@ -159,7 +159,7 @@ if test $(show_value '关闭相机温控') == true; then
 
 elif
 
-	test $(show_value '关闭相机温控') == false
+	test "$(show_value '关闭相机温控')" == "false"
 then
 	rm -rf /data/vendor/thermal/config/*camera.conf
 	rm -rf $MODDIR/system/vendor/etc/*camera.conf
@@ -184,7 +184,7 @@ function restart_mi_thermald() {
 	setprop ctl.restart thermal
 }
 restart_mi_thermald
-if test $(show_value '开启修改电流数') == true; then
+if test "$(show_value '开启修改电流数')" == "true"; then
 	b=$(grep "最大电流数" "$file1" | cut -c7-)
 		echo "$b" >"$file3"
 	echo "$b" >"$file2"
@@ -221,15 +221,14 @@ fi
 
 if [ -f /data/media/0/Android/备份温控（请勿删除）/thermal-normal.conf ]; then
 if test $(show_value '还原性能模式温控') == true; then
-	if [ ! -f /data/media/0/Android/备份温控（请勿删除）/thermal-normal.conf ]; then
 	rm -rf $MODDIR/system/vendor/etc/*per*.conf
 	rm -rf $MODDIR/system/vendor/etc/*tgame.conf
 	rm -rf $MODDIR/system/vendor/etc/*yuanshen*.conf
 	rm -rf $MODDIR/system/vendor/etc/*xingtie*.conf
-	rm -rf $MODDIR/odm/etc/*per*.conf
-	rm -rf $MODDIR/odm/etc/*tgame.conf
-	rm -rf $MODDIR/odm/etc/*yuanshen*.conf
-	rm -rf $MODDIR/odm/etc/*xingtie*.conf
+	rm -rf $MODDIR/system/vendor/odm/etc/*per*.conf
+	rm -rf $MODDIR/system/vendor/odm/etc/*tgame.conf
+	rm -rf $MODDIR/system/vendor/odm/etc/*yuanshen*.conf
+	rm -rf $MODDIR/system/vendor/odm/etc/*xingtie*.conf
 	rm -rf /data/vendor/thermal/config/*per*.conf
 	rm -rf /data/vendor/thermal/config/*tgame.conf
 	rm -rf /data/vendor/thermal/config/*yuanshen*.conf
@@ -247,7 +246,7 @@ elif
 then
 	rm -rf $MODDIR/bin/*log*
 	rm -rf $MODDIR/etc/init/*log*
-	rm -rf $MODDIR/vendor/bin/tcp -fdump
+	rm -rf $MODDIR/vendor/bin/tcp $MODDIR/vendor/bin/fdump
 	rm -rf $MODDIR/vendor/bin/cnss_diag
 	rm -rf $MODDIR/vendor/bin/log
 	rm -rf $MODDIR/Seto_logd.sh
@@ -290,7 +289,7 @@ if test $(show_value '跳电修复模式') == true; then
 	setprop ctl.restart thermal_manager
 	setprop ctl.restart thermal
 	mkdir -p $MODDIR/vendor/etc
-	rm -rf "$MODDIR/system/vendor/etc/*"
+	rm -rf $MODDIR/system/vendor/etc/*
 	chattr -R -i -a /data/vendor/thermal/
 	#云端
 	cp -f "$MODDIR/cloud/thermal/thermal-normal.conf" "/data/vendor/thermal/config/thermal-normal.conf"

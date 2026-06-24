@@ -1,20 +1,38 @@
 #!/system/bin/sh
 
 ##########################
+# Language Detection
+##########################
+sys_lang=$(getprop persist.sys.locale 2>/dev/null || getprop ro.product.locale 2>/dev/null || echo "")
+sys_lang=$(echo "$sys_lang" | tr '[:upper:]' '[:lower:]')
+
+is_zh() {
+    echo "$sys_lang" | grep -qE '^zh' && return 0 || return 1
+}
+
+lang_print() {
+    if is_zh; then
+        eval echo "$1"
+    else
+        eval echo "$2"
+    fi
+}
+
+##########################
 # Root Manager Detection
 ##########################
 if [ -n "$KSU" ]; then
     if [ -n "$KSU_SUKISU" ]; then
         ROOT_MANAGER="sukisu"
-        ui_print "- Detected: SukiSU Ultra"
+        lang_print "- 检测到: SukiSU Ultra" "- Detected: SukiSU Ultra"
     else
         ROOT_MANAGER="ksu"
-        ui_print "- Detected: KernelSU"
+        lang_print "- 检测到: KernelSU" "- Detected: KernelSU"
     fi
-    ui_print "- KSU Version: $KSU_VER ($KSU_VER_CODE)"
+    lang_print "- KSU 版本: $KSU_VER ($KSU_VER_CODE)" "- KSU Version: $KSU_VER ($KSU_VER_CODE)"
 else
     ROOT_MANAGER="magisk"
-    ui_print "- Detected: Magisk $MAGISK_VER ($MAGISK_VER_CODE)"
+    lang_print "- 检测到: Magisk $MAGISK_VER ($MAGISK_VER_CODE)" "- Detected: Magisk $MAGISK_VER ($MAGISK_VER_CODE)"
 fi
 
 # Save root manager type for runtime scripts
@@ -23,42 +41,11 @@ echo "$ROOT_MANAGER" > "$MODPATH/root_manager"
 ##########################
 # Helper Functions
 ##########################
-key_check() {
-  while true; do
-    key_check=$(/system/bin/getevent -qlc 1)
-    key_event=$(echo "$key_check" | awk '{ print $3 }' | grep 'KEY_')
-    key_status=$(echo "$key_check" | awk '{ print $4 }')
-    if [[ "$key_event" == *"KEY_"* && "$key_status" == "DOWN" ]]; then
-      keycheck="$key_event"
-      break
-    fi
-  done
-  while true; do
-    key_check=$(/system/bin/getevent -qlc 1)
-    key_event=$(echo "$key_check" | awk '{ print $3 }' | grep 'KEY_')
-    key_status=$(echo "$key_check" | awk '{ print $4 }')
-    if [[ "$key_event" == *"KEY_"* && "$key_status" == "UP" ]]; then
-      break
-    fi
-  done
-}
-
 identify() {
     a=$(getprop ro.product.vendor.brand)
     if [[ ! $a == "Xiaomi" ]] && [[ ! $a == "Redmi" ]]; then
-        ui_print "- Unknown device brand. If using HyperOS/MIUI, press Volume Up to install."
-        ui_print "- Volume Up = Install"
-        ui_print "- Volume Down = Cancel"
-        key_check
-        case "$keycheck" in
-        "KEY_VOLUMEUP")
-            ui_print "- Continuing installation"
-            ui_print "—————————————————————————"
-            ;;
-        *)
-            abort "- Installation cancelled"
-            ;;
-        esac
+        lang_print "- 非小米/红米设备，不支持" "- Not a Xiaomi/Redmi device, not supported"
+        abort "$(lang_print '非小米/红米设备，不支持' 'Not a Xiaomi/Redmi device, not supported')"
     fi
 }
 
@@ -68,7 +55,7 @@ identify() {
 status=$(cat /sys/class/power_supply/battery/status 2>/dev/null) || status=""
 current=$(cat /sys/class/power_supply/battery/current_now 2>/dev/null) || current=""
 if [ -f "/data/adb/service.d/seto2.sh" ]; then
-    ui_print "- Cleaning up residual files..."
+    lang_print "- 正在清理残留文件..." "- Cleaning up residual files..."
     for i in $(seq 60); do
         if [ -f "/data/adb/service.d/seto.sh" ]; then
             sleep 1
@@ -82,11 +69,11 @@ fi
 # Changelog
 ##########################
 ui_print "—————————————————————————"
-ui_print "- Seto Thermal __VERSION__"
-ui_print "- Now supports: Magisk / KernelSU / SukiSU"
-ui_print "- New: WebUI configuration interface"
-ui_print "- New: Hot-reload (no reboot needed)"
-ui_print "- New: Multi-language support"
+lang_print "- Seto 温控 __VERSION__" "- Seto Thermal __VERSION__"
+lang_print "- 支持: Magisk / KernelSU / SukiSU" "- Now supports: Magisk / KernelSU / SukiSU"
+lang_print "- 新增: WebUI 配置界面" "- New: WebUI configuration interface"
+lang_print "- 新增: 热重载 (无需重启)" "- New: Hot-reload (no reboot needed)"
+lang_print "- 新增: 多语言支持" "- New: Multi-language support"
 ui_print "—————————————————————————"
 sleep 0.5
 
@@ -100,21 +87,21 @@ fi
 PERSISTENT_DIR="/data/adb/SetoSkins"
 
 if [ -f "$PERSISTENT_DIR/配置.prop" ]; then
-    ui_print "- Found saved config, restoring automatically"
+    lang_print "- 找到已保存配置，自动恢复中" "- Found saved config, restoring automatically"
     cp -f "$PERSISTENT_DIR/配置.prop" "$MODPATH/配置.prop" 2>/dev/null || true
     [ -f "$PERSISTENT_DIR/黑名单.prop" ] && cp -f "$PERSISTENT_DIR/黑名单.prop" "$MODPATH/黑名单.prop" || true
     [ -f "$PERSISTENT_DIR/无温控应用.prop" ] && cp -f "$PERSISTENT_DIR/无温控应用.prop" "$MODPATH/无温控应用.prop" || true
-    ui_print "- Config restored from /data/adb/SetoSkins/"
+    lang_print "- 配置已从 /data/adb/SetoSkins/ 恢复" "- Config restored from /data/adb/SetoSkins/"
 else
-    ui_print "- First install, using default config"
+    lang_print "- 首次安装，使用默认配置" "- First install, using default config"
     identify
     # Create persistent dir for future updates
     mkdir -p "$PERSISTENT_DIR" 2>/dev/null || true
 fi
 
 ui_print "—————————————————————————"
-ui_print "- If thermal control is ineffective, make sure your system is up to date."
-ui_print "- Enable empty thermal file mount in config if brightness drops or charging slows."
+lang_print "- 如温控无效，请确保系统已更新。" "- If thermal control is ineffective, make sure your system is up to date."
+lang_print "- 如降亮度或充电变慢，请在配置中开启温控空文件挂载。" "- Enable empty thermal file mount in config if brightness drops or charging slows."
 ui_print "—————————————————————————"
 
 ##########################
@@ -200,26 +187,26 @@ fi
 ##########################
 # Finish
 ##########################
-ui_print "- Config location: Module root directory"
-ui_print "- Use WebUI for live configuration (no reboot needed)"
-ui_print "- Auto-removing conflicting modules"
-ui_print "- Author: SetoSkins | Thanks: SummerSK, shadow3, nakixii"
+lang_print "- 配置位置: 模块根目录" "- Config location: Module root directory"
+lang_print "- 使用 WebUI 进行实时配置 (无需重启)" "- Use WebUI for live configuration (no reboot needed)"
+lang_print "- 自动移除冲突模块" "- Auto-removing conflicting modules"
+lang_print "- 作者: SetoSkins | 感谢: SummerSK, shadow3, nakixii" "- Author: SetoSkins | Thanks: SummerSK, shadow3, nakixii"
 
 # Thanox integration
-thanox=$(find /data/system/ -type d -name 'thanos*' 2>/dev/null) || thanox=""
-if [ -d "$thanox" ]; then
-    ui_print "- Thanox detected"
+thanos=$(find /data/system/ -type d -name 'thanos*' 2>/dev/null) || thanox=""
+if [ -d "$thanos" ]; then
+    lang_print "- 检测到 Thanox" "- Thanox detected"
     chmod 777 /data/system/*thanos* 2>/dev/null || true
-    if [ ! -d "$thanox/profile_user_io" ]; then
-        ui_print "- Creating profile_user_io"
-        mkdir -v "$thanox/profile_user_io" 2>/dev/null || true
+    if [ ! -d "$thanos/profile_user_io" ]; then
+        lang_print "- 正在创建 profile_user_io" "- Creating profile_user_io"
+        mkdir -v "$thanos/profile_user_io" 2>/dev/null || true
     fi
 fi
 
 # Cleanup
 rm -rf /data/system/package_cache/* 2>/dev/null || true
 rm -rf /data/adb/1 2>/dev/null || true
-ui_print "- Cache cleaned"
+lang_print "- 缓存已清理" "- Cache cleaned"
 rm -rf /data/media/0/Seto.zip 2>/dev/null || true
 rm -rf /data/Seto.zip 2>/dev/null || true
 
@@ -234,4 +221,4 @@ if [ ! -f /data/media/0/Android/备份温控（请勿删除）/thermal-normal.co
     fi
 fi
 
-ui_print "- Installation complete!"
+lang_print "- 安装完成！" "- Installation complete!"
