@@ -24,83 +24,32 @@ if test $(show_value '均衡式性能温控') == false; then
 	if test $(show_value '跳电修复模式') == false; then
 		if test $(show_value '还原性能模式温控') == false; then
 		if [ -f "/system/vendor/odm/etc/thermal-normal.conf" ];then
-		if [ -d /data/adb/ksu ] || [ -f /data/adb/magisk/Delta.prop ]; then
 					mkdir -p $MODDIR/system/vendor/odm/etc/
-						cp -f "$MODDIR/system/cloud/thermal/thermal-cnormal.conf" "$MODDIR/system/vendor/odm/etc/thermal-normal.conf"
-							cp -f "$MODDIR/system/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/system/vendor/odm/etc/thermal-thermal-highfps.conf"
-								cp -f "$MODDIR/system/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/system/vendor/odm/etc/thermal-thermal-cclassvideo.conf"
-			cp -f "$MODDIR/system/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/system/vendor/odm/etc/thermal-class0.conf"
-			cp -f "$MODDIR/system/cloud/thermal/thermal-cnormal.conf" "$MODDIR/system/vendor/odm/etc/thermal-per-normal.conf"
-			cp -f "$MODDIR/system/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/system/vendor/odm/etc/thermal-per-class0.conf"
-			cp -f "$MODDIR/system/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/system/vendor/odm/etc/thermal-nolimits.conf"
-			cp -f "$MODDIR/system/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/system/vendor/odm/etc/thermal-tgame.conf"
-			cp -f "$MODDIR/system/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/system/vendor/odm/etc/thermal-mgame.conf"
-					cp -f "$MODDIR/system/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/system/vendor/odm/etc/thermal-cgame.conf"
-							cp -f "$MODDIR/system/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/system/vendor/odm/etc/thermal-cgame2.conf"
-			cp -f "$MODDIR/system/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/system/vendor/odm/etc/thermal-yuanshen.conf"
-			cp -f "$MODDIR/system/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/system/vendor/odm/etc/thermal-video.conf"
-			cp -f "$MODDIR/system/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/system/vendor/odm/etc/thermal-per-video.conf"
-			cp -f "$MODDIR/system/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/system/vendor/odm/etc/thermal-nolimits.conf"
-				cp -f "$MODDIR/system/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/system/vendor/odm/etc/thermal-performance-boost-game.conf"
+					for file in /odm/etc/thermal-*; do
+						if [ -f "$file" ]; then
+							filename=$(basename "$file")
+							cp -f "$MODDIR/system/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/system/vendor/odm/etc/$filename"
+						fi
+					done
 		fi		
-				
-			
-		if [ -f /data/media/0/Android/备份温控（请勿删除）/thermal-cgame.conf ]; then
-			cp -f "$MODDIR/system/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-cgame.conf"
-					cp -f "$MODDIR/system/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/system/vendor/etc/thermal-cgame.conf"
+			if [ -d "/data/vendor/thermal/config" ]; then
+				for file in /data/vendor/thermal/config/thermal-*; do
+					if [ -f "$file" ]; then
+						filename=$(basename "$file")
+						cp -f "$MODDIR/system/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/$filename"
 					fi
-	if [ -f /system/vendor/odm/etc/thermal-cgame.conf ]; then
-			cp -f "$MODDIR/system/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-cgame.conf"
-		
-						cp -f "$MODDIR/system/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-cgame2.conf"
-			
-					fi
-						if [ -f /system/vendor/odm/etc/thermal-cclassvideo.conf ]; then
-			cp -f "$MODDIR/system/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-cclassvideo.conf"
-					fi
-if [ -f /system/vendor/odm/etc/thermal-highfps.conf ]; then
-			cp -f "$MODDIR/system/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-highfps.conf"
-					fi
-					
-			cp -f "$MODDIR/system/cloud/thermal/thermal-cnormal.conf" "/data/vendor/thermal/config/thermal-normal.conf"
-			cp -f "$MODDIR/system/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-class0.conf"
-			cp -f "$MODDIR/system/cloud/thermal/thermal-cnormal.conf" "/data/vendor/thermal/config/thermal-per-normal.conf"
-			cp -f "$MODDIR/system/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-per-class0.conf"
-			cp -f "$MODDIR/system/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-nolimits.conf"
-			cp -f "$MODDIR/system/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-tgame.conf"
-			cp -f "$MODDIR/system/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-mgame.conf"
-			cp -f "$MODDIR/system/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-yuanshen.conf"
-			cp -f "$MODDIR/system/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-video.conf"
-			cp -f "$MODDIR/system/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-per-video.conf"
-			cp -f "$MODDIR/system/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-nolimits.conf"
-				cp -f "$MODDIR/system/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-performance-boost-game.conf"
-			else
+				done
+			fi
+		 else
 					mkdir -p $MODDIR/system/vendor/etc
 			#本地
-			cp -f "$MODDIR/system/cloud/thermal/thermal-cnormal.conf" "$MODDIR/system/vendor/etc/thermal-normal.conf"
-			cp -f "$MODDIR/system/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/system/vendor/etc/thermal-class0.conf"
-			cp -f "$MODDIR/system/cloud/thermal/thermal-cnormal.conf" "$MODDIR/system/vendor/etc/thermal-per-normal.conf"
-			cp -f "$MODDIR/system/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/system/vendor/etc/thermal-per-class0.conf"
-			cp -f "$MODDIR/system/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/system/vendor/etc/thermal-nolimits.conf"
-			cp -f "$MODDIR/system/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/system/vendor/etc/thermal-tgame.conf"
-			cp -f "$MODDIR/system/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/system/vendor/etc/thermal-mgame.conf"
-			cp -f "$MODDIR/system/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/system/vendor/etc/thermal-yuanshen.conf"
-			cp -f "$MODDIR/system/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/system/vendor/etc/thermal-video.conf"
-			cp -f "$MODDIR/system/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/system/vendor/etc/thermal-per-video.conf"
-			cp -f "$MODDIR/system/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/system/vendor/etc/thermal-nolimits.conf"
-					cp -f "$MODDIR/system/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-highfps.conf"
+			for file in /odm/etc/thermal-*; do
+				if [ -f "$file" ]; then
+					filename=$(basename "$file")
+					cp -f "$MODDIR/system/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/system/vendor/etc/$filename"
+				fi
+			done
 					fi
-			cp -f "$MODDIR/system/cloud/thermal/thermal-cnormal.conf" "/data/vendor/thermal/config/thermal-normal.conf"
-			cp -f "$MODDIR/system/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-class0.conf"
-			cp -f "$MODDIR/system/cloud/thermal/thermal-cnormal.conf" "/data/vendor/thermal/config/thermal-per-normal.conf"
-			cp -f "$MODDIR/system/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-per-class0.conf"
-			cp -f "$MODDIR/system/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-nolimits.conf"
-			cp -f "$MODDIR/system/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-tgame.conf"
-			cp -f "$MODDIR/system/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-mgame.conf"
-			cp -f "$MODDIR/system/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-yuanshen.conf"
-			cp -f "$MODDIR/system/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-video.conf"
-			cp -f "$MODDIR/system/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-per-video.conf"
-			cp -f "$MODDIR/system/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-nolimits.conf"
 			chmod 777 /sys/class/thermal/thermal_message/sconfig
 
 			case "$var_device" in
@@ -113,19 +62,19 @@ if [ -f /system/vendor/odm/etc/thermal-highfps.conf ]; then
 			esac
 			if [[ $var_device_trans != "" ]]; then
 				#云端
-				cp -f "$MODDIR/system/cloud/thermal/thermal-cnormal.conf" "/data/vendor/thermal/config/thermal-per-${var_device_trans}-normal.conf"
+				cp -f "$MODDIR/system/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-per-${var_device_trans}-normal.conf"
 				cp -f "$MODDIR/system/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-per-${var_device_trans}-class0.conf"
 				cp -f "$MODDIR/system/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-${var_device_trans}-nolimits.conf"
 				cp -f "$MODDIR/system/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-${var_device_trans}-tgame.conf"
 				cp -f "$MODDIR/system/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-${var_device_trans}-mgame.conf"
 				cp -f "$MODDIR/system/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-per-${var_device_trans}-video.conf"
 				cp -f "$MODDIR/system/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-${var_device_trans}-video.conf"
-				cp -f "$MODDIR/system/cloud/thermal/thermal-cnormal.conf" "/data/vendor/thermal/config/thermal-${var_device_trans}-normal.conf"
+				cp -f "$MODDIR/system/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-${var_device_trans}-normal.conf"
 				cp -f "$MODDIR/system/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-${var_device_trans}-class0.conf"
 				#本地
-				cp -f "$MODDIR/system/cloud/thermal/thermal-cnormal.conf" "$MODDIR/system/vendor/etc/thermal-per-${var_device_trans}-normal.conf"
+				cp -f "$MODDIR/system/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/system/vendor/etc/thermal-per-${var_device_trans}-normal.conf"
 				cp -f "$MODDIR/system/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/system/vendor/etc/thermal-per-${var_device_trans}-class0.conf"
-				cp -f "$MODDIR/system/cloud/thermal/thermal-cnormal.conf" "$MODDIR/system/vendor/etc/thermal-${var_device_trans}-normal.conf"
+				cp -f "$MODDIR/system/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/system/vendor/etc/thermal-${var_device_trans}-normal.conf"
 				cp -f "$MODDIR/system/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/system/vendor/etc/thermal-${var_device_trans}-class0.conf"
 				cp -f "$MODDIR/system/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/system/vendor/etc/thermal-${var_device_trans}-nolimits.conf"
 				cp -f "$MODDIR/system/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/system/vendor/etc/thermal-${var_device_trans}-tgame.conf"
@@ -135,7 +84,7 @@ if [ -f /system/vendor/odm/etc/thermal-highfps.conf ]; then
 		fi
 	fi
 	
-	fi
+	
 fi
 chmod 777 /sys/class/thermal/thermal_message/sconfig
 
@@ -147,16 +96,18 @@ if test $(show_value '均衡式性能温控') == true; then
 		rm -rf $MODDIR/system/system/vendor/etc/*mgame.conf
 		cp -f /data/media/0/Android/备份温控（请勿删除）/thermal-tgame.conf /data/vendor/thermal/config/thermal-mgame.conf
 		cp -f /data/media/0/Android/备份温控（请勿删除）/thermal-tgame.conf $MODDIR/system/system/vendor/etc/thermal-mgame.conf
-				cp -f -f $MODDIR/cloud/thermal/thermal-performance.conf /data/vendor/thermal/config/thermal-normal.conf
-		cp -f -f $MODDIR/cloud/thermal/thermal-performance.conf $MODDIR/system/system/vendor/etc/thermal-mgame.conf
+		cp -f /data/media/0/Android/备份温控（请勿删除）/*tgame.conf /data/vendor/thermal/config/*mgame.conf
+		cp -f /data/media/0/Android/备份温控（请勿删除）/*tgame.conf $MODDIR/system/system/vendor/etc/*mgame.conf
+				cp -f -f $MODDIR/cloud/thermal/thermal-per-huanji.conf /data/vendor/thermal/config/thermal-normal.conf
+		cp -f -f $MODDIR/cloud/thermal/thermal-thermal-per-huanji.conf $MODDIR/system/system/vendor/etc/thermal-mgame.conf
 	
 	if [[ $var_device_trans != "" ]]; then
 		
 		rm -rf /data/system/thermal/*mgame.conf
 		rm -rf $MODDIR/system/system/vendor/etc/*mgame.conf
 	
-		cp -f -f "$MODDIR/cloud/thermal/thermal-performance.conf" "$MODDIR/system/system/vendor/etc/thermal-${var_device_trans}-normal.conf"
-			cp -f -f "$MODDIR/cloud/thermal/thermal-performance.conf /data/vendor/thermal/config/thermal-${var_device_trans}-normal.conf"
+		cp -f -f "$MODDIR/cloud/thermal/thermal-thermal-per-huanji.conf" "$MODDIR/system/system/vendor/etc/thermal-${var_device_trans}-normal.conf"
+			cp -f -f "$MODDIR/cloud/thermal/thermal-thermal-per-huanji.conf /data/vendor/thermal/config/thermal-${var_device_trans}-normal.conf"
 		cp -f "$MODDIR/cloud/thermal/thermal-${var_device_trans}-tgame.conf" "/data/vendor/thermal/config/thermal-${var_device_trans}-mgame.conf"
 		cp -f "$MODDIR/cloud/thermal/thermal-${var_device_trans}-tgame.conf" "$MODDIR/system/vendor/etc/thermal-${var_device_trans}-mgame.conf"
 	fi
@@ -271,23 +222,20 @@ fi
 if [ -f /data/media/0/Android/备份温控（请勿删除）/thermal-normal.conf ]; then
 if test $(show_value '还原性能模式温控') == true; then
 	if [ ! -f /data/media/0/Android/备份温控（请勿删除）/thermal-normal.conf ]; then
-		cp -f "$MODDIR/cloud/thermal/thermal-performance.conf" "$MODDIR/system/vendor/odm/etc/thermal-normal.conf"
-		rm -rf $MODDIR/system/vendor/odm/etc/*per*.conf
-	rm -rf $MODDIR/system/vendor/odm/etc/*tgame.conf
-	rm -rf $MODDIR/system/vendor/odm/etc/thermal-yuanshen.conf
-		fi
-	cp -f -f $MODDIR/cloud/thermal/thermal-performance.conf $MODDIR/system/vendor/etc/thermal-normal.conf
-		cp -f -f $MODDIR/cloud/thermal/thermal-performance.conf /data/vendor/thermal/config/thermal-normal.conf
-		
-	
 	rm -rf $MODDIR/system/vendor/etc/*per*.conf
 	rm -rf $MODDIR/system/vendor/etc/*tgame.conf
-	rm -rf $MODDIR/system/vendor/etc/thermal-yuanshen.conf
+	rm -rf $MODDIR/system/vendor/etc/*yuanshen*.conf
+	rm -rf $MODDIR/system/vendor/etc/*xingtie*.conf
+	rm -rf $MODDIR/odm/etc/*per*.conf
+	rm -rf $MODDIR/odm/etc/*tgame.conf
+	rm -rf $MODDIR/odm/etc/*yuanshen*.conf
+	rm -rf $MODDIR/odm/etc/*xingtie*.conf
 	rm -rf /data/vendor/thermal/config/*per*.conf
 	rm -rf /data/vendor/thermal/config/*tgame.conf
-	rm -rf /data/vendor/thermal/config/thermal-yuanshen.conf
+	rm -rf /data/vendor/thermal/config/*yuanshen*.conf
 			cp -f /data/media/0/Android/备份温控（请勿删除）/*per*.conf /data/vendor/thermal/config/
 				cp -f /data/media/0/Android/备份温控（请勿删除）/*tgame*.conf /data/vendor/thermal/config/
+					cp -f /data/media/0/Android/备份温控（请勿删除）/*xingtie*.conf /data/vendor/thermal/config/
 fi
 fi
 if test $(show_value '关闭logd') == true; then
