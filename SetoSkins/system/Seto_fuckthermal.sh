@@ -31,15 +31,6 @@ if test "$(show_value '均衡式性能温控')" == "false"; then
 							cp -f "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/vendor/odm/etc/$filename"
 						fi
 					done
-		fi		
-			if [ -d "/data/vendor/thermal/config" ]; then
-				for file in /odm/etc/thermal-*; do
-					if [ -f "$file" ]; then
-						filename=$(basename "$file")
-						cp -f "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/$filename"
-					fi
-				done
-			fi
 		 else
 					mkdir -p $MODDIR/vendor/etc
 			#本地
@@ -50,6 +41,14 @@ if test "$(show_value '均衡式性能温控')" == "false"; then
 				fi
 			done
 					fi
+			if [ -d "/data/vendor/thermal/config" ]; then
+				for file in /odm/etc/thermal-*; do
+					if [ -f "$file" ]; then
+						filename=$(basename "$file")
+						cp -f "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/$filename"
+					fi
+				done
+			fi
 			chmod 777 /sys/class/thermal/thermal_message/sconfig
 
 			case "$var_device" in

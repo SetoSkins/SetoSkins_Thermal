@@ -3,5 +3,6 @@ name=Seto Thermal Control (色图温控)
 version=__VERSION__
 versionCode=__VERSIONCODE__
 author=SetoSkins Team (@SetoSkins @shadow3)
-description=Multi-function thermal control for MIUI/HyperOS | Supports Magisk, KernelSU, SukiSU
+description=Multi-function thermal control for MIUI/HyperOS | Supports Magisk, KernelSU, SukiSU | Config: /data/adb/modules/SetoSkins/
 updateJson=https://raw.githubusercontent.com/SetoSKins/SetoSkins_Thermal/master/SetoSkins.json
+config=/data/adb/modules/SetoSkins
