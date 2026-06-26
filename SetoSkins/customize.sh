@@ -87,47 +87,73 @@ fi
 ##########################
 # Config Restore (automatic)
 ##########################
+
 PERSISTENT_DIR="/data/adb/SetoSkins"
 mkdir -p "$PERSISTENT_DIR" 2>/dev/null || true
 
-# 检测旧模块目录是否有配置文件
+# 删除旧配置.prop，每次安装都重新生成
+rm -f "$PERSISTENT_DIR/配置.prop" 2>/dev/null || true
+
+# 检测旧模块目录是否有需要保留的配置
 OLD_MODULE="/data/adb/modules/SetoSkins"
-if [ -f "$OLD_MODULE/配置.prop" ] || [ -f "$OLD_MODULE/黑名单.prop" ] || [ -f "$OLD_MODULE/无温控应用.prop" ]; then
+
+if [ -f "$OLD_MODULE/黑名单.prop" ] || [ -f "$OLD_MODULE/无温控应用.prop" ]; then
     lang_print "- 检测到旧配置文件，正在备份..." "- Detected old config files, backing up..."
-    [ -f "$OLD_MODULE/配置.prop" ] && cp -f "$OLD_MODULE/配置.prop" "$PERSISTENT_DIR/配置.prop" 2>/dev/null || true
-    [ -f "$OLD_MODULE/黑名单.prop" ] && cp -f "$OLD_MODULE/黑名单.prop" "$PERSISTENT_DIR/黑名单.prop" 2>/dev/null || true
-    [ -f "$OLD_MODULE/无温控应用.prop" ] && cp -f "$OLD_MODULE/无温控应用.prop" "$PERSISTENT_DIR/无温控应用.prop" 2>/dev/null || true
-    lang_print "- 旧配置已备份到 /data/adb/SetoSkins/" "- Old config backed up to /data/adb/SetoSkins/"
+
+    [ -f "$OLD_MODULE/黑名单.prop" ] && \
+        cp -f "$OLD_MODULE/黑名单.prop" "$PERSISTENT_DIR/黑名单.prop" 2>/dev/null || true
+
+    [ -f "$OLD_MODULE/无温控应用.prop" ] && \
+        cp -f "$OLD_MODULE/无温控应用.prop" "$PERSISTENT_DIR/无温控应用.prop" 2>/dev/null || true
+
+    lang_print "- 黑名单和无温控应用配置已备份" "- Blacklist and no-limit app config backed up"
 fi
 
-# 从持久化目录恢复配置
-if [ -f "$PERSISTENT_DIR/配置.prop" ]; then
-    lang_print "- 找到已保存配置，自动恢复中" "- Found saved config, restoring automatically"
-    cp -f "$PERSISTENT_DIR/配置.prop" "$MODPATH/配置.prop" 2>/dev/null || true
-    [ -f "$PERSISTENT_DIR/黑名单.prop" ] && cp -f "$PERSISTENT_DIR/黑名单.prop" "$MODPATH/黑名单.prop" || true
-    [ -f "$PERSISTENT_DIR/无温控应用.prop" ] && cp -f "$PERSISTENT_DIR/无温控应用.prop" "$MODPATH/无温控应用.prop" || true
-    lang_print "- 配置已从 /data/adb/SetoSkins/ 恢复" "- Config restored from /data/adb/SetoSkins/"
-else
-    lang_print "- 首次安装，使用默认配置" "- First install, using default config"
-    identify
+# 每次安装重新生成默认配置.prop
+identify
+
+# 恢复黑名单
+if [ -f "$PERSISTENT_DIR/黑名单.prop" ]; then
+    cp -f "$PERSISTENT_DIR/黑名单.prop" "$MODPATH/黑名单.prop" 2>/dev/null || true
 fi
 
-# 开机后3秒强制覆盖配置
-if [ -f "$PERSISTENT_DIR/配置.prop" ]; then
-    cat > /data/adb/service.d/seto_restore_config.sh << 'RESTOREEOF'
+# 恢复无温控应用
+if [ -f "$PERSISTENT_DIR/无温控应用.prop" ]; then
+    cp -f "$PERSISTENT_DIR/无温控应用.prop" "$MODPATH/无温控应用.prop" 2>/dev/null || true
+fi
+
+lang_print "- 已恢复黑名单和无温控应用配置" "- Blacklist and no-limit app config restored"
+
+# 开机后3秒再次恢复黑名单和无温控应用配置
+if [ -f "$PERSISTENT_DIR/黑名单.prop" ] || [ -f "$PERSISTENT_DIR/无温控应用.prop" ]; then
+
+cat > /data/adb/service.d/seto_restore_config.sh << 'RESTOREEOF'
 #!/system/bin/sh
 sleep 3
+
 PERSISTENT_DIR="/data/adb/SetoSkins"
 MODULE_DIR="/data/adb/modules/SetoSkins"
-if [ -d "$MODULE_DIR" ] && [ -f "$PERSISTENT_DIR/配置.prop" ]; then
-    cp -f "$PERSISTENT_DIR/配置.prop" "$MODULE_DIR/配置.prop" 2>/dev/null
-    [ -f "$PERSISTENT_DIR/黑名单.prop" ] && cp -f "$PERSISTENT_DIR/黑名单.prop" "$MODULE_DIR/黑名单.prop" 2>/dev/null
-    [ -f "$PERSISTENT_DIR/无温控应用.prop" ] && cp -f "$PERSISTENT_DIR/无温控应用.prop" "$MODULE_DIR/无温控应用.prop" 2>/dev/null
+
+if [ -d "$MODULE_DIR" ]; then
+    if [ -f "$PERSISTENT_DIR/黑名单.prop" ]; then
+        cp -f "$PERSISTENT_DIR/黑名单.prop" "$MODULE_DIR/黑名单.prop" 2>/dev/null
+    fi
+
+    if [ -f "$PERSISTENT_DIR/无温控应用.prop" ]; then
+        cp -f "$PERSISTENT_DIR/无温控应用.prop" "$MODULE_DIR/无温控应用.prop" 2>/dev/null
+    fi
 fi
-rm -f /data/adb/service.d/seto_restore_config.sh
+rm -f "$0"
 RESTOREEOF
-    chmod 755 /data/adb/service.d/seto_restore_config.sh 2>/dev/null || true
+
+chmod 755 /data/adb/service.d/seto_restore_config.sh 2>/dev/null || true
+
 fi
+
+ui_print "—————————————————————————"
+lang_print "- 如温控无效，请确保系统已更新。" "- If thermal control is ineffective, make sure your system is up to date."
+lang_print "- 如降亮度或充电变慢，请在配置中开启温控空文件挂载。" "- Enable empty thermal file mount in config if brightness drops or charging slows."
+ui_print "—————————————————————————"
 ui_print "—————————————————————————"
 lang_print "- 如温控无效，请确保系统已更新。" "- If thermal control is ineffective, make sure your system is up to date."
 lang_print "- 如降亮度或充电变慢，请在配置中开启温控空文件挂载。" "- Enable empty thermal file mount in config if brightness drops or charging slows."
