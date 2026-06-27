@@ -5,6 +5,8 @@ chmod 777 /data/vendor/thermal/config
 chattr -R -i -a $MODDIR/
 echo 0 >/sys/class/power_supply/battery/input_suspend
 rm -rf /data/adb/post-fs-data.d/post-fs-data.sh
+rm -rf /data/adb/SetoSkins
+rm -rf /data/adb/service.d/seto_restore_config.sh
 echo '0' >/sys/class/qcom-battery/thermal_remove
 echo "50000000" >/sys/class/power_supply/battery/constant_charge_current
 echo "50000000" >/sys/devices/platform/battery/power_supply/battery/fast_charge_current
