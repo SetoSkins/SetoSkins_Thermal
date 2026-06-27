@@ -15,13 +15,13 @@ if [ -f "$MODDIR/执行作者主页.sh" ]; then
 	mv "$MODDIR/执行作者主页.sh" "$MODDIR/乱七八糟/执行作者主页.sh"
 fi
 
-file1=/data/adb/modules/SetoSkins/配置.prop
+file1=$MODDIR/配置.prop
 file2=$(ls /sys/class/power_supply/battery/*charge_current /sys/class/power_supply/battery/current_max /sys/class/power_supply/battery/thermal_input_current 2>/dev/null | tr -d '\n')
 file3=$(ls /sys/class/power_supply/*/constant_charge_current_max /sys/class/power_supply/*/fast_charge_current /sys/class/power_supply/*/thermal_input_current 2>/dev/null |tr -d ' ')
 
 show_value() {
 	value=$1
-	file=/data/adb/modules/SetoSkins/配置.prop
+	file=$MODDIR/配置.prop
 	cat "${file}" | grep -E "(^$value=)" | sed '/^#/d;/^[[:space:]]*$/d;s/.*=//g' | sed 's/，/,/g;s/——/-/g;s/：/:/g' | head -n 1
 }
 
@@ -130,7 +130,6 @@ fi
 					cp -f -f $MODDIR/cloud/thermal/thermal-per-huanji.conf /data/vendor/thermal/config/thermal-per-normal.conf
 						cp -f -f $MODDIR/cloud/thermal/thermal-per-huanji.conf /data/vendor/thermal/config/thermal-per-normal.conf
 			cp -f -f $MODDIR/cloud/thermal/thermal-per-huanji.conf $MODDIR/vendor/etc/thermal-per-class0.conf
-	vendor/etc/; done
 		cp -f -f $MODDIR/cloud/thermal/thermal-per-huanji.conf /data/vendor/thermal/config/thermal-per-class0.conf
 		if [[ $var_device_trans != "" ]]; then
 		rm -rf /data/vendor/thermal/config/*normal.conf
