@@ -277,6 +277,14 @@ body {
 
 <div class="loading hidden" id="loading"><div class="spinner"></div></div>
 <div class="toast" id="toast"></div>
+<div class="root-dialog-overlay hidden" id="rootDialog">
+  <div class="root-dialog">
+    <div class="dialog-icon">🔒</div>
+    <div class="dialog-title" id="rootDialogTitle" data-i18n="dialog.no_root">Root 权限未授予</div>
+    <div class="dialog-msg" id="rootDialogMsg" data-i18n="dialog.no_root.desc">本模块需要 Root 权限才能运行</div>
+    <button class="dialog-btn" id="rootDialogBtn" data-i18n="dialog.retry">重试</button>
+  </div>
+</div>
 
 <div class="header">
   <h1 id="h-title">Seto Thermal</h1>
@@ -502,7 +510,6 @@ const LANGS = {
     "cfg.无温控应用": "无温控应用",
     "cfg.无温控应用.tip": "每行一个包名",
     "cfg.无温控应用.placeholder": "com.example.app"
-   
   },
   "zh-TW": {
     name: "繁體中文",

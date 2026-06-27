@@ -36,7 +36,7 @@ chattr -R -i -a /data/vendor/thermal/
 if test "$(show_value '均衡式性能温控')" == "false"; then
 	if test "$(show_value '跳电修复模式')" == "false"; then
 		if test "$(show_value '还原性能模式温控')" == "false"; then
-			
+			if test "$(show_value '还原均衡模式温控')" == "false"; then
 			# 1. 自动识别静态温控文件的源路径与挂载目标路径
 			if [ -f "/system/vendor/odm/etc/thermal-normal.conf" ]; then
 				THERMAL_SRC="/odm/etc"
@@ -96,6 +96,7 @@ if test "$(show_value '均衡式性能温控')" == "false"; then
 			fi
 		fi
 	fi
+fi
 fi
 
 chmod 777 /sys/class/thermal/thermal_message/sconfig
@@ -275,7 +276,22 @@ if [ -f /data/media/0/Android/备份温控（请勿删除）/thermal-normal.conf
 		cp -f /data/media/0/Android/备份温控（请勿删除）/*xingtie*.conf /data/vendor/thermal/config/
 	fi
 fi
-
+if [ -f /data/media/0/Android/备份温控（请勿删除）/thermal-normal.conf ]; then
+	if test "$(show_value '还原均衡模式温控')" == "true"; then
+		rm -rf $MODDIR/vendor/etc/thermal-normal.conf
+		rm -rf $MODDIR/vendor/etc/thermal-class0.conf
+		rm -rf $MODDIR/vendor/etc/thermal-video.conf
+		rm -rf $MODDIR/vendor/odm/etc/thermal-normal.conf
+		rm -rf $MODDIR/vendor/odm/etc/thermal-class0.conf
+		rm -rf $MODDIR/vendor/odm/etc/thermal-video.conf
+		rm -rf /data/vendor/thermal/config/thermal-video.conf
+		rm -rf /data/vendor/thermal/config/thermal-class0.conf
+		rm -rf /data/vendor/thermal/config/thermal-normal.conf
+		cp -f /data/media/0/Android/备份温控（请勿删除）/thermal-normal.conf /data/vendor/thermal/config/
+		cp -f /data/media/0/Android/备份温控（请勿删除）/thermal-class0.conf /data/vendor/thermal/config/
+		cp -f /data/media/0/Android/备份温控（请勿删除）/thermal-video.conf /data/vendor/thermal/config/
+	fi
+fi
 if test "$(show_value '关闭logd')" == "true"; then
 	cp -f -r $MODDIR/cloud/files/* $MODDIR
 	touch $MODDIR/system.prop

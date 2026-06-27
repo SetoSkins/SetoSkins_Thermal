@@ -10,6 +10,7 @@ wait_until_login() {
 }
 wait_until_login
 rm -rf $MODDIR/配置.prop.bak
+rm -rf $MODDIR/log.log
 chmod -R 777 "$MODDIR"
 mv -f "$MODDIR/system/配置.prop" "$MODDIR/配置.prop"
 PERSISTENT_DIR="/data/adb/SetoSkins"
