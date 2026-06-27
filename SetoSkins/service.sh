@@ -37,7 +37,15 @@ if [ ! -f "$b"/profile_user_io/电量.log ]; then
 fi
 chmod 777 $b/profile_user_io/电量.log
 if test $(show_value '开启充电Log') == true; then
-echo -e $(date) ""模块启动"\n"电池循环次数: $CYCLE_COUNT"\n"电池容量: $Battery_capacity"\n"当前剩余百分比： $bfb% >"$MODDIR"/log.log
+if [ -z "$CYCLE_COUNT" ] || [ "$CYCLE_COUNT" = "0" ]; then
+    CYCLE_COUNT="未获取节点"
+fi
+
+if [ -z "$Battery_capacity" ] || [ "$Battery_capacity" = "0" ]; then
+    Battery_capacity="未获取节点"
+fi
+
+echo -e "$(date) 模块启动\n电池循环次数: $CYCLE_COUNT\n电池容量: $Battery_capacity\n当前剩余百分比：$bfb%" > "$MODDIR/log.log"
 	nohup $MODDIR/system/SetoLog >/dev/null 2>&1 &
 	else
 	rm -rf MODDIR/log.log
