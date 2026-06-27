@@ -15,20 +15,23 @@ if [ -f "$MODDIR/执行作者主页.sh" ]; then
 	mv "$MODDIR/执行作者主页.sh" "$MODDIR/乱七八糟/执行作者主页.sh"
 fi
 
-file1=$MODDIR/配置.prop
+file1=/data/adb/modules/SetoSkins/配置.prop
 file2=$(ls /sys/class/power_supply/battery/*charge_current /sys/class/power_supply/battery/current_max /sys/class/power_supply/battery/thermal_input_current 2>/dev/null | tr -d '\n')
 file3=$(ls /sys/class/power_supply/*/constant_charge_current_max /sys/class/power_supply/*/fast_charge_current /sys/class/power_supply/*/thermal_input_current 2>/dev/null |tr -d ' ')
 
 show_value() {
 	value=$1
-	file=$MODDIR/配置.prop
-	cat "${file}" | grep -E "(^$value=)" | sed '/^#/d;/^[[:space:]]*$/d;s/.*=//g' | sed 's/，/,/g;s/——/-/g;s/：/:/g' | head -n 1
+	file=/data/adb/modules/SetoSkins/配置.prop
+	if [ -f "${file}" ]; then
+		cat "${file}" | grep -E "(^$value=)" | sed '/^#/d;/^[[:space:]]*$/d;s/.*=//g' | sed 's/，/,/g;s/——/-/g;s/：/:/g' | head -n 1
+	else
+		echo "false"
+	fi
 }
 
 rm -rf /data/vendor/thermal/config/*
 chattr -R -i -a /data/vendor/thermal/
 
-# 云端逻辑开始
 # 云端逻辑开始
 if test "$(show_value '均衡式性能温控')" == "false"; then
 	if test "$(show_value '跳电修复模式')" == "false"; then
@@ -74,7 +77,7 @@ if test "$(show_value '均衡式性能温控')" == "false"; then
 				cp -f "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-per-${var_device_trans}-normal.conf"
 				cp -f "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-per-${var_device_trans}-class0.conf"
 				cp -f "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-${var_device_trans}-nolimits.conf"
-				cp -f "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-${var_device_trans}-tgame.conf"
+				cp -f "$MODDIR/cloud/thermal/thermal-${var_device_trans}-tgame.conf" "/data/vendor/thermal/config/thermal-${var_device_trans}-tgame.conf"
 				cp -f "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-${var_device_trans}-mgame.conf"
 				cp -f "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-per-${var_device_trans}-video.conf"
 				cp -f "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-${var_device_trans}-video.conf"
@@ -116,45 +119,44 @@ if [ -f /data/media/0/Android/备份温控（请勿删除）/thermal-normal.conf
 		fi
 	fi
 fi
-	if test "$(show_value '游戏均衡式性能温控')" == "true"; then
-		rm -rf /data/vendor/thermal/config/*per.conf
-		rm -rf $MODDIR/vendor/etc/*per.conf
-		cp -f /data/media/0/Android/备份温控（请勿删除）/thermal-per-normal.conf /data/vendor/thermal/config/thermal-normal.conf
-				cp -f /data/media/0/Android/备份温控（请勿删除）/thermal-per-class0.conf /data/vendor/thermal/config/thermal-class0.conf
-		cp -f /data/media/0/Android/备份温控（请勿删除）/thermal-per-normal.conf $MODDIR/vendor/etc/thermal-normal.conf
-				cp -f /data/media/0/Android/备份温控（请勿删除）/thermal-per-class0.conf $MODDIR/vendor/etc/thermal-class0.conf
-		for f in /data/media/0/Android/备份温控（请勿删除）/*per.conf; do [ -f "$f" ] && cp -f "$f" /data/vendor/thermal/config/; done
-		for f in /data/media/0/Android/备份温控（请勿删除）/*per.conf; do [ -f "$f" ] && cp -f "$f" $MODDIR/vendor/etc/; done
-		cp -f -f $MODDIR/cloud/thermal/thermal-per-huanji.conf $MODDIR/vendor/etc/thermal-per-normal.conf
-			cp -f -f $MODDIR/cloud/thermal/thermal-per-huanji.conf $MODDIR/vendor/etc/thermal-per-class0.conf
-					cp -f -f $MODDIR/cloud/thermal/thermal-per-huanji.conf /data/vendor/thermal/config/thermal-per-normal.conf
-						cp -f -f $MODDIR/cloud/thermal/thermal-per-huanji.conf /data/vendor/thermal/config/thermal-per-normal.conf
-			cp -f -f $MODDIR/cloud/thermal/thermal-per-huanji.conf $MODDIR/vendor/etc/thermal-per-class0.conf
-		cp -f -f $MODDIR/cloud/thermal/thermal-per-huanji.conf /data/vendor/thermal/config/thermal-per-class0.conf
-		if [[ $var_device_trans != "" ]]; then
-		rm -rf /data/vendor/thermal/config/*normal.conf
-rm -rf /data/vendor/thermal/config/*class0.conf
-rm -rf "$MODDIR/vendor/etc/*normal.conf"
-rm -rf "$MODDIR/vendor/etc/*class0.conf"
-BACKUP_DIR="/data/media/0/Android/备份温控（请勿删除）"
-if [ -d "$BACKUP_DIR" ]; then
-    for f in "$BACKUP_DIR"/*normal.conf "$BACKUP_DIR"/*class0.conf; do
-        if [ -f "$f" ]; then
-            cp -f "$f" /data/vendor/thermal/config/
-            cp -f "$f" "$MODDIR/vendor/etc/"
-        fi
-    done
-fi
-cp -f "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-${var_device_trans}-normal.conf"
-cp -f "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/vendor/etc/thermal-${var_device_trans}-normal.conf"
-cp -f "$MODDIR/cloud/thermal/thermal-${var_device_trans}-tgame.conf" "/data/vendor/thermal/config/thermal-per-normal.conf"
-cp -f "$MODDIR/cloud/thermal/thermal-${var_device_trans}-tgame.conf" "/data/vendor/thermal/config/thermal-per-class0.conf"
-cp -f "$MODDIR/cloud/thermal/thermal-${var_device_trans}-tgame.conf" "$MODDIR/vendor/etc/thermal-per-normal.conf"
-cp -f "$MODDIR/cloud/thermal/thermal-${var_device_trans}-tgame.conf" "$MODDIR/vendor/etc/thermal-per-class0.conf"
 
+if test "$(show_value '游戏均衡式性能温控')" == "true"; then
+	rm -rf /data/vendor/thermal/config/*per.conf
+	rm -rf $MODDIR/vendor/etc/*per.conf
+	cp -f /data/media/0/Android/备份温控（请勿删除）/thermal-per-normal.conf /data/vendor/thermal/config/thermal-normal.conf
+	cp -f /data/media/0/Android/备份温控（请勿删除）/thermal-per-class0.conf /data/vendor/thermal/config/thermal-class0.conf
+	cp -f /data/media/0/Android/备份温控（请勿删除）/thermal-per-normal.conf $MODDIR/vendor/etc/thermal-normal.conf
+	cp -f /data/media/0/Android/备份温控（请勿删除）/thermal-per-class0.conf $MODDIR/vendor/etc/thermal-class0.conf
+	for f in /data/media/0/Android/备份温控（请勿删除）/*per.conf; do [ -f "$f" ] && cp -f "$f" /data/vendor/thermal/config/; done
+	for f in /data/media/0/Android/备份温控（请勿删除）/*per.conf; do [ -f "$f" ] && cp -f "$f" $MODDIR/vendor/etc/; done
+	cp -f -f $MODDIR/cloud/thermal/thermal-per-huanji.conf $MODDIR/vendor/etc/thermal-per-normal.conf
+	cp -f -f $MODDIR/cloud/thermal/thermal-per-huanji.conf $MODDIR/vendor/etc/thermal-per-class0.conf
+	cp -f -f $MODDIR/cloud/thermal/thermal-per-huanji.conf /data/vendor/thermal/config/thermal-per-normal.conf
+	cp -f -f $MODDIR/cloud/thermal/thermal-per-huanji.conf /data/vendor/thermal/config/thermal-per-class0.conf
+
+	if [[ $var_device_trans != "" ]]; then
+		rm -rf /data/vendor/thermal/config/*normal.conf
+		rm -rf /data/vendor/thermal/config/*class0.conf
+		rm -rf "$MODDIR/vendor/etc/*normal.conf"
+		rm -rf "$MODDIR/vendor/etc/*class0.conf"
+		BACKUP_DIR="/data/media/0/Android/备份温控（请勿删除）"
+		if [ -d "$BACKUP_DIR" ]; then
+			for f in "$BACKUP_DIR"/*normal.conf "$BACKUP_DIR"/*class0.conf; do
+				if [ -f "$f" ]; then
+					cp -f "$f" /data/vendor/thermal/config/
+					cp -f "$f" "$MODDIR/vendor/etc/"
+				fi
+			done
 		fi
+		cp -f "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-${var_device_trans}-normal.conf"
+		cp -f "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/vendor/etc/thermal-${var_device_trans}-normal.conf"
+		cp -f "$MODDIR/cloud/thermal/thermal-${var_device_trans}-tgame.conf" "/data/vendor/thermal/config/thermal-per-normal.conf"
+		cp -f "$MODDIR/cloud/thermal/thermal-${var_device_trans}-tgame.conf" "/data/vendor/thermal/config/thermal-per-class0.conf"
+		cp -f "$MODDIR/cloud/thermal/thermal-${var_device_trans}-tgame.conf" "$MODDIR/vendor/etc/thermal-per-normal.conf"
+		cp -f "$MODDIR/cloud/thermal/thermal-${var_device_trans}-tgame.conf" "$MODDIR/vendor/etc/thermal-per-class0.conf"
 	fi
 fi
+
 if test "$(show_value '关闭录制温控')" == "true"; then
 	if [ ! -d /data/media/0/Android/备份温控（请勿删除） ]; then
 		cp -f "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/vendor/odm/etc/thermal-4k.conf"

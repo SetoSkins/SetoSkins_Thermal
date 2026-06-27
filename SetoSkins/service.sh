@@ -11,7 +11,10 @@ wait_until_login() {
 wait_until_login
 rm -rf $MODDIR/配置.prop.bak
 chmod -R 777 "$MODDIR"
-
+PERSISTENT_DIR="/data/adb/modules/SetoSkins/"
+mv -f "$MODDIR/system/配置.prop" "$PERSISTENT_DIR/配置.prop"
+[ -f "$MODDIR/黑名单.prop" ] && cp -f "$MODDIR/黑名单.prop" "$PERSISTENT_DIR/黑名单.prop" 2>/dev/null || true
+[ -f "$MODDIR/无温控应用.prop" ] && cp -f "$MODDIR/无温控应用.prop" "$PERSISTENT_DIR/无温控应用.prop" 2>/dev/null || true
 dq=$(cat /sys/class/power_supply/battery/charge_full)
 file2=$(ls /sys/class/power_supply/battery/*charge_current /sys/class/power_supply/battery/current_max /sys/class/power_supply/battery/thermal_input_current 2>>/dev/null | tr -d '\n')
 file3=$(ls /sys/class/power_supply/*/constant_charge_current_max /sys/class/power_supply/*/fast_charge_current /sys/class/power_supply/*/thermal_input_current 2>/dev/null |tr -d ' ')
@@ -42,11 +45,6 @@ nohup $MODDIR/system/SetoFastCharge >/dev/null 2>&1 &
 nohup $MODDIR/system/SetoStop >/dev/null 2>&1 &
 nohup $MODDIR/system/SetoSpecificApp >/dev/null 2>&1 &
 nohup $MODDIR/system/SetoSpecificCurrent >/dev/null 2>&1 &
-show_value() {
-	value=$1
-	file=$MODDIR/配置.prop
-	cat "${file}" | grep -E "(^$value=)" | sed '/^#/d;/^[[:space:]]*$/d;s/.*=//g' | sed 's/，/,/g;s/——/-/g;s/：/:/g' | head -n 1
-}
 # Restore base module.prop if cloud version exists (for description update loop)
 [ -f "$MODDIR/system/cloud/module.prop" ] && cp "$MODDIR/system/cloud/module.prop" "$MODDIR/module.prop"
 echo 0 >/data/vendor/thermal/thermal-global-mode
@@ -134,11 +132,7 @@ rm -rf $MODDIR/配置.prop.bak
 rm -rf $MODDIR/nohup.out
 
 # Backup config to persistent storage (survives module updates)
-PERSISTENT_DIR="/data/adb/SetoSkins"
-mkdir -p "$PERSISTENT_DIR"
-cp -f "$MODDIR/配置.prop" "$PERSISTENT_DIR/配置.prop" 2>/dev/null
-[ -f "$MODDIR/黑名单.prop" ] && cp -f "$MODDIR/黑名单.prop" "$PERSISTENT_DIR/黑名单.prop" 2>/dev/null || true
-[ -f "$MODDIR/无温控应用.prop" ] && cp -f "$MODDIR/无温控应用.prop" "$PERSISTENT_DIR/无温控应用.prop" 2>/dev/null || true
+
 
 # Note: Seto_description.sh (charging info display) is launched
 # automatically by the 'for scripts' loop above as system/Seto_description.sh
