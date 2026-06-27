@@ -1,12 +1,12 @@
 #!/system/bin/sh
 MODDIR=${0%/*}
 pid=$(ps -ef | grep $1 | grep -v grep | cut -d "Seto_charge.sh" -f 2)
-file1=$MODDIR/配置.prop
+file1=/data/adb/modules/SetoSkins/配置.prop
 file2=$(ls /sys/class/power_supply/battery/*charge_current /sys/class/power_supply/battery/current_max /sys/class/power_supply/battery/thermal_input_current 2>>/dev/null |tr -d '\n')
 file3=$(ls /sys/class/power_supply/*/constant_charge_current_max /sys/class/power_supply/*/fast_charge_current /sys/class/power_supply/*/thermal_input_current 2>/dev/null |tr -d ' ')
 show_value() {
 	local value=$1
-	local file=$MODDIR/配置.prop
+	local file=/data/adb/modules/SetoSkins/配置.prop
 	grep "$value" "$file" | cut -d "=" -f2
 }
 log=$MODDIR/limit.log

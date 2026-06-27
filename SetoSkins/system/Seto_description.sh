@@ -16,7 +16,7 @@ done
 PERSISTENT_DIR="/data/adb/SetoSkins"
 
 show_value() {
-    local file="$MODDIR/配置.prop"
+    local file="/data/adb/modules/SetoSkins/配置.prop"
     [ -f "$PERSISTENT_DIR/配置.prop" ] && file="$PERSISTENT_DIR/配置.prop"
     grep "^$1=" "$file" 2>/dev/null | head -n1 | cut -d'=' -f2
 }
