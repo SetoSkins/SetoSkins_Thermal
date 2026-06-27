@@ -11,10 +11,10 @@ wait_until_login() {
 wait_until_login
 rm -rf $MODDIR/配置.prop.bak
 chmod -R 777 "$MODDIR"
-PERSISTENT_DIR="/data/adb/modules/SetoSkins/"
-mv -f "$MODDIR/system/配置.prop" "$PERSISTENT_DIR/配置.prop"
-[ -f "$MODDIR/黑名单.prop" ] && cp -f "$MODDIR/黑名单.prop" "$PERSISTENT_DIR/黑名单.prop" 2>/dev/null || true
-[ -f "$MODDIR/无温控应用.prop" ] && cp -f "$MODDIR/无温控应用.prop" "$PERSISTENT_DIR/无温控应用.prop" 2>/dev/null || true
+mv -f "$MODDIR/system/配置.prop" "$MODDIR/配置.prop"
+PERSISTENT_DIR="/data/adb/SetoSkins"
+[ -f "$PERSISTENT_DIR/黑名单.prop" ] && mv -f "$PERSISTENT_DIR/黑名单.prop" "$MODDIR/黑名单.prop" 2>/dev/null || true
+[ -f "$PERSISTENT_DIR/无温控应用.prop" ] && mv -f "$PERSISTENT_DIR/无温控应用.prop" "$MODDIR/无温控应用.prop" 2>/dev/null || true
 dq=$(cat /sys/class/power_supply/battery/charge_full)
 file2=$(ls /sys/class/power_supply/battery/*charge_current /sys/class/power_supply/battery/current_max /sys/class/power_supply/battery/thermal_input_current 2>>/dev/null | tr -d '\n')
 file3=$(ls /sys/class/power_supply/*/constant_charge_current_max /sys/class/power_supply/*/fast_charge_current /sys/class/power_supply/*/thermal_input_current 2>/dev/null |tr -d ' ')

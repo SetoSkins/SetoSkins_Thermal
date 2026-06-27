@@ -13,7 +13,7 @@ for candidate in "$MODDIR" "/data/adb/modules/SetoSkins"; do
     fi
 done
 
-PERSISTENT_DIR="/data/adb/SetoSkins"
+PERSISTENT_DIR="/data/adb/modules/SetoSkins"
 
 show_value() {
     local file="/data/adb/modules/SetoSkins/配置.prop"
