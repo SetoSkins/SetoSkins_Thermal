@@ -25,11 +25,15 @@ update_desc() {
     local new_desc="$1"
     local prop="$MODDIR/module.prop"
     [ ! -f "$prop" ] && return
+
+    local escaped_desc
+    escaped_desc=$(printf '%s' "$new_desc" | sed 's/[|&]/\\&/g')
+
     local tmp="${prop}.tmp"
-    sed "s|^description=.*|description=${new_desc}|" "$prop" > "$tmp" && mv "$tmp" "$prop"
+    sed "s|^description=.*|description=${escaped_desc}|" "$prop" > "$tmp" && mv "$tmp" "$prop"
+
     chmod 644 "$prop" 2>/dev/null
 }
-
 # Wait for boot
 while [ "$(getprop sys.boot_completed)" != "1" ]; do sleep 2; done
 
