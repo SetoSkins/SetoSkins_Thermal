@@ -99,7 +99,7 @@ if test "$(show_value '均衡式性能温控')" == "false"; then
 chmod 777 /sys/class/thermal/thermal_message/sconfig
 
 if [ -f /data/media/0/Android/备份温控（请勿删除）/thermal-normal.conf ]; then
-	if test "$(show_value '均衡式性能温控')" == "true"; then
+	if test "$(show_value '游戏均衡式性能温控')" == "true"; then
 		rm -rf /data/vendor/thermal/config/*mgame.conf
 		rm -rf $MODDIR/vendor/etc/*mgame.conf
 		cp -f /data/media/0/Android/备份温控（请勿删除）/thermal-tgame.conf /data/vendor/thermal/config/thermal-mgame.conf
@@ -118,7 +118,7 @@ if [ -f /data/media/0/Android/备份温控（请勿删除）/thermal-normal.conf
 	fi
 fi
 
-if test "$(show_value '游戏均衡式性能温控')" == "true"; then
+if test "$(show_value '系统均衡式性能温控')" == "true"; then
 	rm -rf /data/vendor/thermal/config/*per.conf
 	rm -rf $MODDIR/vendor/etc/*per.conf
 	cp -f /data/media/0/Android/备份温控（请勿删除）/thermal-per-normal.conf /data/vendor/thermal/config/thermal-normal.conf
