@@ -35,8 +35,7 @@ chattr -R -i -a /data/vendor/thermal/
 # 云端逻辑开始
 if test "$(show_value '均衡式性能温控')" == "false"; then
 	if test "$(show_value '跳电修复模式')" == "false"; then
-		if test "$(show_value '还原性能模式温控')" == "false"; then
-			if test "$(show_value '还原均衡模式温控')" == "false"; then
+	
 			# 1. 自动识别静态温控文件的源路径与挂载目标路径
 			if [ -f "/system/vendor/odm/etc/thermal-normal.conf" ]; then
 				THERMAL_SRC="/odm/etc"
@@ -96,8 +95,6 @@ if test "$(show_value '均衡式性能温控')" == "false"; then
 			fi
 		fi
 	fi
-fi
-fi
 
 chmod 777 /sys/class/thermal/thermal_message/sconfig
 
