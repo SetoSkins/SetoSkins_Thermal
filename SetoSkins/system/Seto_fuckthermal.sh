@@ -33,8 +33,7 @@ rm -rf /data/vendor/thermal/config/*
 chattr -R -i -a /data/vendor/thermal/
 
 # 云端逻辑开始
-if test "$(show_value '均衡式性能温控')" == "false"; then
-	if test "$(show_value '跳电修复模式')" == "false"; then
+if test "$(show_value '跳电修复模式')" == "false"; then
 	
 			# 1. 自动识别静态温控文件的源路径与挂载目标路径
 			if [ -f "/system/vendor/odm/etc/thermal-normal.conf" ]; then
@@ -94,7 +93,6 @@ if test "$(show_value '均衡式性能温控')" == "false"; then
 				cp -f "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/vendor/etc/thermal-${var_device_trans}-video.conf"
 			fi
 		fi
-	fi
 
 chmod 777 /sys/class/thermal/thermal_message/sconfig
 
