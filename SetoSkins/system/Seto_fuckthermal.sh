@@ -34,8 +34,14 @@ chattr -R -i -a /data/vendor/thermal/
 
 # 云端逻辑开始
 if test "$(show_value '跳电修复模式')" == "false"; then
-	
-			# 1. 自动识别静态温控文件的源路径与挂载目标路径
+	if test "$(show_value '无温控应用')" == "true" && test "$(show_value '黑白名单')" == "黑名单"; then
+			BACKUP_DIR="/data/media/0/Android/备份温控（请勿删除）"
+			if [ -d "$BACKUP_DIR" ] && [ -d "/data/vendor/thermal/config" ]; then
+				cp -f "$BACKUP_DIR"/* "/data/vendor/thermal/config/"
+			fi
+		else
+			
+				# 1. 自动识别静态温控文件的源路径与挂载目标路径
 			if [ -f "/system/vendor/odm/etc/thermal-normal.conf" ]; then
 				THERMAL_SRC="/odm/etc"
 				THERMAL_DST="$MODDIR/vendor/odm/etc"
@@ -93,6 +99,7 @@ if test "$(show_value '跳电修复模式')" == "false"; then
 				cp -f "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/vendor/etc/thermal-${var_device_trans}-video.conf"
 			fi
 		fi
+			fi
 
 chmod 777 /sys/class/thermal/thermal_message/sconfig
 
