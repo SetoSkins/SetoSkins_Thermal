@@ -36,22 +36,22 @@ echo $b
 echo $a1
 echo $b1
 echo "$c End values"
-# if test "$(show_value '修改最大电流数')" == "true"; then
-# 	echo "开启修改最大电流数"
-# 	while true; do
-# 		status=$(cat /sys/class/power_supply/battery/status)
-# 		if [[ $status == "Discharging" ]] || [[ $status == "Full" ]]; then
-# 			sleep 10
-# 		else
-# 			sleep 2
-# 		fi
-# 		b=$(grep "^最大电流数=" "$file1" | cut -d "=" -f2)
-# 		echo "$b" >"$file2"
-# 		echo "$b" >"$file3"
-# 		echo "$b" >"$file4"
-# 		echo "$b" >/sys/class/power_supply/battery/constant_charge_current_max 2>/dev/null
-# 	done
-# fi
+if test "$(show_value '修改最大电流数')" == "true"; then
+	echo "开启修改最大电流数"
+	while true; do
+		status=$(cat /sys/class/power_supply/battery/status)
+		if [[ $status == "Discharging" ]] || [[ $status == "Full" ]]; then
+			sleep 10
+		else
+			sleep 2
+		fi
+		b=$(grep "^最大电流数=" "$file1" | cut -d "=" -f2)
+		echo "$b" >"$file2"
+		echo "$b" >"$file3"
+		echo "$b" >"$file4"
+		echo "$b" >/sys/class/power_supply/battery/constant_charge_current_max 2>/dev/null
+	done
+fi
 
 if test "$(show_value '充电调速')" == "true"; then
 	echo "充电调速"
