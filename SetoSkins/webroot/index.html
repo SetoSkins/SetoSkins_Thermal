@@ -356,8 +356,8 @@ const LANGS = {
     "cfg.均衡式性能温控.desc": "Use performance thermal in balanced mode, no thermal in performance mode.",
     "cfg.跳电修复模式": "Voltage Jump Fix",
     "cfg.跳电修复模式.desc": "Fix battery voltage jumps on Xiaomi. Disable empty thermal mount when enabled.",
-    "cfg.开启修改最大电流数": "Modify Max Current",
-    "cfg.开启修改最大电流数.desc": "Set max charging current limit.",
+    "cfg.修改最大电流数": "Modify Max Current",
+    "cfg.修改最大电流数.desc": "Set max charging current limit.",
     "cfg.最大电流数": "Max Current (uA)",
     "cfg.最大电流数.tip": "e.g. 22000000 = 22A = 22000mA",
     "cfg.开启充电调速": "Temp-based Speed Control",
@@ -456,8 +456,8 @@ const LANGS = {
     "cfg.均衡式性能温控.desc": "均衡模式使用性能温控，性能模式无温控。",
     "cfg.跳电修复模式": "跳电修复模式",
     "cfg.跳电修复模式.desc": "修复小米手机跳电问题。开启后必须关闭温控空文件挂载。",
-    "cfg.开启修改最大电流数": "开启修改最大电流数",
-    "cfg.开启修改最大电流数.desc": "设置最大充电电流限制。",
+    "cfg.修改最大电流数": "修改最大电流数",
+    "cfg.修改最大电流数.desc": "设置最大充电电流限制。",
     "cfg.最大电流数": "最大电流数 (uA)",
     "cfg.最大电流数.tip": "例：22000000 = 22A = 22000mA",
     "cfg.开启充电调速": "开启充电调速",
@@ -909,7 +909,7 @@ function serializeConfig(config) {
   const SECTIONS = [
     { keys: ["简洁版配置", "模块简介显示充电信息", "开启充电Log"] },
     { keys: ["温控空文件挂载", "快充模式", "还原性能模式温控", "均衡式性能温控", "跳电修复模式"] },
-    { keys: ["开启修改最大电流数", "最大电流数"] },
+    { keys: ["修改最大电流数", "最大电流数"] },
     { keys: ["开启充电调速", "一限温度阈值", "一限限制电流", "二限温度阈值", "二限限制电流", "三限温度阈值", "三限限制电流", "延迟温度阈值"] },
     { keys: ["自定义阶梯模式", "一限电量阈值", "一限电量限制电流", "二限电量阈值", "二限电量限制电流", "三限电量阈值", "三限电量限制电流"] },
     { keys: ["亮息屏调速", "亮屏限制电流", "锁屏限制电流"] },
@@ -953,7 +953,7 @@ const CONFIG_LAYOUT = [
     section: "sec.charging",
     items: [
       { key: "开启充电Log", type: "toggle" },
-      { key: "开启修改最大电流数", type: "toggle", children: [
+      { key: "修改最大电流数", type: "toggle", children: [
         { key: "最大电流数", type: "number" },
       ]},
     ]
