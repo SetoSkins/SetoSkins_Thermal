@@ -12,21 +12,22 @@ wait_until_login
 rm -rf $MODDIR/配置.prop.bak
 rm -rf $MODDIR/log.log
 chmod -R 777 "$MODDIR"
-mv -f "$MODDIR/system/配置.prop" "$MODDIR/配置.prop"
-PERSISTENT_DIR="/data/adb/SetoSkins"
+PERSISTENT_DIR="/data/adb/modules/SetoSkins"
+mv -f "$MODDIR/system/配置.prop" "$PERSISTENT_DIR/配置.prop"
 [ -f "$PERSISTENT_DIR/黑名单.prop" ] && mv -f "$PERSISTENT_DIR/黑名单.prop" "$MODDIR/黑名单.prop" 2>/dev/null || true
 [ -f "$PERSISTENT_DIR/无温控应用.prop" ] && mv -f "$PERSISTENT_DIR/无温控应用.prop" "$MODDIR/无温控应用.prop" 2>/dev/null || true
 dq=$(cat /sys/class/power_supply/battery/charge_full)
 file2=$(ls /sys/class/power_supply/battery/*charge_current /sys/class/power_supply/battery/current_max /sys/class/power_supply/battery/thermal_input_current 2>>/dev/null | tr -d '\n')
 file3=$(ls /sys/class/power_supply/*/constant_charge_current_max /sys/class/power_supply/*/fast_charge_current /sys/class/power_supply/*/thermal_input_current 2>/dev/null |tr -d ' ')
+file4=$(ls /sys/class/power_supply/battery/charge_control_limit 2>/dev/null | tr -d '\n')
 cc=$(cat /sys/class/power_supply/battery/charge_full_design)
 bfb=$(echo "$dq $cc" | awk '{printf $1/$2}')
 bfb=$(echo "$bfb 100" | awk '{printf $1*$2}') || bfb="（？）"
 a=$(find /data/system/ -type d -name "thanos*" | tr -d '\n\r')
 b=$(cat $MODDIR/system/节点2.prop)
 show_value() {
-	value=$1
-	file=$MODDIR/配置.prop
+		value=$1
+		file=$PERSISTENT_DIR/配置.prop
 	cat "${file}" | grep -E "(^$value=)" | sed '/^#/d;/^[[:space:]]*$/d;s/.*=//g' | sed 's/，/,/g;s/——/-/g;s/：/:/g' | head -n 1
 }
 if [ ! -f "$MODDIR"/system/节点2.prop ]; then
@@ -36,7 +37,7 @@ if [ ! -f "$b"/profile_user_io/电量.log ]; then
 	touch "$b"/profile_user_io/电量.log
 fi
 chmod 777 $b/profile_user_io/电量.log
-if test $(show_value '开启充电Log') == true; then
+if test "$(show_value '开启充电Log')" == "true"; then
 if [ -z "$CYCLE_COUNT" ] || [ "$CYCLE_COUNT" = "0" ]; then
     CYCLE_COUNT="未获取节点"
 fi
@@ -48,11 +49,12 @@ fi
 echo -e "$(date) 模块启动\n电池循环次数: $CYCLE_COUNT\n电池容量: $Battery_capacity\n当前剩余百分比：$bfb%" > "$MODDIR/log.log"
 	nohup $MODDIR/system/SetoLog >/dev/null 2>&1 &
 	else
-	rm -rf MODDIR/log.log
+	rm -rf $MODDIR/log.log
 fi
 nohup $MODDIR/system/SetoFastCharge >/dev/null 2>&1 &
 nohup $MODDIR/system/SetoStop >/dev/null 2>&1 &
 nohup $MODDIR/system/SetoSpecificApp >/dev/null 2>&1 &
+nohup $MODDIR/system/SetoCharge >/dev/null 2>&1 &
 nohup $MODDIR/system/SetoSpecificCurrent >/dev/null 2>&1 &
 # Restore base module.prop if cloud version exists (for description update loop)
 [ -f "$MODDIR/system/cloud/module.prop" ] && cp "$MODDIR/system/cloud/module.prop" "$MODDIR/module.prop"
@@ -65,9 +67,9 @@ chattr -R -i -a -u /sys/class/power_supply/battery/constant_charge_current
 chmod 777 /sys/class/power_supply/battery/constant_charge_current
 chmod 777 /sys/class/power_supply/battery/step_charging_enabled
 chmod 777 /sys/class/power_supply/battery/fast_charge_current
-chmod 777 /sys/class/power_supply/battery/fast_charge_current
 chmod 777 $file3
 chmod 777 $file2
+chmod 777 $file4
 chmod 777 /sys/class/power_supply/battery/thermal_input_current
 chmod 777 /sys/class/power_supply/battery/input_suspend
 chmod 777 /sys/class/power_supply/usb/current_max
@@ -90,27 +92,27 @@ then
 	[[ -e /sys/class/power_supply/bms/charge_full ]] && Battery_capacity="$(expr $(cat /sys/class/power_supply/bms/charge_full) / 1000)mAh" || Battery_capacity="(?）"
 fi
 
-if test $(show_value '当电流低于阈值执行停充') == true; then
-	echo -e ""停充模式：开启 >>"$MODDIR"/log.log
+if test "$(show_value '当电流低于阈值执行停充')" == "true"; then
+	echo -e "停充模式：开启" >>"$MODDIR"/log.log
 fi
-if test $(show_value '开启修改电流数') == true; then
-	echo -e ""限制电流：开启 >>"$MODDIR"/log.log
+if test "$(show_value '开启修改电流数')" == "true"; then
+	echo -e "限制电流：开启" >>"$MODDIR"/log.log
 fi
-if test $(show_value '开启充电调速') == true; then
-	echo -e ""温度阈值：开启 >>"$MODDIR"/log.log
+if test "$(show_value '开启充电调速')" == "true"; then
+	echo -e "温度阈值：开启" >>"$MODDIR"/log.log
 fi
-if test $(show_value '自定义阶梯模式') == true; then
-	echo -e ""自定义阶梯：开启"\n" >>"$MODDIR"/log.log
-fi
-
-if test $(show_value '简洁版配置') == true; then
-	mv $MODDIR/配置.prop $MODDIR/跳电请执行/
-	cp -f $MODDIR/system/cloud/配置.prop $MODDIR/配置.prop
+if test "$(show_value '自定义阶梯模式')" == "true"; then
+	echo -e "自定义阶梯：开启\n" >>"$MODDIR"/log.log
 fi
 
-if test $(show_value '功能版配置') == true; then
-	mv $MODDIR/跳电请执行/配置.prop $MODDIR/配置.prop
-fi
+if test "$(show_value '简洁版配置')" == "true"; then
+		mv $PERSISTENT_DIR/配置.prop $MODDIR/跳电请执行/
+		cp -f $MODDIR/system/cloud/配置.prop $PERSISTENT_DIR/配置.prop
+	fi
+	
+	if test "$(show_value '功能版配置')" == "true"; then
+		mv $MODDIR/跳电请执行/配置.prop $PERSISTENT_DIR/配置.prop
+	fi
 
 remove_all_modules() {
   local module_id

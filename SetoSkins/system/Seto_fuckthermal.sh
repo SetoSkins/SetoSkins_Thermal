@@ -1,13 +1,10 @@
 #!/system/bin/sh
 MODDIR=${0%/*}
 
-alias sh='/system/bin/sh'
 var_device=$(getprop ro.product.device)
 status=$(cat /sys/class/power_supply/battery/status)
 capacity=$(cat /sys/class/power_supply/battery/capacity)
 temp=$(expr $(cat /sys/class/power_supply/battery/temp) / 10)
-ChargemA=$(expr $(cat /sys/class/power_supply/battery/current_now) / -1000)
-a=$(getprop ro.system.build.version.release)
 
 # 修复：提前创建目标文件夹防止 mv 失败，并增加文件存在性判断
 if [ -f "$MODDIR/执行作者主页.sh" ]; then
@@ -18,6 +15,7 @@ fi
 file1=/data/adb/modules/SetoSkins/配置.prop
 file2=$(ls /sys/class/power_supply/battery/*charge_current /sys/class/power_supply/battery/current_max /sys/class/power_supply/battery/thermal_input_current 2>/dev/null | tr -d '\n')
 file3=$(ls /sys/class/power_supply/*/constant_charge_current_max /sys/class/power_supply/*/fast_charge_current /sys/class/power_supply/*/thermal_input_current 2>/dev/null |tr -d ' ')
+file4=$(ls /sys/class/power_supply/battery/charge_control_limit 2>/dev/null | tr -d '\n')
 
 show_value() {
 	value=$1
@@ -111,12 +109,12 @@ if [ -f /data/media/0/Android/备份温控（请勿删除）/thermal-normal.conf
 		cp -f /data/media/0/Android/备份温控（请勿删除）/thermal-tgame.conf $MODDIR/vendor/etc/thermal-mgame.conf
 		for f in /data/media/0/Android/备份温控（请勿删除）/*tgame.conf; do [ -f "$f" ] && cp -f "$f" /data/vendor/thermal/config/; done
 		for f in /data/media/0/Android/备份温控（请勿删除）/*tgame.conf; do [ -f "$f" ] && cp -f "$f" $MODDIR/vendor/etc/; done
-		cp -f -f $MODDIR/cloud/thermal/thermal-per-huanji.conf $MODDIR/vendor/etc/thermal-mgame.conf
+		cp -f $MODDIR/cloud/thermal/thermal-per-huanji.conf $MODDIR/vendor/etc/thermal-mgame.conf
 	
 		if [[ $var_device_trans != "" ]]; then
 			rm -rf /data/vendor/thermal/config/*mgame.conf
 			rm -rf $MODDIR/vendor/etc/*mgame.conf
-			cp -f -f "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/vendor/etc/thermal-${var_device_trans}-normal.conf"
+			cp -f "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/vendor/etc/thermal-${var_device_trans}-normal.conf"
 			cp -f "$MODDIR/cloud/thermal/thermal-${var_device_trans}-tgame.conf" "/data/vendor/thermal/config/thermal-${var_device_trans}-mgame.conf"
 			cp -f "$MODDIR/cloud/thermal/thermal-${var_device_trans}-tgame.conf" "$MODDIR/vendor/etc/thermal-${var_device_trans}-mgame.conf"
 		fi
@@ -132,16 +130,16 @@ if test "$(show_value '系统均衡式性能温控')" == "true"; then
 	cp -f /data/media/0/Android/备份温控（请勿删除）/thermal-per-class0.conf $MODDIR/vendor/etc/thermal-class0.conf
 	for f in /data/media/0/Android/备份温控（请勿删除）/*per.conf; do [ -f "$f" ] && cp -f "$f" /data/vendor/thermal/config/; done
 	for f in /data/media/0/Android/备份温控（请勿删除）/*per.conf; do [ -f "$f" ] && cp -f "$f" $MODDIR/vendor/etc/; done
-	cp -f -f $MODDIR/cloud/thermal/thermal-per-huanji.conf $MODDIR/vendor/etc/thermal-per-normal.conf
-	cp -f -f $MODDIR/cloud/thermal/thermal-per-huanji.conf $MODDIR/vendor/etc/thermal-per-class0.conf
-	cp -f -f $MODDIR/cloud/thermal/thermal-per-huanji.conf /data/vendor/thermal/config/thermal-per-normal.conf
-	cp -f -f $MODDIR/cloud/thermal/thermal-per-huanji.conf /data/vendor/thermal/config/thermal-per-class0.conf
+	cp -f $MODDIR/cloud/thermal/thermal-per-huanji.conf $MODDIR/vendor/etc/thermal-per-normal.conf
+	cp -f $MODDIR/cloud/thermal/thermal-per-huanji.conf $MODDIR/vendor/etc/thermal-per-class0.conf
+	cp -f $MODDIR/cloud/thermal/thermal-per-huanji.conf /data/vendor/thermal/config/thermal-per-normal.conf
+	cp -f $MODDIR/cloud/thermal/thermal-per-huanji.conf /data/vendor/thermal/config/thermal-per-class0.conf
 
 	if [[ $var_device_trans != "" ]]; then
 		rm -rf /data/vendor/thermal/config/*normal.conf
 		rm -rf /data/vendor/thermal/config/*class0.conf
-		rm -rf "$MODDIR/vendor/etc/*normal.conf"
-		rm -rf "$MODDIR/vendor/etc/*class0.conf"
+		rm -rf $MODDIR/vendor/etc/*normal.conf
+			rm -rf $MODDIR/vendor/etc/*class0.conf
 		BACKUP_DIR="/data/media/0/Android/备份温控（请勿删除）"
 		if [ -d "$BACKUP_DIR" ]; then
 			for f in "$BACKUP_DIR"/*normal.conf "$BACKUP_DIR"/*class0.conf; do
@@ -206,7 +204,7 @@ elif test "$(show_value '关闭相机温控')" == "false"; then
 	rm -rf $MODDIR/vendor/odm/etc/*camera.conf
 fi
 
-function restart_mi_thermald() {
+restart_mi_thermald() {
 	pkill -9 -f mi_thermald
 	pkill -9 -f thermal-engine
 	for i in $(which -a thermal-engine); do
@@ -228,17 +226,13 @@ function restart_mi_thermald() {
 restart_mi_thermald
 
 if test "$(show_value '开启修改电流数')" == "true"; then
-	b=$(grep "最大电流数" "$file1" | cut -c7-)
+	b=$(grep "^最大电流数=" "$file1" | cut -d "=" -f2)
 	echo "$b" >"$file3"
 	echo "$b" >"$file2"
+	echo "$b" >"$file4"
 fi
-
-if test "$(show_value '开启修改电流数')" == "false"; then
-	echo "50000000" >"$file2"
-	echo "50000000" >"$file3"
-fi
-
-if test "$(show_value '全局高刷（和dfps冲突）')" == "true"; then
+		
+		if test "$(show_value '全局高刷（和dfps冲突）')" == "true"; then
 	{
 		until [[ "$(getprop sys.boot_completed)" == "1" ]]; do
 			sleep 1
@@ -309,7 +303,7 @@ elif test "$(show_value '关闭logd')" == "false"; then
 fi
 
 if test "$(show_value '加快部分游戏启动速度')" == "true"; then
-	printf "debug.game.video.speed=true\ndebug.game.video.support=true\n" >$MODDIR/system.prop
+	printf "debug.game.video.speed=true\ndebug.game.video.support=true\n" >>$MODDIR/system.prop
 elif test "$(show_value '加快部分游戏启动速度')" == "false"; then
 	sed -i '/debug.game.video.speed=true/d' $MODDIR/system.prop
 	sed -i '/debug.game.video.support=true/d' $MODDIR/system.prop

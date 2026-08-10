@@ -1,13 +1,13 @@
 #!/system/bin/sh
 MODDIR=${0%/*}
-pid=$(ps -ef | grep $1 | grep -v grep | cut -d "Seto_charge.sh" -f 2)
 file1=/data/adb/modules/SetoSkins/配置.prop
 file2=$(ls /sys/class/power_supply/battery/*charge_current /sys/class/power_supply/battery/current_max /sys/class/power_supply/battery/thermal_input_current 2>>/dev/null |tr -d '\n')
 file3=$(ls /sys/class/power_supply/*/constant_charge_current_max /sys/class/power_supply/*/fast_charge_current /sys/class/power_supply/*/thermal_input_current 2>/dev/null |tr -d ' ')
+file4=$(ls /sys/class/power_supply/battery/charge_control_limit 2>/dev/null | tr -d '\n')
 show_value() {
 	local value=$1
 	local file=/data/adb/modules/SetoSkins/配置.prop
-	grep "$value" "$file" | cut -d "=" -f2
+	grep "^$value=" "$file" | cut -d "=" -f2
 }
 log=$MODDIR/limit.log
 logc=0
@@ -27,7 +27,7 @@ getp() {
 	f=$(grep "三限电量阈值" "$file1" | cut -d "=" -f2)
 	f1=$(grep "三限电量限制电流" "$file1" | cut -d "=" -f2)
 	g=$(grep "亮屏限制电流" "$file1" | cut -d "=" -f2)
-	g1=$(grep "锁屏限制电流" "$file1" | cut -d "=" -f2)
+	g1=$(grep "息屏限制电流" "$file1" | cut -d "=" -f2)
 }
 getp
 echo -n "Values:"
@@ -36,90 +36,104 @@ echo $b
 echo $a1
 echo $b1
 echo "$c End values"
-if test $(show_value '开启充电调速') == true; then
+if test "$(show_value '开启充电调速')" == "true"; then
 	echo "开启充电调速"
 	while true; do
-		sleep 5
-		getp
-		let logc++
-		sleep $c
-		if [[ $temp -gt $a && $temp -lt $a1 ]]; then
+			status=$(cat /sys/class/power_supply/battery/status)
+			if [[ $status == "Discharging" ]] || [[ $status == "Full" ]]; then
+				sleep 10
+			else
+				sleep 2
+			fi
+			getp
+			logc=$((logc + 1))
+			sleep $c
+			if [[ $temp -gt $a && $temp -lt $a1 ]]; then
 			echo "$b" >"$file2"
-				echo "$b" >"$file3"
-					echo "$b" >/sys/class/power_supply/battery/constant_charge_current_max
-			echo "触发一限温度阈值 temp:$a current:$b" | tee -a $log
-			kill -19 $pid
-		elif
-			[[ $temp -lt $a ]]
-		then
+					echo "$b" >"$file3"
+					echo "$b" >"$file4"
+						echo "$b" >/sys/class/power_supply/battery/constant_charge_current_max
+				echo "触发一限温度阈值 temp:$a current:$b" | tee -a $log
+		elif [[ $temp -lt $a ]]; then
 			echo "50000000" >"$file2"
-			echo "50000000" >"$file3"
-					echo "50000000" >/sys/class/power_supply/battery/constant_charge_current_max
-			kill -18 $pid
-			echo "触发无限制阈值 temp:$a" | tee -a $log
+				echo "50000000" >"$file3"
+                echo "50000000" >"$file4"
+                echo "触发无限制阈值 temp:$a" | tee -a $log
 		elif [[ $temp -gt $a1 ]]; then
 			echo "$b1" >"$file2"
-			echo "$b1" >"$file3"
-					echo "$b1" >/sys/class/power_supply/battery/constant_charge_current_max
-			kill -19 $pid
-			echo "触发二限温度阈值 temp:$a1 current:$b1" | tee -a $log
+				echo "$b1" >"$file3"
+				echo "$b1" >"$file4"
+						echo "$b1" >/sys/class/power_supply/battery/constant_charge_current_max
+                echo "触发二限温度阈值 temp:$a1 current:$b1" | tee -a $log
 		elif [[ $temp -gt $a2 ]]; then
-			echo "$b2" >"$file2"
-				echo "$b2" >"$file3"
-					echo "$b1" >/sys/class/power_supply/battery/constant_charge_current_max
-			kill -19 $pid
-			echo "触发三限温度阈值 temp:$a2 current:$b2" | tee -a $log
+				echo "$b2" >"$file2"
+						echo "$b2" >"$file3"
+						echo "$b2" >"$file4"
+							echo "$b2" >/sys/class/power_supply/battery/constant_charge_current_max
+                echo "触发三限温度阈值 temp:$a2 current:$b2" | tee -a $log
 		fi
 		[ $logc -ge 50 ] && echo -n "" >$log && logc=0
 	done
 fi
-if test $(show_value '自定义阶梯模式') == true; then
+if test "$(show_value '自定义阶梯模式')" == "true"; then
 	echo "开启自定义阶梯"
 	while true; do
-		sleep 10
-		capacity=$(cat /sys/class/power_supply/battery/capacity)
-		status=$(cat /sys/class/power_supply/battery/status)
+			status=$(cat /sys/class/power_supply/battery/status)
+			if [[ $status == "Discharging" ]] || [[ $status == "Full" ]]; then
+				sleep 10
+			else
+				sleep 2
+			fi
+			capacity=$(cat /sys/class/power_supply/battery/capacity)
 		if [[ $status == "Discharging" ]] || [[ $status == "Full" ]]; then
 			echo "50000000" >"$file2"
-			echo "50000000" >"$file3"
-					echo "50000000" >/sys/class/power_supply/battery/constant_charge_current_max
-			sleep 10
-		elif [[ $capacity -ge $f ]]; then
+				echo "50000000" >"$file3"
+				echo "50000000" >"$file4"
+			elif [[ $capacity -ge $f ]]; then
 			echo "$f1" >"$file2"
-			echo "$f1" >"$file3"
-					echo "$f1" >/sys/class/power_supply/battery/constant_charge_current_max
-			echo "触发三限电量阈值 current:$f" | tee -a $log
+				echo "$f1" >"$file3"
+				echo "$f1" >"$file4"
+						echo "$f1" >/sys/class/power_supply/battery/constant_charge_current_max
+				echo "触发三限电量阈值 current:$f" | tee -a $log
 		elif [[ $capacity -ge $e ]]; then
 			echo "$e1" >"$file2"
-			echo "$e1" >"$file3"
-					echo "$e1" >/sys/class/power_supply/battery/constant_charge_current_max
-			echo "触发二限电量阈值 current:$e" | tee -a $log
+				echo "$e1" >"$file3"
+				echo "$e1" >"$file4"
+						echo "$e1" >/sys/class/power_supply/battery/constant_charge_current_max
+				echo "触发二限电量阈值 current:$e" | tee -a $log
 		elif [[ $capacity -ge $d ]]; then
 			echo "$d1" >"$file2"
-			echo "$d1" >"$file3"
-					echo "$d1" >/sys/class/power_supply/battery/constant_charge_current_max
-			echo "触发一限电量阈值 current:$d" | tee -a $log
+				echo "$d1" >"$file3"
+				echo "$d1" >"$file4"
+						echo "$d1" >/sys/class/power_supply/battery/constant_charge_current_max
+				echo "触发一限电量阈值 current:$d" | tee -a $log
 		fi
 	done
 fi
 
-if test $(show_value '亮息屏调速') == true; then
+if test "$(show_value '亮息屏调速')" == "true"; then
 	echo "开启亮息屏调速"
 	while true; do
-		Bright=$(dumpsys window policy | grep mIsScreen | tr -d " " | sed -n '1p')
-		sleep 40
-		if [[ $status == "Discharging" ]] || [[ $status == "Full" ]]; then
-			sleep 60
-		elif [[ $status == "Charging" ]] || [[ $Bright == "mIsScreenOn=true" ]]; then
-			echo "$g" >"$file2"
-			echo "$g" >"$file3"
-					echo "$g" >/sys/class/power_supply/battery/constant_charge_current_max
-			echo $(date) "亮屏充电 限制电流：$g" | tee -a $log
-		elif [[ $status == "Charging" ]] || [[ $Bright == "mIsScreenOn=false" ]]; then
+			Bright=$(dumpsys window policy | grep mIsScreen | tr -d " " | sed -n '1p')
+				status=$(cat /sys/class/power_supply/battery/status)
+				if [[ $status == "Discharging" ]] || [[ $status == "Full" ]]; then
+					sleep 10
+				else
+					sleep 2
+				fi
+				getp
+			if [[ $status == "Charging" && $Bright == "mIsScreenOn=true" ]]; then
+				echo "$g" >"$file2"
+					echo "$g" >"$file3"
+					echo "$g" >"$file4"
+							echo "$g" >/sys/class/power_supply/battery/constant_charge_current_max
+					echo $(date) "亮屏充电 限制电流：$g" | tee -a $log
+			elif [[ $status == "Charging" && $Bright == "mIsScreenOn=false" ]]; then
 			echo "$g1" >"$file3"
-			echo "$g1" >"$file2"
-					echo "$g1" >/sys/class/power_supply/battery/constant_charge_current_max
-			echo $(date) "息屏充电 限制电流：$g1" | tee -a $log
-		fi
-	done
-fi
+				echo "$g1" >"$file2"
+				echo "$g1" >"$file4"
+						echo "$g1" >/sys/class/power_supply/battery/constant_charge_current_max
+				echo $(date) "息屏充电 限制电流：$g1" | tee -a $log
+			fi
+		done
+	fi
