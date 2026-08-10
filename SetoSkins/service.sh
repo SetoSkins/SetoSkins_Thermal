@@ -99,7 +99,7 @@ fi
 if test "$(show_value '修改最大电流数')" == "true"; then
 	echo -e "限制电流：开启" >>"$MODDIR"/log.log
 fi
-if test "$(show_value '开启充电调速')" == "true"; then
+if test "$(show_value '充电调速')" == "true"; then
 	echo -e "温度阈值：开启" >>"$MODDIR"/log.log
 fi
 if test "$(show_value '自定义阶梯模式')" == "true"; then

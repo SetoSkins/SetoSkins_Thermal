@@ -53,8 +53,8 @@ echo "$c End values"
 # 	done
 # fi
 
-if test "$(show_value '开启充电调速')" == "true"; then
-	echo "开启充电调速"
+if test "$(show_value '充电调速')" == "true"; then
+	echo "充电调速"
 	while true; do
 			status=$(cat /sys/class/power_supply/battery/status)
 			if [[ $status == "Discharging" ]] || [[ $status == "Full" ]]; then
