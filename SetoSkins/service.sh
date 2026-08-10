@@ -96,7 +96,7 @@ done
 if test "$(show_value '当电流低于阈值执行停充')" == "true"; then
 	echo -e "停充模式：开启" >>"$MODDIR"/log.log
 fi
-if test "$(show_value '开启修改电流数')" == "true"; then
+if test "$(show_value '开启修改最大电流数')" == "true"; then
 	echo -e "限制电流：开启" >>"$MODDIR"/log.log
 fi
 if test "$(show_value '开启充电调速')" == "true"; then
