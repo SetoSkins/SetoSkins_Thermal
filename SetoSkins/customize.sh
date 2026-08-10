@@ -154,10 +154,6 @@ ui_print "———————————————————————�
 lang_print "- 如温控无效，请确保系统已更新。" "- If thermal control is ineffective, make sure your system is up to date."
 lang_print "- 如降亮度或充电变慢，请在配置中开启温控空文件挂载。" "- Enable empty thermal file mount in config if brightness drops or charging slows."
 ui_print "—————————————————————————"
-ui_print "—————————————————————————"
-lang_print "- 如温控无效，请确保系统已更新。" "- If thermal control is ineffective, make sure your system is up to date."
-lang_print "- 如降亮度或充电变慢，请在配置中开启温控空文件挂载。" "- Enable empty thermal file mount in config if brightness drops or charging slows."
-ui_print "—————————————————————————"
 
 ##########################
 # Thermal Setup

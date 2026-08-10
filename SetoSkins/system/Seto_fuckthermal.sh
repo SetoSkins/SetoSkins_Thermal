@@ -13,9 +13,9 @@ if [ -f "$MODDIR/执行作者主页.sh" ]; then
 fi
 
 file1=/data/adb/modules/SetoSkins/配置.prop
-file2=$(ls /sys/class/power_supply/battery/*charge_current /sys/class/power_supply/battery/current_max /sys/class/power_supply/battery/thermal_input_current 2>/dev/null | tr -d '\n')
-file3=$(ls /sys/class/power_supply/*/constant_charge_current_max /sys/class/power_supply/*/fast_charge_current /sys/class/power_supply/*/thermal_input_current 2>/dev/null |tr -d ' ')
-file4=$(ls /sys/class/power_supply/battery/charge_control_limit 2>/dev/null | tr -d '\n')
+file2=$(ls /sys/class/power_supply/battery/*charge_current /sys/class/power_supply/battery/current_max /sys/class/power_supply/battery/thermal_input_current 2>/dev/null | tr '\n' ' ')
+file3=$(ls /sys/class/power_supply/*/constant_charge_current_max /sys/class/power_supply/*/fast_charge_current /sys/class/power_supply/*/thermal_input_current 2>/dev/null | tr '\n' ' ')
+file4=$(ls /sys/class/power_supply/battery/charge_control_limit 2>/dev/null | tr '\n' ' ')
 
 show_value() {
 	value=$1

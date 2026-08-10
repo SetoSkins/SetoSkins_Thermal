@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/system/bin/sh
 start_time=$(date +%s)
 duration=125
 

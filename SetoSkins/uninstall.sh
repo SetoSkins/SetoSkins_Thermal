@@ -1,3 +1,4 @@
+#!/system/bin/sh
 MODDIR=${0%/*}
 chattr -i /data/vendor/thermal/config
 chattr -i /data/vendor/thermal/config/*

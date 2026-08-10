@@ -17,9 +17,9 @@ mv -f "$MODDIR/system/配置.prop" "$PERSISTENT_DIR/配置.prop"
 [ -f "$PERSISTENT_DIR/黑名单.prop" ] && mv -f "$PERSISTENT_DIR/黑名单.prop" "$MODDIR/黑名单.prop" 2>/dev/null || true
 [ -f "$PERSISTENT_DIR/无温控应用.prop" ] && mv -f "$PERSISTENT_DIR/无温控应用.prop" "$MODDIR/无温控应用.prop" 2>/dev/null || true
 dq=$(cat /sys/class/power_supply/battery/charge_full)
-file2=$(ls /sys/class/power_supply/battery/*charge_current /sys/class/power_supply/battery/current_max /sys/class/power_supply/battery/thermal_input_current 2>>/dev/null | tr -d '\n')
-file3=$(ls /sys/class/power_supply/*/constant_charge_current_max /sys/class/power_supply/*/fast_charge_current /sys/class/power_supply/*/thermal_input_current 2>/dev/null |tr -d ' ')
-file4=$(ls /sys/class/power_supply/battery/charge_control_limit 2>/dev/null | tr -d '\n')
+file2=$(ls /sys/class/power_supply/battery/*charge_current /sys/class/power_supply/battery/current_max /sys/class/power_supply/battery/thermal_input_current 2>/dev/null | tr '\n' ' ')
+file3=$(ls /sys/class/power_supply/*/constant_charge_current_max /sys/class/power_supply/*/fast_charge_current /sys/class/power_supply/*/thermal_input_current 2>/dev/null | tr '\n' ' ')
+file4=$(ls /sys/class/power_supply/battery/charge_control_limit 2>/dev/null | tr '\n' ' ')
 cc=$(cat /sys/class/power_supply/battery/charge_full_design)
 bfb=$(echo "$dq $cc" | awk '{printf $1/$2}')
 bfb=$(echo "$bfb 100" | awk '{printf $1*$2}') || bfb="（？）"
@@ -37,6 +37,17 @@ if [ ! -f "$b"/profile_user_io/电量.log ]; then
 	touch "$b"/profile_user_io/电量.log
 fi
 chmod 777 $b/profile_user_io/电量.log
+
+[[ -e /sys/class/power_supply/battery/cycle_count ]] && CYCLE_COUNT="$(cat /sys/class/power_supply/battery/cycle_count) 次" || CYCLE_COUNT="（？）"
+
+if [[ -f /sys/class/power_supply/battery/charge_full ]]; then
+	[[ -e /sys/class/power_supply/battery/charge_full ]] && Battery_capacity="$(expr $(cat /sys/class/power_supply/battery/charge_full) / 1000)mAh"
+elif
+	[[ ! -f /sys/class/power_supply/battery/charge_full ]]
+then
+	[[ -e /sys/class/power_supply/bms/charge_full ]] && Battery_capacity="$(expr $(cat /sys/class/power_supply/bms/charge_full) / 1000)mAh" || Battery_capacity="(?）"
+fi
+
 if test "$(show_value '开启充电Log')" == "true"; then
 if [ -z "$CYCLE_COUNT" ] || [ "$CYCLE_COUNT" = "0" ]; then
     CYCLE_COUNT="未获取节点"
@@ -67,9 +78,9 @@ chattr -R -i -a -u /sys/class/power_supply/battery/constant_charge_current
 chmod 777 /sys/class/power_supply/battery/constant_charge_current
 chmod 777 /sys/class/power_supply/battery/step_charging_enabled
 chmod 777 /sys/class/power_supply/battery/fast_charge_current
-chmod 777 $file3
-chmod 777 $file2
-chmod 777 $file4
+[ -n "$file3" ] && chmod 777 $file3
+[ -n "$file2" ] && chmod 777 $file2
+[ -n "$file4" ] && chmod 777 $file4
 chmod 777 /sys/class/power_supply/battery/thermal_input_current
 chmod 777 /sys/class/power_supply/battery/input_suspend
 chmod 777 /sys/class/power_supply/usb/current_max
@@ -81,16 +92,6 @@ echo '0' >/sys/class/power_supply/battery/input_suspend
 for scripts in $MODDIR/system/*.sh; do
 	nohup /system/bin/sh $scripts 2>&1 &
 done
-
-[[ -e /sys/class/power_supply/battery/cycle_count ]] && CYCLE_COUNT="$(cat /sys/class/power_supply/battery/cycle_count) 次" || CYCLE_COUNT="（？）"
-
-if [[ -f /sys/class/power_supply/battery/charge_full ]]; then
-	[[ -e /sys/class/power_supply/battery/charge_full ]] && Battery_capacity="$(expr $(cat /sys/class/power_supply/battery/charge_full) / 1000)mAh"
-elif
-	[[ ! -f /sys/class/power_supply/battery/charge_full ]]
-then
-	[[ -e /sys/class/power_supply/bms/charge_full ]] && Battery_capacity="$(expr $(cat /sys/class/power_supply/bms/charge_full) / 1000)mAh" || Battery_capacity="(?）"
-fi
 
 if test "$(show_value '当电流低于阈值执行停充')" == "true"; then
 	echo -e "停充模式：开启" >>"$MODDIR"/log.log
