@@ -225,7 +225,9 @@ restart_mi_thermald() {
 
 restart_mi_thermald
 
-if test "$(show_value '修改最大电流数')" == "true"; then
+
+		
+		if test "$(show_value '修改最大电流数')" == "true"; then
 	b=$(grep "^最大电流数=" "$file1" | cut -d "=" -f2)
 	echo "$b" >"$file3"
 	echo "$b" >"$file2"
