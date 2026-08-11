@@ -39,9 +39,6 @@ else
     lang_print "- 检测到: Magisk ${MAGISK_VER:-unknown} (${MAGISK_VER_CODE:-?})" "- Detected: Magisk ${MAGISK_VER:-unknown} (${MAGISK_VER_CODE:-?})"
 fi
 
-# Save root manager type for runtime scripts
-echo "$ROOT_MANAGER" > "$MODPATH/root_manager"
-
 ##########################
 # Helper Functions
 ##########################
