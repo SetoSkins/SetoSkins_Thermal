@@ -97,35 +97,35 @@ rm -f "$PERSISTENT_DIR/配置.prop" 2>/dev/null || true
 # 检测旧模块目录是否有需要保留的配置
 OLD_MODULE="/data/adb/modules/SetoSkins"
 
-if [ -f "$OLD_MODULE/黑名单.prop" ] || [ -f "$OLD_MODULE/无温控应用.prop" ]; then
+if [ -f "$OLD_MODULE/无温控应用.prop" ] || [ -f "$OLD_MODULE/旁路充电配置.prop" ]; then
     lang_print "- 检测到旧配置文件，正在备份..." "- Detected old config files, backing up..."
-
-    [ -f "$OLD_MODULE/黑名单.prop" ] && \
-        cp -f "$OLD_MODULE/黑名单.prop" "$PERSISTENT_DIR/黑名单.prop" 2>/dev/null || true
 
     [ -f "$OLD_MODULE/无温控应用.prop" ] && \
         cp -f "$OLD_MODULE/无温控应用.prop" "$PERSISTENT_DIR/无温控应用.prop" 2>/dev/null || true
 
-    lang_print "- 黑名单和无温控应用配置已备份" "- Blacklist and no-limit app config backed up"
+    [ -f "$OLD_MODULE/旁路充电配置.prop" ] && \
+        cp -f "$OLD_MODULE/旁路充电配置.prop" "$PERSISTENT_DIR/旁路充电配置.prop" 2>/dev/null || true
+
+    lang_print "- 无温控应用和旁路充电配置已备份" "- Config files backed up"
 fi
 
 # 每次安装重新生成默认配置.prop
 identify
-
-# 恢复黑名单
-if [ -f "$PERSISTENT_DIR/黑名单.prop" ]; then
-    cp -f "$PERSISTENT_DIR/黑名单.prop" "$MODPATH/黑名单.prop" 2>/dev/null || true
-fi
 
 # 恢复无温控应用
 if [ -f "$PERSISTENT_DIR/无温控应用.prop" ]; then
     cp -f "$PERSISTENT_DIR/无温控应用.prop" "$MODPATH/无温控应用.prop" 2>/dev/null || true
 fi
 
-lang_print "- 已恢复黑名单和无温控应用配置" "- Blacklist and no-limit app config restored"
+# 恢复旁路充电配置
+if [ -f "$PERSISTENT_DIR/旁路充电配置.prop" ]; then
+    cp -f "$PERSISTENT_DIR/旁路充电配置.prop" "$MODPATH/旁路充电配置.prop" 2>/dev/null || true
+fi
 
-# 开机后3秒再次恢复黑名单和无温控应用配置
-if [ -f "$PERSISTENT_DIR/黑名单.prop" ] || [ -f "$PERSISTENT_DIR/无温控应用.prop" ]; then
+lang_print "- 已恢复无温控应用和旁路充电配置" "- Config files restored"
+
+# 开机后3秒再次恢复配置
+if [ -f "$PERSISTENT_DIR/无温控应用.prop" ] || [ -f "$PERSISTENT_DIR/旁路充电配置.prop" ]; then
 
 cat > /data/adb/service.d/seto_restore_config.sh << 'RESTOREEOF'
 #!/system/bin/sh
@@ -135,12 +135,12 @@ PERSISTENT_DIR="/data/adb/SetoSkins"
 MODULE_DIR="/data/adb/modules/SetoSkins"
 
 if [ -d "$MODULE_DIR" ]; then
-    if [ -f "$PERSISTENT_DIR/黑名单.prop" ]; then
-        cp -f "$PERSISTENT_DIR/黑名单.prop" "$MODULE_DIR/黑名单.prop" 2>/dev/null
-    fi
-
     if [ -f "$PERSISTENT_DIR/无温控应用.prop" ]; then
         cp -f "$PERSISTENT_DIR/无温控应用.prop" "$MODULE_DIR/无温控应用.prop" 2>/dev/null
+    fi
+
+    if [ -f "$PERSISTENT_DIR/旁路充电配置.prop" ]; then
+        cp -f "$PERSISTENT_DIR/旁路充电配置.prop" "$MODULE_DIR/旁路充电配置.prop" 2>/dev/null
     fi
 fi
 rm -f "$0"
