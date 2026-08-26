@@ -81,7 +81,7 @@ while true; do
     # Re-check in case user toggled off via WebUI
     VAL=$(show_value '模块简介显示充电信息')
     if [ "$VAL" != "true" ]; then
-        update_desc "Multi-function thermal control for MIUI/HyperOS | Supports Magisk, KernelSU, SukiSU"
+        update_desc "Multi-function thermal control for MIUI/HyperOS | Supports Magisk, KernelSU, SukiSU | Config: /data/adb/modules/SetoSkins/"
         exit 0
     fi
 done
