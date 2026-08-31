@@ -63,7 +63,8 @@ jobs:
 
           sed -i "s|^version=.*|version=${{ env.new_version }}|" tmp_unpack/module.prop
           sed -i "s|^versionCode=.*|versionCode=${{ env.new_code }}|" tmp_unpack/module.prop
-          sed -i "s|Seto Thermal [^ ]*|Seto Thermal ${{ env.new_version }}|" tmp_unpack/customize.sh
+          sed -i "s|Seto Thermal [^ ]*|Seto Thermal ${{ env.new_version }}\"|" tmp_unpack/customize.sh
+
 
           ACTUAL_CODE=$(grep '^versionCode=' tmp_unpack/module.prop | cut -d= -f2 | tr -d '[:space:]')
           ACTUAL_VER=$(grep '^version=' tmp_unpack/module.prop | cut -d= -f2- | tr -d '[:space:]')
