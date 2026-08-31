@@ -10,7 +10,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      # ✅ 修复1: 缩进从5空格改为6空格（与上下step对齐）
       - name: 1. Find latest pre-release
         run: |
           PRE_TAG=$(gh release list --limit 20 --json tagName,isPrerelease | jq -r '[.[] | select(.isPrerelease == true)][0].tagName')
@@ -25,7 +24,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
 
-      - name: 2. Calculate next version
+      - name: 2. Extract version from pre-release
         run: |
           set -e
 
@@ -36,36 +35,18 @@ jobs:
           PRE_CODE=$(unzip -p "$PRE_ZIP" module.prop | grep '^versionCode=' | cut -d= -f2 | tr -d '[:space:]')
           PRE_VERSION=$(unzip -p "$PRE_ZIP" module.prop | grep '^version=' | cut -d= -f2- | tr -d '[:space:]')
 
-          JSON_CODE=$(jq -r '.versionCode' SetoSkins.json)
-          JSON_VERSION=$(jq -r '.version' SetoSkins.json)
-
-          echo "Pre-release → version: '$PRE_VERSION', versionCode: '$PRE_CODE'"
-          echo "JSON current → version: '$JSON_VERSION', versionCode: '$JSON_CODE'"
-
-          if [ -n "$PRE_CODE" ] && [ "$PRE_CODE" -gt "$JSON_CODE" ] 2>/dev/null; then
-            NEW_CODE=$PRE_CODE
-            echo "✅ Using pre-release versionCode: $NEW_CODE"
-          else
-            NEW_CODE=$((JSON_CODE + 1))
-            echo "⚠️ Pre-release code ($PRE_CODE) not greater than JSON ($JSON_CODE), fallback to JSON+1: $NEW_CODE"
+          if [ -z "$PRE_VERSION" ] || [ -z "$PRE_CODE" ]; then
+            echo "::error::Pre-release module.prop missing version or versionCode!"
+            exit 1
           fi
 
-          if [ -n "$PRE_VERSION" ]; then
-            CLEAN_VERSION=$(echo "$PRE_VERSION" | sed 's/-.*//')
-            NEW_VERSION=$CLEAN_VERSION
-            echo "✅ Using pre-release version (cleaned): $NEW_VERSION"
-          else
-            PREFIX=$(echo "$JSON_VERSION" | sed 's/[0-9].*//')
-            MAJOR=$(echo "$JSON_VERSION" | sed 's/^[^0-9]*//' | cut -d. -f1)
-            MINOR=$(echo "$JSON_VERSION" | sed 's/^[^0-9]*//' | cut -d. -f2)
-            NEW_VERSION="${PREFIX}${MAJOR}.$((MINOR + 1))"
-            echo "⚠️ No pre-release version found, fallback to incremented: $NEW_VERSION"
-          fi
+          CLEAN_VERSION=$(echo "$PRE_VERSION" | sed 's/-.*//')
 
-          echo "new_version=${NEW_VERSION}" >> $GITHUB_ENV
-          echo "new_code=${NEW_CODE}" >> $GITHUB_ENV
-          echo "zip_name=SetoSkins_Thermal_${NEW_VERSION}.zip" >> $GITHUB_ENV
-          echo "Final → version: ${NEW_VERSION}, versionCode: ${NEW_CODE}"
+          echo "new_version=${CLEAN_VERSION}" >> $GITHUB_ENV
+          echo "new_code=${PRE_CODE}" >> $GITHUB_ENV
+          echo "zip_name=SetoSkins_Thermal_${CLEAN_VERSION}.zip" >> $GITHUB_ENV
+
+          echo "✅ Promoting as-is: version=${CLEAN_VERSION}, versionCode=${PRE_CODE}"
 
           rm -rf tmp_version_check
         env:
@@ -127,7 +108,6 @@ jobs:
           allowUpdates: true
           artifactErrorsFailBuild: true
 
-      # ✅ 修复2: DOWNLOAD_URL 的管道符改为单行
       - name: 5. Update SetoSkins.json
         run: |
           git config --global user.email "${{ github.actor }}@users.noreply.github.com"
@@ -161,7 +141,6 @@ jobs:
         with:
           branch: ${{ github.ref }}
 
-      # ✅ 修复3: gh release list 管道符改为单行
       - name: 7. Clean up old pre-releases
         run: |
           gh release list --limit 50 --json tagName,isPrerelease | jq -r '.[] | select(.isPrerelease == true) | .tagName' | while read tag; do
