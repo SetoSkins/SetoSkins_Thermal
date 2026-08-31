@@ -10,11 +10,9 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: 1. Find latest pre-release
+       - name: 1. Find latest pre-release
         run: |
-          PRE_TAG=$(gh release list --limit 20 --json tagName,isPrerelease \
-
-            | jq -r '[.[] | select(.isPrerelease == true)][0].tagName')
+          PRE_TAG=$(gh release list --limit 20 --json tagName,isPrerelease | jq -r '[.[] | select(.isPrerelease == true)][0].tagName')
 
           if [ "$PRE_TAG" = "null" ] || [ -z "$PRE_TAG" ]; then
             echo "::error::No pre-release found. Run a build first."
