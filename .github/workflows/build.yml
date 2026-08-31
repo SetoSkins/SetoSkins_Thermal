@@ -57,13 +57,7 @@ jobs:
           artifacts: ${{ github.workspace }}/GithubRelease/*
           name: "Pre-release ${{ env.short_sha }}"
           tag: "${{ env.tag }}"
-          body: |
-            Automated pre-release build from commit `${{ github.sha }}`
-
-            **Version:** `${{ env.display_version }}`
-            **Commit:** ${{ github.event.head_commit.message }}
-
-            > This is a pre-release for testing. Use the **Promote Release** workflow to publish a stable release.
+          bodyFile: SetoSkins.md
           prerelease: true
           makeLatest: false
           allowUpdates: true
