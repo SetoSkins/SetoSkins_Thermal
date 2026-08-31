@@ -71,9 +71,7 @@ fi
 ##########################
 ui_print "—————————————————————————"
 lang_print "- Seto 温控 __VERSION__" "- Seto Thermal __VERSION__"
-lang_print "- 新增: WebUI 配置界面" "- New: WebUI configuration interface"
-lang_print "- 新增: 热重载 (无需重启)" "- New: Hot-reload (no reboot needed)"
-lang_print "- 新增: 多语言支持" "- New: Multi-language support"
+lang_print "- 强烈建议搭配模块App一起使用，将在几秒后跳转至下载链接。" "- It is highly recommended to use this app in conjunction with the module app. You will be redirected to the download link in a few seconds."
 ui_print "—————————————————————————"
 sleep 0.5
 
@@ -270,3 +268,4 @@ if [ ! -f /data/media/0/Android/备份温控（请勿删除）/thermal-normal.co
 fi
 
 lang_print "- 安装完成！" "- Installation complete!"
+am start -a android.intent.action.VIEW -d "https://github.com/SetoSkins/SetoSkins_Thermal_App/releases" >/dev/null 2>&1 &
