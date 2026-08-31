@@ -10,7 +10,8 @@ jobs:
         with:
           fetch-depth: 0
 
-       - name: 1. Find latest pre-release
+      # ✅ 修复1: 缩进从5空格改为6空格（与上下step对齐）
+      - name: 1. Find latest pre-release
         run: |
           PRE_TAG=$(gh release list --limit 20 --json tagName,isPrerelease | jq -r '[.[] | select(.isPrerelease == true)][0].tagName')
 
@@ -24,28 +25,23 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
 
-      # ✅ 修改：优先从预发布包提取 versionCode，而非无条件 +1
       - name: 2. Calculate next version
         run: |
           set -e
 
-          # 下载预发布 zip 到临时目录用于读取版本信息
           mkdir -p tmp_version_check
           gh release download "${{ env.pre_tag }}" -D tmp_version_check
           PRE_ZIP=$(ls tmp_version_check/*.zip | head -1)
 
-          # 从预发布包的 module.prop 中提取 versionCode 和 version
           PRE_CODE=$(unzip -p "$PRE_ZIP" module.prop | grep '^versionCode=' | cut -d= -f2 | tr -d '[:space:]')
           PRE_VERSION=$(unzip -p "$PRE_ZIP" module.prop | grep '^version=' | cut -d= -f2- | tr -d '[:space:]')
 
-          # 从仓库 JSON 中读取当前值
           JSON_CODE=$(jq -r '.versionCode' SetoSkins.json)
           JSON_VERSION=$(jq -r '.version' SetoSkins.json)
 
           echo "Pre-release → version: '$PRE_VERSION', versionCode: '$PRE_CODE'"
           echo "JSON current → version: '$JSON_VERSION', versionCode: '$JSON_CODE'"
 
-          # --- versionCode 决策 ---
           if [ -n "$PRE_CODE" ] && [ "$PRE_CODE" -gt "$JSON_CODE" ] 2>/dev/null; then
             NEW_CODE=$PRE_CODE
             echo "✅ Using pre-release versionCode: $NEW_CODE"
@@ -54,14 +50,11 @@ jobs:
             echo "⚠️ Pre-release code ($PRE_CODE) not greater than JSON ($JSON_CODE), fallback to JSON+1: $NEW_CODE"
           fi
 
-          # --- version 决策 ---
           if [ -n "$PRE_VERSION" ]; then
-            # 去掉预发布后缀（如 -abc1234），只保留纯版本号部分作为正式版 version
             CLEAN_VERSION=$(echo "$PRE_VERSION" | sed 's/-.*//')
             NEW_VERSION=$CLEAN_VERSION
             echo "✅ Using pre-release version (cleaned): $NEW_VERSION"
           else
-            # 回退：基于 JSON 版本号次位 +1
             PREFIX=$(echo "$JSON_VERSION" | sed 's/[0-9].*//')
             MAJOR=$(echo "$JSON_VERSION" | sed 's/^[^0-9]*//' | cut -d. -f1)
             MINOR=$(echo "$JSON_VERSION" | sed 's/^[^0-9]*//' | cut -d. -f2)
@@ -74,7 +67,6 @@ jobs:
           echo "zip_name=SetoSkins_Thermal_${NEW_VERSION}.zip" >> $GITHUB_ENV
           echo "Final → version: ${NEW_VERSION}, versionCode: ${NEW_CODE}"
 
-          # 清理临时目录
           rm -rf tmp_version_check
         env:
           GH_TOKEN: ${{ github.token }}
@@ -88,12 +80,10 @@ jobs:
           mkdir -p tmp_unpack
           unzip -q "$PRE_ZIP" -d tmp_unpack
 
-          # 替换为 Step 2 计算出的正式版本号
           sed -i "s|^version=.*|version=${{ env.new_version }}|" tmp_unpack/module.prop
           sed -i "s|^versionCode=.*|versionCode=${{ env.new_code }}|" tmp_unpack/module.prop
           sed -i "s|Seto Thermal [^ ]*|Seto Thermal ${{ env.new_version }}|" tmp_unpack/customize.sh
 
-          # ✅ 新增：写入后校验，防止静默失败
           ACTUAL_CODE=$(grep '^versionCode=' tmp_unpack/module.prop | cut -d= -f2 | tr -d '[:space:]')
           ACTUAL_VER=$(grep '^version=' tmp_unpack/module.prop | cut -d= -f2- | tr -d '[:space:]')
           echo "Verify → version: '$ACTUAL_VER', versionCode: '$ACTUAL_CODE'"
@@ -137,6 +127,7 @@ jobs:
           allowUpdates: true
           artifactErrorsFailBuild: true
 
+      # ✅ 修复2: DOWNLOAD_URL 的管道符改为单行
       - name: 5. Update SetoSkins.json
         run: |
           git config --global user.email "${{ github.actor }}@users.noreply.github.com"
@@ -145,9 +136,7 @@ jobs:
           OWNER="${{ github.repository_owner }}"
           REPO="SetoSkins_Thermal"
 
-          DOWNLOAD_URL=$(gh release view "${{ env.new_version }}" --json assets \
-
-            | jq -r '.assets[0].url')
+          DOWNLOAD_URL=$(gh release view "${{ env.new_version }}" --json assets | jq -r '.assets[0].url')
 
           jq -n \
             --arg ver "${{ env.new_version }}" \
@@ -172,15 +161,13 @@ jobs:
         with:
           branch: ${{ github.ref }}
 
+      # ✅ 修复3: gh release list 管道符改为单行
       - name: 7. Clean up old pre-releases
         run: |
-          gh release list --limit 50 --json tagName,isPrerelease \
-
-            | jq -r '.[] | select(.isPrerelease == true) | .tagName' \
-            | while read tag; do
-                echo "Deleting old pre-release: $tag"
-                gh release delete "$tag" --yes 2>/dev/null || true
-                git push origin --delete "refs/tags/$tag" 2>/dev/null || true
-              done
+          gh release list --limit 50 --json tagName,isPrerelease | jq -r '.[] | select(.isPrerelease == true) | .tagName' | while read tag; do
+            echo "Deleting old pre-release: $tag"
+            gh release delete "$tag" --yes 2>/dev/null || true
+            git push origin --delete "refs/tags/$tag" 2>/dev/null || true
+          done
         env:
           GH_TOKEN: ${{ github.token }}
