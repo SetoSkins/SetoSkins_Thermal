@@ -260,7 +260,7 @@ rm -rf /data/Seto.zip 2>/dev/null || true
 if [ ! -f /data/media/0/Android/备份温控（请勿删除）/thermal-normal.conf ]; then
     sleep 8
     mkdir -p /data/media/0/Android/备份温控（请勿删除） 2>/dev/null || true
-    cp $(find /system/vendor/etc/ -type f -iname "thermal*.conf*" 2>/dev/null | grep -v /system/vendor/etc/thermal/) /data/media/0/Android/备份温控（请勿删除）/ 2>/dev/null || true
+   cp $(find /system/vendor/etc/ -type f -iname "thermal*.conf*" 2>/dev/null | grep -v '/system/vendor/etc/thermal/') /data/media/0/Android/备份温控（请勿删除）/ 2>/dev/null || true
     if [ ! -f /data/media/0/Android/备份温控（请勿删除）/thermal-normal.conf ]; then
         rm -rf /data/media/0/Android/备份温控（请勿删除）/* 2>/dev/null || true
         cp /odm/etc/thermal* /sdcard/Android/备份温控（请勿删除）/ 2>/dev/null || true
