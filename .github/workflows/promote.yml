@@ -85,7 +85,8 @@ jobs:
 
       - name: 3.5 Pull latest SetoSkins.md
         run: |
-          git pull origin master -- SetoSkins.md
+          git fetch origin master
+          git checkout FETCH_HEAD -- SetoSkins.md
 
       - name: 4. Publish stable release
         uses: ncipollo/release-action@main
