@@ -30,6 +30,21 @@ show_value() {
 rm -rf /data/vendor/thermal/config/*
 chattr -R -i -a /data/vendor/thermal/
 
+if test "$(show_value '温控空文件挂载')" == "true"; then
+	cp -f -r $MODDIR/cloud/vendor/bin/ $MODDIR/vendor/
+	cp -f -r $MODDIR/cloud/system/vendor/etc/* $MODDIR/vendor/etc/
+	cp -f -r $MODDIR/cloud/lib64/ $MODDIR
+	cp -f -r $MODDIR/cloud/bin/ $MODDIR
+	cp -f -r $MODDIR/cloud/etc/ $MODDIR
+elif test "$(show_value '温控空文件挂载')" == "false"; then
+	rm -rf $MODDIR/bin/thermalserviced
+	rm -rf $MODDIR/lib64
+	rm -rf $MODDIR/etc/init/thermalservice.rc
+	rm -rf $MODDIR/vendor/etc
+	rm -rf $MODDIR/vendor/bin/thermal*
+	rm -rf $MODDIR/init
+fi
+
 # 云端逻辑开始
 if test "$(show_value '跳电修复模式')" == "false"; then
 		if test "$(show_value '无温控应用')" == "true" && test "$(show_value '黑白名单')" == "黑名单"; then
@@ -108,7 +123,8 @@ if [ -f /data/media/0/Android/备份温控（请勿删除）/thermal-normal.conf
 		cp -f /data/media/0/Android/备份温控（请勿删除）/thermal-tgame.conf $MODDIR/vendor/etc/thermal-mgame.conf
 		for f in /data/media/0/Android/备份温控（请勿删除）/*tgame.conf; do [ -f "$f" ] && cp -f "$f" /data/vendor/thermal/config/; done
 		for f in /data/media/0/Android/备份温控（请勿删除）/*tgame.conf; do [ -f "$f" ] && cp -f "$f" $MODDIR/vendor/etc/; done
-		cp -f $MODDIR/cloud/thermal/thermal-per-huanji.conf $MODDIR/vendor/etc/thermal-mgame.conf
+		cp -f $MODDIR/cloud/thermal/thermal-per-huanji.conf /data/vendor/thermal/config/thermal-tgame.conf
+		cp -f $MODDIR/cloud/thermal/thermal-per-huanji.conf $MODDIR/vendor/etc/thermal-tgame.conf
 	
 		if [[ $var_device_trans != "" ]]; then
 			rm -rf /data/vendor/thermal/config/*mgame.conf
@@ -116,6 +132,8 @@ if [ -f /data/media/0/Android/备份温控（请勿删除）/thermal-normal.conf
 			cp -f "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/vendor/etc/thermal-${var_device_trans}-normal.conf"
 			cp -f "$MODDIR/cloud/thermal/thermal-${var_device_trans}-tgame.conf" "/data/vendor/thermal/config/thermal-${var_device_trans}-mgame.conf"
 			cp -f "$MODDIR/cloud/thermal/thermal-${var_device_trans}-tgame.conf" "$MODDIR/vendor/etc/thermal-${var_device_trans}-mgame.conf"
+			cp -f "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "/data/vendor/thermal/config/thermal-${var_device_trans}-tgame.conf"
+			cp -f "$MODDIR/cloud/thermal/thermal-per-huanji.conf" "$MODDIR/vendor/etc/thermal-${var_device_trans}-tgame.conf"
 		fi
 	fi
 fi
@@ -303,21 +321,6 @@ if test "$(show_value '加快部分游戏启动速度')" == "true"; then
 elif test "$(show_value '加快部分游戏启动速度')" == "false"; then
 	sed -i '/debug.game.video.speed=true/d' $MODDIR/system.prop
 	sed -i '/debug.game.video.support=true/d' $MODDIR/system.prop
-fi
-
-if test "$(show_value '温控空文件挂载')" == "true"; then
-	cp -f -r $MODDIR/cloud/vendor/bin/ $MODDIR/vendor/
-	cp -f -r $MODDIR/cloud/system/vendor/etc/* $MODDIR/vendor/etc/
-	cp -f -r $MODDIR/cloud/lib64/ $MODDIR
-	cp -f -r $MODDIR/cloud/bin/ $MODDIR
-	cp -f -r $MODDIR/cloud/etc/ $MODDIR
-elif test "$(show_value '温控空文件挂载')" == "false"; then
-	rm -rf $MODDIR/bin/thermalserviced
-	rm -rf $MODDIR/lib64
-	rm -rf $MODDIR/etc/init/thermalservice.rc
-	rm -rf $MODDIR/vendor/etc
-	rm -rf $MODDIR/vendor/bin/thermal*
-	rm -rf $MODDIR/init
 fi
 
 if test "$(show_value '跳电修复模式')" == "true"; then
