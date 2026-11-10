@@ -18,6 +18,8 @@ echo "50000000" >/sys/firmware/devicetree/base/charger/current_max
 echo "50000000" >/sys/class/power_supply/battery/constant_charge_current_max
 echo "50000000" >/sys/class/power_supply/battery/fast_charge_current
 echo "50000000" >/sys/class/power_supply/battery/current_max
+echo "50000000" >/sys/class/xm_power/charger/charger_thermal/wired_chg_curr 2>/dev/null
+echo "50000000" >/sys/class/xm_power/charger/charger_thermal/wired_chg_curr2 2>/dev/null
 # Cleanup legacy files
 rm -rf /data/adb/magisk/Delta.prop 2>/dev/null
 function restart_mi_thermald() {

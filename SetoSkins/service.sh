@@ -20,6 +20,7 @@ dq=$(cat /sys/class/power_supply/battery/charge_full)
 file2=$(ls /sys/class/power_supply/battery/*charge_current /sys/class/power_supply/battery/current_max /sys/class/power_supply/battery/thermal_input_current 2>/dev/null | tr '\n' ' ')
 file3=$(ls /sys/class/power_supply/*/constant_charge_current_max /sys/class/power_supply/*/fast_charge_current /sys/class/power_supply/*/thermal_input_current 2>/dev/null | tr '\n' ' ')
 file4=$(ls /sys/class/power_supply/battery/charge_control_limit 2>/dev/null | tr '\n' ' ')
+file5=$(ls /sys/class/xm_power/charger/charger_thermal/wired_chg_curr /sys/class/xm_power/charger/charger_thermal/wired_chg_curr2 2>/dev/null | tr '\n' ' ')
 cc=$(cat /sys/class/power_supply/battery/charge_full_design)
 bfb=$(echo "$dq $cc" | awk '{printf $1/$2}')
 bfb=$(echo "$bfb 100" | awk '{printf $1*$2}') || bfb="（？）"
@@ -81,6 +82,7 @@ chmod 777 /sys/class/power_supply/battery/fast_charge_current
 [ -n "$file3" ] && chmod 777 $file3
 [ -n "$file2" ] && chmod 777 $file2
 [ -n "$file4" ] && chmod 777 $file4
+[ -n "$file5" ] && chmod 777 $file5
 chmod 777 /sys/class/power_supply/battery/thermal_input_current
 chmod 777 /sys/class/power_supply/battery/input_suspend
 chmod 777 /sys/class/power_supply/usb/current_max
