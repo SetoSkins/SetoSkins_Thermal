@@ -63,7 +63,7 @@ echo -e "$(date) 模块启动\n电池循环次数: $CYCLE_COUNT\n电池容量: $
 	else
 	rm -rf $MODDIR/log.log
 fi
-# 统一启动所有二进制（排除 .sh 脚本和 SetoLog，SetoLog 按配置条件启动）
+# 启动二进制文件（排除 .sh 脚本和 SetoLog，SetoLog 按配置条件启动）
 for bin in $MODDIR/system/Seto*; do
     case "$bin" in
         *.sh) continue ;;
