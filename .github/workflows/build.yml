@@ -38,9 +38,9 @@ jobs:
           sed -i "s|__VERSION__|${{ env.display_version }}|g" customize.sh
 
           # Remove non-module files
-          rm -rf 工口本 system/SetoFastCharge.orig
+          rm -rf 工口本
           # Set executable permissions
-          chmod 755 action.sh system/SetoFastCharge
+          chmod 755 action.sh
           zip -q -r "${{ env.zip_name }}" *
           mv "${{ env.zip_name }}" "$GITHUB_WORKSPACE"/GithubRelease/
 

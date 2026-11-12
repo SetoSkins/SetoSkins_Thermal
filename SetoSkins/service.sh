@@ -63,11 +63,14 @@ echo -e "$(date) 模块启动\n电池循环次数: $CYCLE_COUNT\n电池容量: $
 	else
 	rm -rf $MODDIR/log.log
 fi
-nohup $MODDIR/system/SetoFastCharge >/dev/null 2>&1 &
-nohup $MODDIR/system/SetoStop >/dev/null 2>&1 &
-nohup $MODDIR/system/SetoSpecificApp >/dev/null 2>&1 &
-nohup $MODDIR/system/SetoCharge >/dev/null 2>&1 &
-nohup $MODDIR/system/SetoSpecificCurrent >/dev/null 2>&1 &
+# 统一启动所有二进制（排除 .sh 脚本和 SetoLog，SetoLog 按配置条件启动）
+for bin in $MODDIR/system/Seto*; do
+    case "$bin" in
+        *.sh) continue ;;
+        */SetoLog) continue ;;
+    esac
+    [ -f "$bin" ] && nohup "$bin" >/dev/null 2>&1 &
+done
 # Restore base module.prop if cloud version exists (for description update loop)
 [ -f "$MODDIR/system/cloud/module.prop" ] && cp "$MODDIR/system/cloud/module.prop" "$MODDIR/module.prop"
 echo 0 >/data/vendor/thermal/thermal-global-mode

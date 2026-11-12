@@ -347,9 +347,6 @@ const LANGS = {
     "cfg.开启充电Log.desc": "Low-power C++ charging log, viewable in module root.",
     "cfg.温控空文件挂载": "Empty Thermal File Mount",
     "cfg.温控空文件挂载.desc": "Deeper thermal removal. Enable if brightness drops or charging slows.",
-    "cfg.快充模式": "Fast Charge Mode",
-    "cfg.快充模式.desc": "Spoofs battery temp to bypass limits. DANGEROUS: may damage battery!",
-    "cfg.快充模式.warn": "DANGER",
     "cfg.还原性能模式温控": "Restore Performance Thermal",
     "cfg.还原性能模式温控.desc": "Restore original performance mode thermal config.",
     "cfg.均衡式性能温控": "Balanced Performance Thermal",
@@ -444,9 +441,6 @@ const LANGS = {
     "cfg.开启充电Log.desc": "由C++编写的低功耗充电Log，可在模块根目录查看。",
     "cfg.温控空文件挂载": "温控空文件挂载",
     "cfg.温控空文件挂载.desc": "温控去的更干净，如降亮度或充电慢可开启此选项。",
-    "cfg.快充模式": "快充模式",
-    "cfg.快充模式.desc": "伪装电池温度绕过限制。危险：可能损坏电池！",
-    "cfg.快充模式.warn": "危险",
     "cfg.还原性能模式温控": "还原性能模式温控",
     "cfg.还原性能模式温控.desc": "仅还原系统原有的性能模式温控。",
     "cfg.均衡式性能温控": "均衡式性能温控",
@@ -885,7 +879,7 @@ function serializeConfig(config) {
 
   const SECTIONS = [
     { keys: ["简洁版配置", "模块简介显示充电信息", "开启充电Log"] },
-    { keys: ["温控空文件挂载", "快充模式", "还原性能模式温控", "均衡式性能温控", "跳电修复模式"] },
+    { keys: ["温控空文件挂载", "还原性能模式温控", "均衡式性能温控", "跳电修复模式"] },
     { keys: ["修改最大电流数", "最大电流数"] },
     { keys: ["开启充电调速", "一限温度阈值", "一限限制电流", "二限温度阈值", "二限限制电流", "三限温度阈值", "三限限制电流", "延迟温度阈值"] },
     { keys: ["自定义阶梯模式", "一限电量阈值", "一限电量限制电流", "二限电量阈值", "二限电量限制电流", "三限电量阈值", "三限电量限制电流"] },
@@ -939,7 +933,6 @@ const CONFIG_LAYOUT = [
     section: "sec.thermal",
     items: [
       { key: "温控空文件挂载", type: "toggle" },
-      { key: "快充模式", type: "toggle", warn: true },
       { key: "还原性能模式温控", type: "toggle" },
       { key: "均衡式性能温控", type: "toggle" },
       { key: "跳电修复模式", type: "toggle" },
