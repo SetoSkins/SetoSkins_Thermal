@@ -1,6 +1,6 @@
 #!/system/bin/sh
 # Seto_description.sh - Dynamic module description updater
-# Launched by service.sh via system/*.sh glob, or by WebUI hot-reload
+# Launched by service.sh via system/*.sh glob
 
 SCRIPT_DIR=${0%/*}
 MODDIR=${SCRIPT_DIR%/*}
@@ -65,7 +65,7 @@ while true; do
     if [ "$capacity" = "100" ]; then
         update_desc "[ 😊已充满 温度${temp}℃ 电流${ChargemA}mA ]"
     elif [ "$hint" = "DisCharging" ]; then
-        update_desc "[ 🔋未充电 ] Seto Thermal | 使用WebUI配置"
+        update_desc "[ 🔋未充电 ] Seto Thermal"
         setprop ctl.restart mi_thermald 2>/dev/null
         setprop ctl.restart thermal 2>/dev/null
         echo 1 >/sys/class/thermal/thermal_message/sconfig 2>/dev/null
@@ -78,7 +78,7 @@ while true; do
         update_desc "[ 🥵太烧了 温度${temp}℃ 电流${ChargemA}mA ] Seto Thermal"
     fi
 
-    # Re-check in case user toggled off via WebUI
+    # Re-check in case user toggled off in config
     VAL=$(show_value '模块简介显示充电信息')
     if [ "$VAL" != "true" ]; then
         update_desc "Multi-function thermal control for MIUI/HyperOS | Supports Magisk, KernelSU, SukiSU | Config: /data/adb/modules/SetoSkins/"

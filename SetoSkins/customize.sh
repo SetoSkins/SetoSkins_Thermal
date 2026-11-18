@@ -217,20 +217,6 @@ if [ ! -f /data/vendor/thermal/decrypt.txt ]; then
 fi
 
 ##########################
-# KSU-specific Setup
-##########################
-if [ "$ROOT_MANAGER" = "ksu" ] || [ "$ROOT_MANAGER" = "sukisu" ]; then
-    # Set proper permissions for webroot
-    if [ -d "$MODPATH/webroot" ]; then
-        set_perm_recursive "$MODPATH/webroot" 0 0 0755 0644
-    fi
-    # Set permissions for action.sh
-    if [ -f "$MODPATH/action.sh" ]; then
-        set_perm "$MODPATH/action.sh" 0 0 0755
-    fi
-fi
-
-##########################
 # Finish
 ##########################
 lang_print "- 配置位置: 模块根目录" "- Config location: Module root directory"

@@ -39,8 +39,6 @@ jobs:
 
           # Remove non-module files
           rm -rf 工口本
-          # Set executable permissions
-          chmod 755 action.sh
           zip -q -r "${{ env.zip_name }}" *
           mv "${{ env.zip_name }}" "$GITHUB_WORKSPACE"/GithubRelease/
 
