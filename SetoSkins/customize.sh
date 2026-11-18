@@ -72,6 +72,7 @@ fi
 ui_print "—————————————————————————"
 lang_print "- Seto 温控 __VERSION__" "- Seto Thermal __VERSION__"
 lang_print "- 强烈建议搭配模块App一起使用，将在几秒后跳转至下载链接。" "- It is highly recommended to use this app in conjunction with the module app. You will be redirected to the download link in a few seconds."
+lang_print "- 配置位置: /data/adb/modules/SetoSkins/" "- Config location: /data/adb/modules/SetoSkins/"
 ui_print "—————————————————————————"
 sleep 0.5
 
@@ -145,11 +146,6 @@ chmod 755 /data/adb/service.d/seto_restore_config.sh 2>/dev/null || true
 
 fi
 
-ui_print "—————————————————————————"
-lang_print "- 如温控无效，请确保系统已更新。" "- If thermal control is ineffective, make sure your system is up to date."
-lang_print "- 如降亮度或充电变慢，请在配置中开启温控空文件挂载。" "- Enable empty thermal file mount in config if brightness drops or charging slows."
-ui_print "—————————————————————————"
-
 ##########################
 # Thermal Setup
 ##########################
@@ -219,9 +215,6 @@ fi
 ##########################
 # Finish
 ##########################
-lang_print "- 配置位置: 模块根目录" "- Config location: Module root directory"
-lang_print "- 自动移除冲突模块" "- Auto-removing conflicting modules"
-lang_print "- 作者: SetoSkins | 感谢: SummerSK, shadow3, nakixii " "- Author: SetoSkins | Thanks: SummerSK, shadow3, nakixii"
 
 # Thanox integration
 thanos=$(find /data/system/ -type d -name 'thanos*' 2>/dev/null) || thanox=""
@@ -237,7 +230,6 @@ fi
 # Cleanup
 rm -rf /data/system/package_cache/* 2>/dev/null || true
 rm -rf /data/adb/1 2>/dev/null || true
-lang_print "- 缓存已清理" "- Cache cleaned"
 rm -rf /data/media/0/Seto.zip 2>/dev/null || true
 rm -rf /data/Seto.zip 2>/dev/null || true
 
