@@ -234,9 +234,8 @@ fi
 # Finish
 ##########################
 lang_print "- 配置位置: 模块根目录" "- Config location: Module root directory"
-lang_print "- 使用 WebUI 进行实时配置 (无需重启)" "- Use WebUI for live configuration (no reboot needed)"
 lang_print "- 自动移除冲突模块" "- Auto-removing conflicting modules"
-lang_print "- 作者: SetoSkins | 感谢: SummerSK, shadow3, nakixii" "- Author: SetoSkins | Thanks: SummerSK, shadow3, nakixii"
+lang_print "- 作者: SetoSkins | 感谢: SummerSK, shadow3, nakixii " "- Author: SetoSkins | Thanks: SummerSK, shadow3, nakixii"
 
 # Thanox integration
 thanos=$(find /data/system/ -type d -name 'thanos*' 2>/dev/null) || thanox=""

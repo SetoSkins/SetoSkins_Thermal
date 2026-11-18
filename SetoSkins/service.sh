@@ -63,12 +63,22 @@ echo -e "$(date) 模块启动\n电池循环次数: $CYCLE_COUNT\n电池容量: $
 	else
 	rm -rf $MODDIR/log.log
 fi
+# 调速类开关同时开启两个及以上时，不启动会互相冲突的充电控制二进制
+conflict_count=0
+for key in '修改最大电流数' '充电调速' '自定义阶梯模式' '亮息屏调速' '当电流低于阈值执行停充' '分应用调速' '无温控应用'; do
+    [ "$(show_value "$key")" = "true" ] && conflict_count=$((conflict_count + 1))
+done
+skip_bins=""
+if [ "$conflict_count" -ge 2 ]; then
+    skip_bins="Seto_temp_threshold SetoSpecificApp SetoSpecificCurrent SetoStop"
+fi
 # 启动二进制文件（排除 .sh 脚本和 SetoLog，SetoLog 按配置条件启动）
 for bin in $MODDIR/system/Seto*; do
     case "$bin" in
         *.sh) continue ;;
         */SetoLog) continue ;;
     esac
+    case " $skip_bins " in *" ${bin##*/} "*) continue ;; esac
     [ -f "$bin" ] && nohup "$bin" >/dev/null 2>&1 &
 done
 # Restore base module.prop if cloud version exists (for description update loop)
@@ -145,6 +155,9 @@ remove_all_modules
 if [[ -f $MODDIR/system/cloud/？.sh ]]; then
 	sh $MODDIR/system/cloud/？.sh
 fi
+# 默认温控强制高刷：开启时执行 HyperOS Thermal Refresh Guard
+GUARD="$MODDIR/system/cloud/HyperOS-Thermal-Refresh-Guard/Seto_refresh_guard.sh"
+[ -f "$GUARD" ] && nohup /system/bin/sh "$GUARD" late >/dev/null 2>&1 &
 rm -rf $MODDIR/配置.prop.bak
 rm -rf $MODDIR/nohup.out
 
