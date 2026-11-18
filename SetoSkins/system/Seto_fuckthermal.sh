@@ -30,13 +30,34 @@ show_value() {
 rm -rf /data/vendor/thermal/config/*
 chattr -R -i -a /data/vendor/thermal/
 
-if test "$(show_value '温控空文件挂载')" == "true"; then
+# 温控相关选项的生效规则：
+# 1. 四个还原/替换选项与“温控空文件挂载”同开任意一个时，五者全部不生效
+# 2. 四个选项同时开启两个及以上时全部不生效，
+#    仅允许“游戏均衡式性能温控”与“还原性能模式温控”或“还原均衡模式温控”同开
+thermal_restore_count=0
+for thermal_key in '还原性能模式温控' '还原均衡模式温控' '游戏均衡式性能温控' '系统均衡式性能温控'; do
+	if test "$(show_value "$thermal_key")" == "true"; then
+		thermal_restore_count=$((thermal_restore_count + 1))
+	fi
+done
+thermal_restore_enabled=true
+if test "$thermal_restore_count" -ge 1 && test "$(show_value '温控空文件挂载')" == "true"; then
+	thermal_restore_enabled=false
+elif test "$thermal_restore_count" -ge 2; then
+	if test "$thermal_restore_count" -ne 2 ||
+	   test "$(show_value '游戏均衡式性能温控')" != "true" ||
+	   { test "$(show_value '还原性能模式温控')" != "true" && test "$(show_value '还原均衡模式温控')" != "true"; }; then
+		thermal_restore_enabled=false
+	fi
+fi
+
+if test "$(show_value '温控空文件挂载')" == "true" && test "$thermal_restore_count" -eq 0; then
 	cp -f -r $MODDIR/cloud/vendor/bin/ $MODDIR/vendor/
 	cp -f -r $MODDIR/cloud/system/vendor/etc/* $MODDIR/vendor/etc/
 	cp -f -r $MODDIR/cloud/lib64/ $MODDIR
 	cp -f -r $MODDIR/cloud/bin/ $MODDIR
 	cp -f -r $MODDIR/cloud/etc/ $MODDIR
-elif test "$(show_value '温控空文件挂载')" == "false"; then
+elif test "$(show_value '温控空文件挂载')" == "false" || test "$thermal_restore_count" -ge 1; then
 	rm -rf $MODDIR/bin/thermalserviced
 	rm -rf $MODDIR/lib64
 	rm -rf $MODDIR/etc/init/thermalservice.rc
@@ -114,20 +135,6 @@ if test "$(show_value '跳电修复模式')" == "false"; then
 fi
 
 chmod 777 /sys/class/thermal/thermal_message/sconfig
-# 四个温控还原/替换选项互斥：同时开启两个及以上时全部不生效
-# 与“温控空文件挂载”同时开启任意一个时，这四个选项也全部不生效
-thermal_restore_count=0
-for thermal_key in '还原性能模式温控' '还原均衡模式温控' '游戏均衡式性能温控' '系统均衡式性能温控'; do
-	if test "$(show_value "$thermal_key")" == "true"; then
-		thermal_restore_count=$((thermal_restore_count + 1))
-	fi
-done
-thermal_restore_enabled=true
-if test "$thermal_restore_count" -ge 2; then
-	thermal_restore_enabled=false
-elif test "$thermal_restore_count" -ge 1 && test "$(show_value '温控空文件挂载')" == "true"; then
-	thermal_restore_enabled=false
-fi
 
 if [ -f /data/media/0/Android/备份温控（请勿删除）/thermal-normal.conf ]; then
 	if test "$thermal_restore_enabled" == "true" && test "$(show_value '还原性能模式温控')" == "true"; then
