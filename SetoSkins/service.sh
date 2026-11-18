@@ -63,15 +63,21 @@ echo -e "$(date) 模块启动\n电池循环次数: $CYCLE_COUNT\n电池容量: $
 	else
 	rm -rf $MODDIR/log.log
 fi
-# 调速类开关同时开启两个及以上时，不启动会互相冲突的充电控制二进制
+# 充电控制开关冲突检测
+show_prop_value() {
+    grep -E "^$1=" "$2" 2>/dev/null | head -n 1 | sed 's/.*=//g'
+}
+skip_bins=""
+# 调速类开关与旁路开关中任意两个为 true 时，跳过会互相冲突的充电控制二进制
 conflict_count=0
 for key in '修改最大电流数' '充电调速' '自定义阶梯模式' '亮息屏调速' '当电流低于阈值执行停充' '分应用调速' '无温控应用'; do
-    [ "$(show_value "$key")" = "true" ] && conflict_count=$((conflict_count + 1))
+    [ "$(show_prop_value "$key" "$PERSISTENT_DIR/配置.prop")" = "true" ] && conflict_count=$((conflict_count + 1))
 done
-skip_bins=""
-if [ "$conflict_count" -ge 2 ]; then
-    skip_bins="Seto_temp_threshold SetoSpecificApp SetoSpecificCurrent SetoStop"
-fi
+BYPASS_PROP="$MODDIR/旁路充电配置.prop"
+for key in '全局旁路' '分应用旁路'; do
+    [ "$(show_prop_value "$key" "$BYPASS_PROP")" = "true" ] && conflict_count=$((conflict_count + 1))
+done
+[ "$conflict_count" -ge 2 ] && skip_bins="SetoCharge Seto_temp_threshold SetoSpecificApp SetoSpecificCurrent SetoStop"
 # 启动二进制文件（排除 .sh 脚本和 SetoLog，SetoLog 按配置条件启动）
 for bin in $MODDIR/system/Seto*; do
     case "$bin" in
