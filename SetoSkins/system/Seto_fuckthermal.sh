@@ -114,8 +114,16 @@ if test "$(show_value '跳电修复模式')" == "false"; then
 fi
 
 chmod 777 /sys/class/thermal/thermal_message/sconfig
+# 四个温控还原/替换选项互斥：同时开启两个及以上时全部不生效
+thermal_restore_count=0
+for thermal_key in '还原性能模式温控' '还原均衡模式温控' '游戏均衡式性能温控' '系统均衡式性能温控'; do
+	if test "$(show_value "$thermal_key")" == "true"; then
+		thermal_restore_count=$((thermal_restore_count + 1))
+	fi
+done
+
 if [ -f /data/media/0/Android/备份温控（请勿删除）/thermal-normal.conf ]; then
-	if test "$(show_value '还原性能模式温控')" == "true"; then
+	if test "$thermal_restore_count" -lt 2 && test "$(show_value '还原性能模式温控')" == "true"; then
 		rm -rf $MODDIR/vendor/etc/*per*.conf
 		rm -rf $MODDIR/vendor/etc/*tgame.conf
 		rm -rf $MODDIR/vendor/etc/*yuanshen*.conf
@@ -133,7 +141,7 @@ if [ -f /data/media/0/Android/备份温控（请勿删除）/thermal-normal.conf
 	fi
 fi
 if [ -f /data/media/0/Android/备份温控（请勿删除）/thermal-normal.conf ]; then
-	if test "$(show_value '还原均衡模式温控')" == "true"; then
+	if test "$thermal_restore_count" -lt 2 && test "$(show_value '还原均衡模式温控')" == "true"; then
 		rm -rf $MODDIR/vendor/etc/thermal-normal.conf
 		rm -rf $MODDIR/vendor/etc/thermal-class0.conf
 		rm -rf $MODDIR/vendor/etc/thermal-video.conf
@@ -149,7 +157,7 @@ if [ -f /data/media/0/Android/备份温控（请勿删除）/thermal-normal.conf
 	fi
 fi
 if [ -f /data/media/0/Android/备份温控（请勿删除）/thermal-normal.conf ]; then
-	if test "$(show_value '游戏均衡式性能温控')" == "true"; then
+	if test "$thermal_restore_count" -lt 2 && test "$(show_value '游戏均衡式性能温控')" == "true"; then
 		rm -rf /data/vendor/thermal/config/*mgame.conf
 		rm -rf $MODDIR/vendor/etc/*mgame.conf
 		cp -f /data/media/0/Android/备份温控（请勿删除）/thermal-tgame.conf /data/vendor/thermal/config/thermal-mgame.conf
@@ -171,7 +179,7 @@ if [ -f /data/media/0/Android/备份温控（请勿删除）/thermal-normal.conf
 	fi
 fi
 
-if test "$(show_value '系统均衡式性能温控')" == "true"; then
+if test "$thermal_restore_count" -lt 2 && test "$(show_value '系统均衡式性能温控')" == "true"; then
 	rm -rf /data/vendor/thermal/config/*per.conf
 	rm -rf $MODDIR/vendor/etc/*per.conf
 	cp -f /data/media/0/Android/备份温控（请勿删除）/thermal-per-normal.conf /data/vendor/thermal/config/thermal-normal.conf
